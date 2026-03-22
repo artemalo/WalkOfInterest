@@ -1,8 +1,5 @@
 data/
 *.pbf
-subcategories.sql
-subcategories-good.sql
-categories.sql
 
 # Maven
 target/
