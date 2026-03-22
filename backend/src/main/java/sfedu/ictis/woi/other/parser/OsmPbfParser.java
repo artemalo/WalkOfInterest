@@ -15,19 +15,84 @@ import java.util.logging.*;
 public class OsmPbfParser {
     private static final Logger logger = Logger.getLogger(OsmPbfParser.class.getName());
 
-    private static final Map<String, Set<String>> WHITELIST_TAGS = Map.of(
-            // УДЛИТЬ РАБОТУ С POI_SYSTEM_TAGS
-            "natural", Set.of("wood", "beach", "spring", "cave", "rock", "waterfall", "valley"),
-            "amenity", Set.of("cafe", "restaurant", "pub", "bar", "fast_food",
-                    "toilet", "parking", "fuel", "bench", "drinking_water"),
-            "leisure", Set.of("park", "garden", "playground", "picnic_site",
-                    "swimming_area", "track"),
-            "tourism", Set.of("attraction", "museum", "viewpoint", "artwork",
-                    "information", "alpine_hut"),
-            "shop", Set.of("supermarket", "convenience", "bakery", "ice_cream"),
-            "historic", Set.of("monument", "memorial", "archaeological_site", "ruins"),
-            "man_made", Set.of("lighthouse", "obelisk", "tower", "bridge"),
-            "building", Set.of("museum", "church", "cathedral", "castle")
+    private static final Map<String, Set<String>> WHITELIST_TAGS = Map.ofEntries(
+            Map.entry("amenity", Set.of(
+                    "nightclub", "casino", "theatre", "cinema", "arts_centre",
+                    "conference_centre", "community_centre", "pub", "bar",
+                    "biergarten", "food_court", "restaurant", "cafe",
+                    "ice_cream", "marketplace", "library", "college",
+                    "townhall", "courthouse", "hospital", "clinic",
+                    "dentist", "pharmacy", "bank", "post_office",
+                    "bus_station", "ferry_terminal", "place_of_worship",
+                    "clock"
+            )),
+            Map.entry("leisure", Set.of(
+                    "beach_resort", "stadium", "nature_reserve", "golf_course",
+                    "sports_centre", "marina", "horse_riding", "park",
+                    "swimming_pool", "garden", "fitness_centre", "pitch",
+                    "track", "dog_park", "slipway"
+            )),
+            Map.entry("sport", Set.of(
+                    "golf", "skiing", "surfing", "sailing", "ice_hockey",
+                    "ice_skating", "climbing", "horse_racing", "equestrian",
+                    "tennis", "swimming", "athletics", "soccer", "basketball",
+                    "volleyball", "running", "cycling", "fitness", "yoga",
+                    "rowing"
+            )),
+            Map.entry("tourism", Set.of(
+                    "theme_park", "zoo", "aquarium", "museum", "gallery",
+                    "viewpoint", "attraction", "artwork", "hotel", "hostel",
+                    "motel", "guest_house", "alpine_hut", "wilderness_hut",
+                    "camp_site", "picnic_site"
+            )),
+            Map.entry("shop", Set.of(
+                    "mall", "jewelry", "electronics", "supermarket",
+                    "convenience", "bakery", "butcher", "greengrocer",
+                    "deli", "clothes", "shoes", "sports", "furniture",
+                    "garden_centre", "doityourself", "bicycle", "music",
+                    "antiques", "second_hand", "beauty", "travel_agency",
+                    "kiosk"
+            )),
+            Map.entry("historic", Set.of(
+                    "heritage", "castle", "archaeological_site", "monument",
+                    "fort", "tower", "manor", "church", "city_gate",
+                    "ship", "watermill", "ruins", "battlefield",
+                    "cemetery", "tomb", "memorial", "pillory",
+                    "boundary_stone", "wayside_shrine", "mine"
+            )),
+            Map.entry("artwork_type", Set.of(
+                    "sculpture", "statue", "installation", "relief",
+                    "bust", "mosaic", "mural", "graffiti", "stone"
+            )),
+            Map.entry("memorial", Set.of(
+                    "bust"
+            )),
+            Map.entry("man_made", Set.of(
+                    "bridge", "obelisk", "observatory", "ceremonial_gate",
+                    "tower", "lighthouse", "watermill", "windmill",
+                    "pier", "breakwater", "geoglyph", "cross",
+                    "maypole", "water_tower", "ruins",
+                    "mineshaft", "adit", "gasometer"
+            )),
+            Map.entry("building", Set.of(
+                    "cathedral", "palace", "castle", "university",
+                    "train_station", "church", "mosque", "temple",
+                    "synagogue", "chapel", "fire_station",
+                    "dormitory", "factory", "ruins"
+            )),
+            Map.entry("natural", Set.of(
+                    "geyser", "hot_spring", "gorge", "bay", "beach",
+                    "cave_entrance", "spring", "hill", "isthmus", "stone"
+            )),
+            Map.entry("landuse", Set.of(
+                    "recreation_ground", "brownfield"
+            )),
+            Map.entry("waterway", Set.of(
+                    "waterfall"
+            )),
+            Map.entry("water", Set.of(
+                    "reservoir", "pond"
+            ))
     );
 
     private final Map<Long, OsmNode> nodes = new HashMap<>();
