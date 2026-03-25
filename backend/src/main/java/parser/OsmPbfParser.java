@@ -1,4 +1,4 @@
-package sfedu.ictis.woi.other.parser;
+package parser;
 
 import de.topobyte.osm4j.core.access.DefaultOsmHandler;
 import de.topobyte.osm4j.core.model.iface.*;
@@ -95,29 +95,26 @@ public class OsmPbfParser {
             ))
     );
 
-    private final Map<Long, OsmNode> nodes = new HashMap<>();
+    private final Map<Long, Coordinate> nodeCoords = new HashMap<>();
     private final Map<Long, OsmWay> ways = new HashMap<>();
 
     private final BatchInserter batchInserter;
 
     private final Connection conn;
-    private final int batchSize = 1000;
-    private static final int CACHE_CLEAR_INTERVAL = 50_000;
-    private static final int MAX_CACHE_SIZE = 10_000;
     private int processedCount = 0;
-    private static final int progressInterval = 100_000;
+    private static final int BATCH_SIZE = 1000;
+    private static final int PROGRESS_INTERVAL = 100_000;
 
     // Для JTS
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
     public OsmPbfParser(Connection conn) {
         this.conn = conn;
-        this.batchInserter = new BatchInserter(conn, batchSize);
+        this.batchInserter = new BatchInserter(conn, BATCH_SIZE);
 
         setupFileLogging();
     }
 
-    // ===================== PROGRESS LOGGER =====================
     private static class ProgressLogger {
         private final String entityType;
         private final long entityId;
@@ -150,7 +147,6 @@ public class OsmPbfParser {
         }
     }
 
-    // ===================== PARSE =====================
     public void parse(String filePath) throws Exception {
         logger.info("Starting parsing of file: " + filePath);
         PbfReader reader = new PbfReader(new FileInputStream(filePath), false);
@@ -158,26 +154,20 @@ public class OsmPbfParser {
         DefaultOsmHandler handler = new DefaultOsmHandler() {
             @Override
             public void handle(OsmNode node) {
-                // Если у ноды есть интересные нам теги — обрабатываем и пишем в БД
                 if (hasValidTag(node)) {
                     processNode(node);
                 }
 
-                // ВАЖНО: Нам нужно хранить координаты нод, чтобы собрать из них пути (Ways)
-                // Здесь можно добавить фильтрацию: хранить только те ноды, которые используются в путях.
-                // Но для простоты пока оставляем в кэше.
-                nodes.put(node.getId(), node);
+                nodeCoords.put(node.getId(), new Coordinate(node.getLongitude(), node.getLatitude()));
                 checkProgress();
             }
 
             @Override
             public void handle(OsmWay way) {
-                // Если у пути есть теги — обрабатываем (строим полигон) и пишем в БД
                 if (hasValidTag(way)) {
                     processWay(way);
                 }
 
-                // ВАЖНО: Оставляем путь в кэше, так как он может быть частью Relation (мультиполигона)
                 ways.put(way.getId(), way);
                 checkProgress();
             }
@@ -194,10 +184,8 @@ public class OsmPbfParser {
         reader.setHandler(handler);
         reader.read();
 
-        // Только теперь, когда всё прочитано, сбрасываем остатки батчей
         batchInserter.flushBatches();
 
-        // И очищаем кэш в самом конце
         clearCaches();
 
         logger.info("Parsing complete. Total processed: " + processedCount);
@@ -205,21 +193,11 @@ public class OsmPbfParser {
 
     private void checkProgress() {
         processedCount++;
-        if (processedCount % progressInterval == 0) {
+        if (processedCount % PROGRESS_INTERVAL == 0) {
             logger.info("Processed " + processedCount + " objects so far");
-        }
-
-        // Очистка кэша при достижении лимита
-        if (nodes.size() > MAX_CACHE_SIZE || ways.size() > MAX_CACHE_SIZE) {
-            clearCaches();
-        }
-
-        if (processedCount % CACHE_CLEAR_INTERVAL == 0) {
-            clearCaches();
         }
     }
 
-    // ===================== FILTER =====================
     private boolean hasValidTag(OsmEntity entity) {
         for (int i = 0; i < entity.getNumberOfTags(); i++) {
             OsmTag tag = entity.getTag(i);
@@ -234,8 +212,6 @@ public class OsmPbfParser {
         return false;
     }
 
-
-    // ===================== NODE =====================
     private void processNode(OsmNode node) {
         try {
             String geom = createPointGeometry(node.getLongitude(), node.getLatitude());
@@ -263,7 +239,6 @@ public class OsmPbfParser {
         }
     }
 
-    // ===================== WAY =====================
     private void processWay(OsmWay way) {
         if (way.getNumberOfNodes() < 4) return;
 
@@ -293,9 +268,8 @@ public class OsmPbfParser {
         }
     }
 
-    // ===================== RELATION =====================
     private void processRelation(OsmRelation relation) {
-        // 1. Проверяем, является ли отношение мультиполигоном
+        // является ли отношение мультиполигоном
         boolean isMultipolygon = false;
         for (int i = 0; i < relation.getNumberOfTags(); i++) {
             OsmTag tag = relation.getTag(i);
@@ -307,22 +281,20 @@ public class OsmPbfParser {
 
         if (!isMultipolygon) return;
 
-        // Инициализируем логгер прогресса для тяжелых объектов
+        // логгер прогресса для тяжелых объектов
         ProgressLogger progressLogger =
                 new ProgressLogger("relation", relation.getId(), relation.getNumberOfMembers());
 
         List<Polygon> outerPolygons = new ArrayList<>();
 
-        // 2. Собираем геометрию из путей (ways), которые должны быть в кэше
+        // Собираем геометрию из путей (ways), которые должны быть в кэше
         for (int i = 0; i < relation.getNumberOfMembers(); i++) {
             progressLogger.increment();
 
             OsmRelationMember member = relation.getMember(i);
 
-            // Нас интересуют только участники типа Way (линии/границы)
             if (member.getType() != EntityType.Way) continue;
 
-            // Пытаемся достать путь из кэша (он должен был сохраниться там ранее)
             OsmWay way = ways.get(member.getId());
             if (way == null) continue;
 
@@ -330,7 +302,6 @@ public class OsmPbfParser {
             if (coordinates == null) continue;
 
             try {
-                // Создаем полигон из координат пути
                 outerPolygons.add(
                         geometryFactory.createPolygon(coordinates.toArray(new Coordinate[0]))
                 );
@@ -345,27 +316,24 @@ public class OsmPbfParser {
         }
 
         try {
-            // 3. Формируем MultiPolygon через JTS
+            // MultiPolygon через JTS
             MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(
                     outerPolygons.toArray(new Polygon[0])
             );
 
             String geom = createMultiPolygonGeometry(multiPolygon);
 
-            // 4. Добавляем основную запись в Batch (с типом "relation")
             batchInserter.addPoi("relation",
                     relation.getId(),
                     getOsmUid(relation),
                     getTimestampFromOsm(relation),
                     geom);
 
-            // 5. Добавляем теги в Batch (тип "relation" нужен для поиска ID в БД)
             for (int i = 0; i < relation.getNumberOfTags(); i++) {
                 OsmTag tag = relation.getTag(i);
                 batchInserter.addTag(relation.getId(), "relation", tag.getKey(), tag.getValue());
             }
 
-            // 6. Извлекаем и добавляем локализацию (имена и описания)
             Map<String, Map<String, String>> langData = extractLangData(relation);
             for (Map.Entry<String, Map<String, String>> entry : langData.entrySet()) {
                 String lang = entry.getKey();
@@ -388,7 +356,6 @@ public class OsmPbfParser {
         }
     }
 
-    // ===================== GEOMETRY METHODS =====================
     private String createPointGeometry(double lon, double lat) {
         return String.format(Locale.US, "POINT(%f %f)", lon, lat);
     }
@@ -407,13 +374,17 @@ public class OsmPbfParser {
         List<Coordinate> coordinates = new ArrayList<>();
 
         for (int i = 0; i < way.getNumberOfNodes(); i++) {
-            OsmNode n = nodes.get(way.getNodeId(i));
-            if (n == null) return null;
+            Coordinate c = nodeCoords.get(way.getNodeId(i));
 
-            coordinates.add(new Coordinate(n.getLongitude(), n.getLatitude()));
+            if (c == null) {
+                logger.warning("Missing node " + way.getNodeId(i) + " for way" + way.getId());
+                return null;
+            }
+
+            coordinates.add(c);
         }
 
-        // Проверяем замкнутость полигона
+        // замкнутость полигона
         if (!coordinates.get(0).equals2D(coordinates.get(coordinates.size() - 1))) {
             return null;
         }
@@ -461,37 +432,25 @@ public class OsmPbfParser {
         return (meta != null) ? meta.getUid() : 0L;
     }
 
-    // ===================== UTILITY METHODS =====================
-
-    /**
-     * Очищает кэш узлов и путей для освобождения памяти
-     * Вызывать периодически при обработке больших файлов
-     */
     public void clearCaches() {
-        int nodeCount = nodes.size();
+        int nodeCount = nodeCoords.size();
         int wayCount = ways.size();
 
-        nodes.clear();
+        nodeCoords.clear();
         ways.clear();
 
         logger.info("Cache cleared: " + nodeCount + " nodes and " + wayCount +
                 " ways removed. Total processed: " + processedCount);
     }
 
-    /**
-     * Получает статистику по обработанным объектам
-     */
     public Map<String, Integer> getStatistics() {
         Map<String, Integer> stats = new HashMap<>();
         stats.put("processed_objects", processedCount);
-        stats.put("cached_nodes", nodes.size());
+        stats.put("cached_nodes", nodeCoords.size());
         stats.put("cached_ways", ways.size());
         return stats;
     }
 
-    /**
-     * Закрывает соединение с БД (если оно не управляется извне)
-     */
     public void close() throws SQLException {
         for (Handler handler : logger.getHandlers()) {
             handler.close();

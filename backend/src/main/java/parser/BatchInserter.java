@@ -1,4 +1,4 @@
-package sfedu.ictis.woi.other.parser;
+package parser;
 
 import java.sql.*;
 import java.util.*;
@@ -50,8 +50,6 @@ public class BatchInserter {
         }
     }
 
-    // --- Методы добавления данных ---
-
     public void addPoi(String type, long osmId, long uid, Timestamp ts, String wkt) {
         if (batch.size() >= batchSize) {
             flush();
@@ -76,21 +74,16 @@ public class BatchInserter {
         }
     }
 
-    // --- Основная логика записи ---
-
     public void flush() {
         if (batch.isEmpty()) return;
 
         try {
             conn.setAutoCommit(false);
 
-            // Map для хранения: "тип:osm_id" -> внутренний_id_бд
             Map<String, Long> idMap = new HashMap<>();
 
-            // 1. Вставка POI с получением ID через RETURNING
             insertPoisAndPopulateMap(idMap);
 
-            // 2. Вставка всех зависимых данных через полученную карту ID
             insertChildren(idMap);
 
             conn.commit();
@@ -115,7 +108,6 @@ public class BatchInserter {
             if (i < batch.size() - 1) sql.append(", ");
         }
 
-        // Убираем WHERE, чтобы RETURNING всегда возвращал ID всех элементов батча
         sql.append(" ON CONFLICT (osm_type, osm_id) DO UPDATE SET ")
                 .append("geom = EXCLUDED.geom, last_update = EXCLUDED.last_update ")
                 .append("RETURNING id, osm_type, osm_id");
@@ -132,7 +124,6 @@ public class BatchInserter {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    // Теперь idMap будет заполнен на 100% (1000 из 1000)
                     String key = rs.getString("osm_type") + ":" + rs.getLong("osm_id");
                     idMap.put(key, rs.getLong("id"));
                 }
