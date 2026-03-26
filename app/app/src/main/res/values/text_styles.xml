@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.App.H1">
+        <item name="android:textSize">@dimen/text_h1</item>
+        <item name="android:fontFamily">@font/firaSans_regular</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="TextAppearance.App.H2">
+        <item name="android:textSize">@dimen/text_h2</item>
+        <item name="android:fontFamily">@font/firaSans_regular</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="TextAppearance.App.Body">
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:fontFamily">@font/firaSans_regular</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="TextAppearance.App.Body2">
+        <item name="android:textSize">@dimen/text_m_body</item>
+        <item name="android:fontFamily">@font/firaSans_regular</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="TextAppearance.App.Body3">
+        <item name="android:textSize">@dimen/text_mm_body</item>
+        <item name="android:fontFamily">@font/firaSans_regular</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+</resources>

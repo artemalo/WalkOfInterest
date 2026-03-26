@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+
     <color name="white">#FFFFFFFF</color>
+    <color name="green">#4B8F65</color>
+
+    <color name="general">#1B1B1B</color>
+    <color name="gray_button">#333333</color>
+
+    <color name="object_not_active">#A2ABAB</color>
 </resources>
