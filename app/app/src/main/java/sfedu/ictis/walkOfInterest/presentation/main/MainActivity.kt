@@ -1,10 +1,11 @@
-package sfedu.ictis.walkOfInterest
+package sfedu.ictis.walkOfInterest.presentation.main
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import sfedu.ictis.walkOfInterest.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
