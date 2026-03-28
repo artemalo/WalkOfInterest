@@ -5,4 +5,18 @@
     <dimen name="text_body">14sp</dimen>
     <dimen name="text_m_body">12sp</dimen>
     <dimen name="text_mm_body">10sp</dimen>
+
+    <dimen name="corner_radius_general">24dp</dimen>
+    <dimen name="corner_field">14dp</dimen>
+
+    <dimen name="padding_general">24dp</dimen>
+    <dimen name="padding_middle">12dp</dimen>
+    <dimen name="padding_small">6dp</dimen>
+
+    <dimen name="btn_field">48dp</dimen>
+    <dimen name="btn_general">36dp</dimen>
+
+    <dimen name="icon_general">24dp</dimen>
+
+
 </resources>

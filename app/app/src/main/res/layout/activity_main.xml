@@ -7,163 +7,178 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/general"
-        android:padding="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/map">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/gray_button"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:orientation="horizontal">
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/frameLayout2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-                    <FrameLayout
-                        android:id="@+id/imgA"
-                        android:layout_width="match_parent"
-                        android:layout_height="24dp"
-                        android:foreground="@drawable/marker_default"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <Space
-                    android:layout_width="6dp"
-                    android:layout_height="match_parent"/>
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintStart_toEndOf="@+id/frameLayout2">
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="From"
-                        android:textColor="@color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:background="@color/white"
-                android:layout_height="1dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:orientation="horizontal">
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/frameLayouts"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-                    <FrameLayout
-                        android:id="@+id/imgB"
-                        android:layout_width="match_parent"
-                        android:layout_height="24dp"
-                        android:foreground="@drawable/marker_default"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <Space
-                    android:layout_width="6dp"
-                    android:layout_height="match_parent"/>
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintStart_toEndOf="@+id/frameLayouts">
-                    <TextView
-                        android:id="@+id/textViewTo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="To"
-                        android:textColor="@color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="12dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="120dp"
-            android:layout_marginEnd="120dp"
-            android:orientation="horizontal">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-                <FrameLayout
-                    android:id="@+id/imgClock"
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:foreground="@drawable/center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="2h 30m"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="12dp"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Рассчитать"
-            android:style="@style/TextAppearance.App.H2"/>
-
-    </LinearLayout>
-
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/general_sheet"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <View
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginBottom="@dimen/padding_middle"
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:background="@drawable/handle_shape"/>
+
+
+        <FrameLayout
+            android:id="@+id/fieldFrom"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/btn_field">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:background="@drawable/field_general_shape_top"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingStart="@dimen/padding_middle"
+                android:paddingEnd="@dimen/padding_middle"
+                android:paddingBottom="@dimen/padding_small">
+                <ImageView
+                    android:id="@+id/imgA"
+                    android:layout_width="@dimen/icon_general"
+                    android:layout_height="@dimen/icon_general"
+                    android:layout_gravity="center"
+                    android:contentDescription="Point Start"
+                    android:src="@drawable/ic_a" />
+                <TextView
+                    android:id="@+id/textFrom"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/padding_small"
+                    android:text="Откуда"
+                    android:textColor="@color/white_gray"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:background="@drawable/field_general_shape_top"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+            <View
+                android:layout_marginStart="@dimen/padding_middle"
+                android:layout_marginEnd="@dimen/padding_middle"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fieldTo"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/btn_field">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:orientation="horizontal"
+                android:background="@drawable/field_general_shape_bottom"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingStart="@dimen/padding_middle"
+                android:paddingEnd="@dimen/padding_middle"
+                android:paddingBottom="@dimen/padding_small">
+                <ImageView
+                    android:id="@+id/imgB"
+                    android:layout_width="@dimen/icon_general"
+                    android:layout_height="@dimen/icon_general"
+                    android:layout_gravity="center"
+                    android:contentDescription="Point End"
+                    android:src="@drawable/ic_b" />
+                <TextView
+                    android:id="@+id/textTo"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/padding_small"
+                    android:text="Куда"
+                    android:textColor="@color/white_gray" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fieldClock"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:minHeight="@dimen/btn_field">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/field_general_shape"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/padding_middle"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_middle"
+            android:paddingBottom="@dimen/padding_small">
+
+            <ImageView
+                android:id="@+id/imgClock"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:contentDescription="Time"
+                android:src="@drawable/ic_clock"
+                app:tint="@color/object_time"
+                android:layout_gravity="center" />
+            <TextView
+                android:id="@+id/textClock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="23ч 30м"
+                android:textColor="@color/white"
+                android:layout_marginStart="@dimen/padding_small" />
+        </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fieldBtn"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_field"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small">
+            <Button
+                android:clickable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_general_selector"
+                android:minHeight="36dp"
+                android:textAppearance="@style/TextAppearance.App.H2"
+                android:includeFontPadding="false"
+                android:text="Рассчитать" />
+        </FrameLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

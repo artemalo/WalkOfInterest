@@ -2,11 +2,19 @@
 <resources>
     <color name="black">#FF000000</color>
 
+    <color name="divider">#33FFFFFF</color>
+
     <color name="white">#FFFFFFFF</color>
+    <color name="white_gray">#DDDDDD</color>
     <color name="green">#4B8F65</color>
 
     <color name="general">#1B1B1B</color>
     <color name="gray_button">#333333</color>
 
     <color name="object_not_active">#A2ABAB</color>
+    <color name="object_time">#C67C4E</color>
+    <color name="object_place">#A1C969</color>
+    <color name="object_red">#CF2D24</color>
+    <color name="object_star">#EDD84C</color>
+    <color name="object">#4B8F8C</color>
 </resources>
