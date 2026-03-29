@@ -6,7 +6,10 @@
 
     <color name="white">#FFFFFFFF</color>
     <color name="white_gray">#DDDDDD</color>
+    <color name="white_empty">#D9D9D9</color>
     <color name="green">#4B8F65</color>
+
+    <color name="description">#BBBBBB</color>
 
     <color name="general">#1B1B1B</color>
     <color name="gray_button">#333333</color>
@@ -17,4 +20,5 @@
     <color name="object_red">#CF2D24</color>
     <color name="object_star">#EDD84C</color>
     <color name="object">#4B8F8C</color>
+    <color name="object_selected">#264B8F8C</color>
 </resources>
