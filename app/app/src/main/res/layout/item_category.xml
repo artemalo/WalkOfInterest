@@ -21,7 +21,6 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:paddingTop="@dimen/padding_small"
         android:paddingBottom="@dimen/padding_small"
         android:paddingStart="@dimen/padding_s_small"
@@ -69,7 +68,6 @@
             android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout

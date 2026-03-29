@@ -9,14 +9,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCategories"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:paddingStart="@dimen/padding_general"
         android:paddingEnd="@dimen/padding_general"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintTop_toBottomOf="@+id/searchBar"
+        app:layout_constraintBottom_toBottomOf="@id/bottomSheet"
         tools:listitem="@layout/item_category" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
         android:layout_marginTop="@dimen/padding_general"
         android:paddingStart="@dimen/padding_general"
@@ -28,36 +29,29 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:src="@drawable/ic_arrow_l"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:id="@+id/imageButton"
             android:layout_width="@dimen/btn_field"
             android:layout_height="@dimen/btn_field"
-            android:contentDescription="button back"/>
-
-        <Space
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+            android:layout_marginStart="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="button back"
+            android:src="@drawable/ic_arrow_l"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_marginStart="@dimen/padding_s_small"
             android:text="Категории"
             android:textAppearance="@style/TextAppearance.App.H1"
-            android:textColor="@color/white_gray"/>
+            android:textColor="@color/white_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <Space
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-        <FrameLayout
-            android:layout_width="@dimen/btn_field"
-            android:layout_height="@dimen/btn_field"/>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/searchBar"
@@ -79,7 +73,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="@dimen/btn_field"
             android:layout_height="@dimen/btn_field"
-            android:contentDescription="button back"/>
+            android:contentDescription="button swap"/>
 
     </LinearLayout>
 
@@ -146,7 +140,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="@dimen/icon_general">
             <LinearLayout
                 android:layout_marginEnd="@dimen/padding_middle"
                 android:orientation="horizontal"
@@ -155,36 +149,32 @@
                 <ImageView
                     android:layout_width="@dimen/icon_general"
                     android:layout_height="@dimen/icon_general"
-                    android:layout_gravity="center"
                     app:tint="@color/green"
                     android:src="@drawable/ic_walk" />
                 <TextView
                     android:id="@+id/timeTotal"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="none"
                     android:textAppearance="@style/TextAppearance.App.Body"
                     android:textColor="@color/white_gray"/>
             </LinearLayout>
             <LinearLayout
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="@dimen/icon_general">
                 <ImageView
                     android:layout_width="@dimen/icon_general"
                     android:layout_height="@dimen/icon_general"
-                    android:layout_gravity="center"
                     app:tint="@color/object_orange"
                     android:src="@drawable/ic_clock" />
                 <TextView
                     android:id="@+id/timeCurrent"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="none"
+                    android:textAlignment="textStart"
                     android:textAppearance="@style/TextAppearance.App.Body"
                     android:textColor="@color/white_gray"/>
             </LinearLayout>
