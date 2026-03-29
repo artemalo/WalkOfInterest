@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,127 +7,104 @@
     android:orientation="horizontal">
 
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="@dimen/image_category"
-        android:layout_height="@dimen/image_category">
+        android:layout_height="@dimen/image_category"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/imgCategory"
-            android:background="@drawable/field_categ_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/field_categ_img"
             android:contentDescription="Category img" />
     </FrameLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:paddingTop="@dimen/padding_small"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingStart="@dimen/padding_s_small"
-        android:paddingEnd="@dimen/padding_s_small">
+    <TextView
+        android:id="@+id/nameCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Название категории"
+        android:textAppearance="@style/TextAppearance.App.H1"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/frameLayout"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/textCategory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/details"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Всего мест: "
+        android:textAppearance="@style/TextAppearance.App.Body"
+        android:textColor="@color/description"
+        app:layout_constraintStart_toStartOf="@+id/nameCategory"
+        app:layout_constraintTop_toBottomOf="@+id/nameCategory" />
 
-            <TextView
-                android:id="@+id/nameCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="Название категории"
-                android:textAppearance="@style/TextAppearance.App.H1" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Всего мест: "
-                    android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/description" />
-                <TextView
-                    android:id="@+id/countSpots"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="none"
-                    android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/description" />
-            </LinearLayout>
+    <TextView
+        android:id="@+id/countSpots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="none"
+        android:textAppearance="@style/TextAppearance.App.Body"
+        android:textColor="@color/description"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/textView" />
 
-        </LinearLayout>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_marginStart="@dimen/padding_s_small"
+        android:layout_marginBottom="@dimen/padding_small"
+        android:layout_width="@dimen/icon_general"
+        android:layout_height="@dimen/icon_general"
+        android:layout_gravity="center"
+        android:contentDescription="Point Start"
+        android:src="@drawable/ic_point"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/frameLayout"
+        app:tint="@color/object" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent">
+    <TextView
+        android:id="@+id/detailSpot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="none"
+        android:textAppearance="@style/TextAppearance.App.Body"
+        android:textColor="@color/white_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
 
-            <LinearLayout
-                android:id="@+id/details_spots"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-                <ImageView
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    android:layout_gravity="center"
-                    android:contentDescription="Point Start"
-                    android:src="@drawable/ic_point"
-                    app:tint="@color/object" />
 
-                <TextView
-                    android:id="@+id/detailSpot"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="none"
-                    android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/white_gray" />
-            </LinearLayout>
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_marginStart="@dimen/padding_s_small"
+        android:layout_width="@dimen/icon_general"
+        android:layout_height="@dimen/icon_general"
+        android:layout_gravity="center"
+        android:contentDescription="Point Start"
+        android:src="@drawable/ic_clock"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/detailSpot"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:tint="@color/object_orange" />
 
-            <LinearLayout
-                android:id="@+id/details_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/padding_s_small"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/details_spots"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
-
-                <ImageView
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    android:layout_gravity="center"
-                    android:contentDescription="Point Start"
-                    android:src="@drawable/ic_clock"
-                    app:tint="@color/object_orange" />
-
-                <TextView
-                    android:id="@+id/detailTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="none"
-                    android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/white_gray" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/detailTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="none"
+        android:textAppearance="@style/TextAppearance.App.Body"
+        android:textColor="@color/white_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
 
 
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
