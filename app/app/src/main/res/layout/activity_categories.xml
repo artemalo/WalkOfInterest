@@ -1,6 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/general"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCategories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/searchBar"
+        tools:listitem="@layout/item_category" />
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_marginTop="@dimen/padding_general"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_field"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:src="@drawable/ic_arrow_l"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"
+            android:contentDescription="button back"/>
+
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/padding_s_small"
+            android:text="Категории"
+            android:textAppearance="@style/TextAppearance.App.H1"
+            android:textColor="@color/white_gray"/>
+
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <FrameLayout
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/searchBar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_field"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/btnSwap"
+            android:src="@drawable/ic_swap"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"
+            android:contentDescription="button back"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/general_sheet"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/padding_middle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/imgA"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:layout_gravity="center"
+                android:contentDescription="Point Start"
+                app:tint="@color/white_gray"
+                android:src="@drawable/ic_a" />
+            <TextView
+                android:id="@+id/textFrom"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:text="Откуда"
+                android:textAppearance="@style/TextAppearance.App.Body2"
+                android:textColor="@color/white_gray"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/imgB"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:layout_gravity="center"
+                android:contentDescription="Point Start"
+                app:tint="@color/white_gray"
+                android:src="@drawable/ic_b" />
+            <TextView
+                android:id="@+id/textTo"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:text="Куда"
+                android:textAppearance="@style/TextAppearance.App.Body2"
+                android:textColor="@color/white_gray"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/padding_normal"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_marginEnd="@dimen/padding_middle"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="@dimen/icon_general"
+                    android:layout_height="@dimen/icon_general"
+                    android:layout_gravity="center"
+                    app:tint="@color/green"
+                    android:src="@drawable/ic_walk" />
+                <TextView
+                    android:id="@+id/timeTotal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="none"
+                    android:textAppearance="@style/TextAppearance.App.Body"
+                    android:textColor="@color/white_gray"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="@dimen/icon_general"
+                    android:layout_height="@dimen/icon_general"
+                    android:layout_gravity="center"
+                    app:tint="@color/object_orange"
+                    android:src="@drawable/ic_clock" />
+                <TextView
+                    android:id="@+id/timeCurrent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="none"
+                    android:textAppearance="@style/TextAppearance.App.Body"
+                    android:textColor="@color/white_gray"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fieldBtn"
+            android:layout_marginTop="@dimen/padding_middle_s"
+            android:layout_marginBottom="@dimen/padding_small"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_field"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small">
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_general_selector"
+                android:minHeight="36dp"
+                android:textAppearance="@style/TextAppearance.App.H2"
+                android:includeFontPadding="false"
+                android:text="Далее" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -116,7 +116,7 @@
                     android:layout_gravity="center"
                     android:contentDescription="Point Start"
                     android:src="@drawable/ic_clock"
-                    app:tint="@color/object_time" />
+                    app:tint="@color/object_orange" />
 
                 <TextView
                     android:id="@+id/detailTime"

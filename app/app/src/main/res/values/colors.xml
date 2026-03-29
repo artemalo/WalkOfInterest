@@ -15,7 +15,7 @@
     <color name="gray_button">#333333</color>
 
     <color name="object_not_active">#A2ABAB</color>
-    <color name="object_time">#C67C4E</color>
+    <color name="object_orange">#C67C4E</color>
     <color name="object_place">#A1C969</color>
     <color name="object_red">#CF2D24</color>
     <color name="object_star">#EDD84C</color>
