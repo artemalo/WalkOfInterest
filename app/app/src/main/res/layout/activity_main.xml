@@ -169,6 +169,7 @@
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small">
             <Button
+                android:id="@+id/btnCalculate"
                 android:clickable="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
