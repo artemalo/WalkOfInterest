@@ -16,10 +16,9 @@ git clone https://github.com/artemalo/WalkOfInterest.git
 cd WalkOfInterest
 git clone https://github.com/artemalo/WalkOfInterest-backend.git
 cd ..
-docker compose up -d
 ```
 2. Установите данные для базы данных и карт
- - Скачайте архив по ссылке: https://disk.yandex.ru/d/4IBh3J78BAYxfA
+ - Скачайте архив по ссылке: ...
  - Распакуйте содержимое архива в папку WalkOfInterest (ту, куда вы клонировали репозиторий).
  Или в корневой папке WalkOfInterest/.. :
  ```bash
