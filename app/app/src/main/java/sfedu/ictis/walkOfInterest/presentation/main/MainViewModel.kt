@@ -53,7 +53,7 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
                     Log.i("MainViewModel","checkAndFetchMinTime: repository.getMinTime - OK")
                 }.onFailure { error ->
                     val message = when (error) {
-                        is IOException -> "Нет интернета"
+                        is IOException -> "Проблема с сетью"
                         is HttpException -> "Ошибка сервера"
                         else -> "Неизвестная ошибка"
                     }
