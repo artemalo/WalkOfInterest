@@ -7,6 +7,11 @@ android {
     namespace = "sfedu.ictis.walkOfInterest"
     compileSdk = 36
 
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "sfedu.ictis.walkOfInterest"
         minSdk = 24
@@ -36,6 +41,12 @@ android {
 }
 
 dependencies {
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx")
+    implementation("androidx.preference:preference-ktx:1.2.1")
     implementation(libs.osmdroid.android)
 
     implementation(libs.androidx.core.ktx)

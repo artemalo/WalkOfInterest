@@ -8,6 +8,13 @@
         </shape>
     </item>
 
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/object_selected"/>
+            <corners android:radius="@dimen/corner_field"/>
+        </shape>
+    </item>
+
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/green"/>

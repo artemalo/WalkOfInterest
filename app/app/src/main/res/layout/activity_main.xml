@@ -34,7 +34,6 @@
             android:id="@+id/fieldFrom"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/btn_field">
@@ -83,7 +82,6 @@
             android:id="@+id/fieldTo"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/btn_field">
@@ -161,24 +159,29 @@
             android:id="@+id/fieldBtnCalculate"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:layout_marginTop="@dimen/padding_small"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_field"
-            android:layout_marginBottom="@dimen/padding_small"
+            android:layout_marginBottom="@dimen/padding_normal"
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small">
-            <Button
+            <FrameLayout
                 android:id="@+id/btnCalculate"
-                android:clickable="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/btn_general_selector"
-                android:minHeight="36dp"
-                android:textAppearance="@style/TextAppearance.App.H2"
-                android:includeFontPadding="false"
-                android:text="Рассчитать" />
+                android:minHeight="36dp">
+                <TextView
+                    android:id="@+id/btnCalculateText"
+                    android:text="Рассчитать"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.App.H2"
+                    android:includeFontPadding="false"/>
+            </FrameLayout>
         </FrameLayout>
 
     </LinearLayout>

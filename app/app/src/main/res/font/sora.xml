@@ -10,11 +10,11 @@
         android:fontStyle="normal"/>
 
     <font
-        android:font="@font/firaSans_regular"
+        android:font="@font/fira_sans_regular"
         android:fontWeight="400"
         android:fontStyle="normal"/>
     <font
-        android:font="@font/firaSans_bold"
+        android:font="@font/fira_sans_regular"
         android:fontWeight="700"
         android:fontStyle="normal"/>
 </font-family>
