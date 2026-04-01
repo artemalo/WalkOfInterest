@@ -18,6 +18,7 @@ services:
     ports:
       - "8989:8989" # Close port?
     volumes:
+      - ./data/map.osm.pbf:/data/map.osm.pbf
       - ./data/graphhopper:/data
       - ./graphhopper/config.yml:/config.yml
     command: ["-c", "/config.yml"]
