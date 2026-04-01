@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
@@ -142,6 +141,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.uiState.collect { state ->
                 binding.textFrom.text = state.addressFrom
                 binding.textTo.text = state.addressTo
+                binding.textClock.text = formatMinutes(state.selectedTimeMinutes)
 
                 // Чтобы alpha работала корректно, кнопки нужно приглушать, если они недоступны
                 binding.fieldClock.alpha = if (state.isTimePickerEnabled) 1.0f else 0.5f
@@ -154,7 +154,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Жизненный цикл OSMDroid (ОБЯЗАТЕЛЬНО для работы карты!)
     override fun onResume() {
         super.onResume()
         binding.map.onResume()
@@ -172,9 +171,9 @@ class MainActivity : AppCompatActivity() {
         }, currentMin / 60, currentMin % 60, true).show()
     }
 
-//    private fun formatMinutes(totalMinutes: Int): String {
-//        val h = totalMinutes / 60
-//        val m = totalMinutes % 60
-//        return "${h}ч ${m}м"
-//    }
+    private fun formatMinutes(totalMinutes: Int): String {
+        val h = totalMinutes / 60
+        val m = totalMinutes % 60
+        return "${h}ч ${m}м"
+    }
 }

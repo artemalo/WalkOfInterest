@@ -93,6 +93,19 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
                 .onSuccess {
                     _uiState.update { it.copy(isLoading = false) }
                     // Здесь будет навигация к категориям
+                }.onFailure { error ->
+                    val message = when (error) {
+                        is IOException -> "Проблема с сетью"
+                        is HttpException -> "Ошибка сервера"
+                        else -> "Неизвестная ошибка"
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false
+                        )
+                    }
+                    Log.e("MainViewModel","onCalculateClicked: $message")
                 }
         }
     }

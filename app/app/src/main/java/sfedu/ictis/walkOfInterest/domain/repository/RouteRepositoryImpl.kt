@@ -2,10 +2,11 @@ package sfedu.ictis.walkOfInterest.domain.repository
 
 import sfedu.ictis.walkOfInterest.data.api.RouteApi
 import sfedu.ictis.walkOfInterest.data.model.Coordinates
-import sfedu.ictis.walkOfInterest.data.model.CoordinatesDto
 import sfedu.ictis.walkOfInterest.data.model.MinTimeResponse
+import sfedu.ictis.walkOfInterest.data.model.PointDto
 import sfedu.ictis.walkOfInterest.data.model.SearchRequestDto
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepository
+import java.util.UUID
 
 class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
     override suspend fun getMinTime(from: Coordinates, to: Coordinates): Result<MinTimeResponse> {
@@ -24,13 +25,25 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
 
     override suspend fun searchRoute(from: Coordinates, to: Coordinates, timeMinutes: Int): Result<Boolean> {
         return try {
+            val currentRequestId = UUID.randomUUID().toString()
+
+            val currentLang = "ru"
+
             val dto = SearchRequestDto(
-                from = CoordinatesDto(from.lat, from.lon),
-                to = CoordinatesDto(to.lat, to.lon),
-                timeLimit = timeMinutes
+                p1 = PointDto(from.lat, from.lon),
+                p2 = PointDto(to.lat, to.lon),
+                timeLimitMinutes = timeMinutes,
+                lang = currentLang,
+                requestId = currentRequestId
             )
+
             val response = api.searchRoute(dto)
-            Result.success(response.isSuccessful)
+
+            if (response.isSuccessful) {
+                Result.success(true)
+            } else {
+                Result.failure(Exception("Search failed with code: ${response.code()}"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
