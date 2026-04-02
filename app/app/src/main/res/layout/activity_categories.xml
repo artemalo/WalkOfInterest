@@ -182,26 +182,31 @@
         </LinearLayout>
 
         <FrameLayout
-            android:id="@+id/fieldBtn"
-            android:layout_marginTop="@dimen/padding_middle_s"
-            android:layout_marginBottom="@dimen/padding_small"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_field"
+            android:layout_marginTop="@dimen/padding_middle_s"
+            android:layout_marginBottom="@dimen/padding_small"
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small">
-            <Button
-                android:id="@+id/btnNext"
+            <FrameLayout
+                android:id="@+id/fieldBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/btn_general_selector"
-                android:minHeight="36dp"
-                android:textAppearance="@style/TextAppearance.App.H2"
-                android:includeFontPadding="false"
-                android:text="Далее" />
+                android:minHeight="36dp">
+                <TextView
+                    android:id="@+id/btnNext"
+                    android:text="Далее"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.App.H2"
+                    android:includeFontPadding="false"/>
+            </FrameLayout>
         </FrameLayout>
 
     </LinearLayout>
