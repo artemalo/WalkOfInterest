@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import sfedu.ictis.walkOfInterest.data.model.Coordinates
+import sfedu.ictis.walkOfInterest.data.model.PointDto
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepository
 import java.io.IOException
 
@@ -23,14 +23,14 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
     // Вызывается при выборе точки
     fun onPointSelected(isFrom: Boolean, lat: Double, lon: Double, address: String) {
         _uiState.update { state ->
-            if (isFrom) state.copy(pointFrom = Coordinates(lat, lon), addressFrom = address)
-            else state.copy(pointTo = Coordinates(lat, lon), addressTo = address)
+            if (isFrom) state.copy(pointFrom = PointDto(lat, lon), addressFrom = address)
+            else state.copy(pointTo = PointDto(lat, lon), addressTo = address)
         }
-        checkAndFetchMinTime()
+        checkAndFetchRoute()
         Log.i("MainViewModel","onPointSelected(): ${lat},${lon}")
     }
 
-    private fun checkAndFetchMinTime() {
+    private fun checkAndFetchRoute() {
         val from = _uiState.value.pointFrom
         val to = _uiState.value.pointTo
 
@@ -41,10 +41,11 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
             minTimeJob = viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
 
-                repository.getMinTime(from, to).onSuccess { response ->
+                repository.getRoute(from, to).onSuccess { response ->
                     _uiState.update { it.copy(
-                        minTimeMinutes = response.minMinutes,
-                        selectedTimeMinutes = response.minMinutes, // По умолчанию ставим минимум
+                        minTimeMinutes = response.minTime,
+                        selectedTimeMinutes = response.minTime,
+                        route = response.route,
                         isTimePickerEnabled = true,
                         isLoading = false
                     )

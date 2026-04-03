@@ -1,20 +1,23 @@
 package sfedu.ictis.walkOfInterest.domain.repository
 
 import sfedu.ictis.walkOfInterest.data.api.RouteApi
-import sfedu.ictis.walkOfInterest.data.model.Coordinates
-import sfedu.ictis.walkOfInterest.data.model.MinTimeResponse
 import sfedu.ictis.walkOfInterest.data.model.PointDto
+import sfedu.ictis.walkOfInterest.data.model.RouteResponseDto
 import sfedu.ictis.walkOfInterest.data.model.SearchRequestDto
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepository
 import java.util.UUID
 
 class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
-    override suspend fun getMinTime(from: Coordinates, to: Coordinates): Result<MinTimeResponse> {
+    override suspend fun getRoute(from: PointDto, to: PointDto): Result<RouteResponseDto> {
         return try {
             val response = api.getMinTime(from.lat, from.lon, to.lat, to.lon)
             if (response.isSuccessful && response.body() != null) {
                 // Маппим DTO в Domain модель
-                Result.success(MinTimeResponse(response.body()!!.minMinutes))
+                Result.success(RouteResponseDto(
+                    response.body()!!.minTime,
+                    response.body()!!.distance,
+                    response.body()!!.route
+                ))
             } else {
                 Result.failure(Exception("Ошибка бэкенда"))
             }
@@ -23,7 +26,7 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
         }
     }
 
-    override suspend fun searchRoute(from: Coordinates, to: Coordinates, timeMinutes: Int): Result<Boolean> {
+    override suspend fun searchRoute(from: PointDto, to: PointDto, timeMinutes: Int): Result<Boolean> {
         return try {
             val currentRequestId = UUID.randomUUID().toString()
 
