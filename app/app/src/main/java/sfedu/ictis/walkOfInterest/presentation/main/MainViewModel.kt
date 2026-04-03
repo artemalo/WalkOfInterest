@@ -17,10 +17,8 @@ import java.io.IOException
 class MainViewModel(private val repository: RouteRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
-
     private var minTimeJob: Job? = null
 
-    // Вызывается при выборе точки
     fun onPointSelected(isFrom: Boolean, lat: Double, lon: Double, address: String) {
         _uiState.update { state ->
             if (isFrom) state.copy(pointFrom = PointDto(lat, lon), addressFrom = address)
@@ -35,7 +33,6 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
         val to = _uiState.value.pointTo
 
         if (from != null && to != null) {
-            // Отменяем предыдущий запрос, если пользователь быстро сменил точку
             Log.i("MainViewModel","checkAndFetchMinTime(): ${from},${to}")
             minTimeJob?.cancel()
             minTimeJob = viewModelScope.launch {
@@ -62,7 +59,6 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
                     _uiState.update {
                         it.copy(
                             isLoading = false
-//                            errorMessage = message
                         )
                     }
                     Log.e("MainViewModel","checkAndFetchMinTime: $message")

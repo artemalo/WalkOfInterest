@@ -24,26 +24,21 @@ import sfedu.ictis.walkOfInterest.domain.repository.RouteRepositoryImpl
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-
     private val viewModel: MainViewModel by viewModels {
         MainViewModelFactory(RouteRepositoryImpl(NetworkModule.routeApi))
     }
 
     private var isSelectingFrom: Boolean? = null
-
     private var markerFrom: Marker? = null
     private var markerTo: Marker? = null
-
-    private var routePolyline: org.osmdroid.views.overlay.Polyline? = null
-
+    private var routePolyline: Polyline? = null
     private var isMapReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ВАЖНО: Инициализация OSMDroid ДО setContentView! Иначе будет черный экран.
+        // ВАЖНО: Инициализация OSMDroid ДО setContentView
         Configuration.getInstance().load(
             applicationContext,
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -62,14 +57,13 @@ class MainActivity : AppCompatActivity() {
 
         map.addOnFirstLayoutListener { _, _, _, _, _ ->
             isMapReady = true
-            // Как только карта готова — принудительно обновляем состояние из ViewModel
-            // Чтобы отрисовать то, что уже пришло, пока карта "спала"
+
             lifecycleScope.launch {
                 drawCurrentState(viewModel.uiState.value)
             }
         }
 
-        map.setMultiTouchControls(true) // Включаем зум щипком
+        map.setMultiTouchControls(true)
 
         val startPoint = GeoPoint(47.2220, 39.7190)
         map.controller.setZoom(15.0)
@@ -99,29 +93,6 @@ class MainActivity : AppCompatActivity() {
 
         isSelectingFrom = null
     }
-
-//    private fun addMarker(geoPoint: GeoPoint, isFrom: Boolean) {
-//        val map = binding.map
-//
-//        if (isFrom) {
-//            markerFrom?.let { map.overlays.remove(it) }
-//        } else {
-//            markerTo?.let { map.overlays.remove(it) }
-//        }
-//
-//        val marker = Marker(map).apply {
-//            position = geoPoint
-//            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-//            title = if (isFrom) "Откуда" else "Куда"
-//
-//            val idMarker = if (isFrom) R.drawable.ic_a else R.drawable.ic_b
-//            icon = ContextCompat.getDrawable(this@MainActivity, idMarker)
-//        }
-//
-//        if (isFrom) markerFrom = marker else markerTo = marker
-//        map.overlays.add(marker)
-//        map.invalidate() // Заставляем карту перерисоваться
-//    }
 
     private fun setupListeners() {
         binding.fieldFrom.setOnClickListener {
@@ -160,8 +131,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun drawCurrentState(state: MainUiState) {
-        // Рисуем маркеры и маршрут (внутри drawRoute уже есть наш зум)
         updateMapMarkers(state.pointFrom, state.pointTo)
+
         if (state.route != null) {
             drawRoute(state.route)
         } else {
@@ -200,7 +171,7 @@ class MainActivity : AppCompatActivity() {
         binding.textFrom.text = state.addressFrom
         binding.textTo.text = state.addressTo
 
-        binding.textClock.text = state.minTimeMinutes?.let { formatMinutes(it) } ?: "Выберите время"
+        binding.textClock.text = state.minTimeMinutes?.let { formatMinutes(it) } ?: "Выберите точки"
 
         binding.fieldClock.alpha = if (state.isTimePickerEnabled) 1.0f else 0.5f
         binding.btnCalculate.isEnabled = state.isCalculateEnabled
@@ -225,21 +196,23 @@ class MainActivity : AppCompatActivity() {
 
         routePolyline = Polyline(map).apply {
             setPoints(geoPoints)
-            outlinePaint.color = ContextCompat.getColor(this@MainActivity, R.color.general)
-            outlinePaint.strokeWidth = 12f
+
+            outlinePaint.color = ContextCompat.getColor(this@MainActivity, R.color.route_color)
+
+            outlinePaint.strokeWidth = 14f
+
+            outlinePaint.strokeCap = android.graphics.Paint.Cap.ROUND
+            outlinePaint.strokeJoin = android.graphics.Paint.Join.ROUND
+
             outlinePaint.isAntiAlias = true
         }
 
         map.overlays.add(routePolyline)
-
-        // ВАЖНО: используем post, чтобы карта успела получить размеры перед зумом
+        
         map.post {
-            if (geoPoints.isNotEmpty()) {
+            if (geoPoints.isNotEmpty() && !isFinishing) {
                 val boundingBox = BoundingBox.fromGeoPoints(geoPoints)
-                // Добавляем проверку на случай, если Activity уже закрывается
-                if (!isFinishing) {
-                    map.zoomToBoundingBox(boundingBox, true, 150)
-                }
+                map.zoomToBoundingBox(boundingBox, true, 100)
             }
         }
         map.invalidate()

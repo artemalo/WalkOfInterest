@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="route_color">#AE4B8F65</color>
+
 
     <color name="divider">#33FFFFFF</color>
 
