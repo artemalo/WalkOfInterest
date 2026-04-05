@@ -2,6 +2,7 @@ package sfedu.ictis.walkOfInterest.domain.repository
 
 import sfedu.ictis.walkOfInterest.data.api.RouteApi
 import sfedu.ictis.walkOfInterest.data.model.PointDto
+import sfedu.ictis.walkOfInterest.data.model.RouteRequestDto
 import sfedu.ictis.walkOfInterest.data.model.RouteResponseDto
 import sfedu.ictis.walkOfInterest.data.model.SearchRequestDto
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepository
@@ -10,9 +11,12 @@ import java.util.UUID
 class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
     override suspend fun getRoute(from: PointDto, to: PointDto): Result<RouteResponseDto> {
         return try {
-            val response = api.getMinTime(from.lat, from.lon, to.lat, to.lon)
+            val dto = RouteRequestDto(
+                p1 = PointDto(from.lat, from.lon),
+                p2 = PointDto(to.lat, to.lon)
+            )
+            val response = api.getRoute(dto)
             if (response.isSuccessful && response.body() != null) {
-                // Маппим DTO в Domain модель
                 Result.success(RouteResponseDto(
                     response.body()!!.minTime,
                     response.body()!!.distance,

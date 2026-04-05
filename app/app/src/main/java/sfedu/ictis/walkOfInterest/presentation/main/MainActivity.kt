@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         map.setMultiTouchControls(true)
 
-        val startPoint = GeoPoint(47.2220, 39.7190)
+        val startPoint = GeoPoint(47.207564,38.938756)
         map.controller.setZoom(15.0)
         map.controller.setCenter(startPoint)
 
@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         map.overlays.add(routePolyline)
-        
+
         map.post {
             if (geoPoints.isNotEmpty() && !isFinishing) {
                 val boundingBox = BoundingBox.fromGeoPoints(geoPoints)

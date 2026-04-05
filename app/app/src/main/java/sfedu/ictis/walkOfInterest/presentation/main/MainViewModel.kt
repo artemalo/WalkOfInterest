@@ -48,7 +48,7 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
                     )
                     }
                     validateCalculateButton()
-                    Log.i("MainViewModel","checkAndFetchMinTime: repository.getMinTime - OK")
+                    Log.i("MainViewModel","checkAndFetchMinTime: repository.getRoute - OK")
                 }.onFailure { error ->
                     val message = when (error) {
                         is IOException -> "Проблема с сетью"
@@ -61,7 +61,7 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
                             isLoading = false
                         )
                     }
-                    Log.e("MainViewModel","checkAndFetchMinTime: $message")
+                    Log.e("MainViewModel","checkAndFetchRoute: $message, $error")
                 }
             }
         }
