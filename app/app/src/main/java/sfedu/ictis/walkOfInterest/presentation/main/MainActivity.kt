@@ -3,7 +3,6 @@ package sfedu.ictis.walkOfInterest.presentation.main
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,6 +21,7 @@ import sfedu.ictis.walkOfInterest.data.model.PointDto
 import sfedu.ictis.walkOfInterest.databinding.ActivityMainBinding
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepositoryImpl
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
+import sfedu.ictis.walkOfInterest.presentation.notification.ToastManager
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             if (viewModel.uiState.value.isTimePickerEnabled) {
                 showTimePicker()
             } else {
-                Toast.makeText(this, "Сначала выберите обе точки на карте", Toast.LENGTH_SHORT).show()
+                ToastManager(this).showToast("Сначала выберите обе точки на карте")
             }
         }
 
