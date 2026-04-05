@@ -24,6 +24,10 @@ import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
 import sfedu.ictis.walkOfInterest.presentation.notification.ToastManager
 
 class MainActivity : AppCompatActivity() {
+    private companion object {
+        const val MSG_WARN = "Выберите обе точки на карте"
+    }
+
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels {
         MainViewModelFactory(RouteRepositoryImpl(NetworkModule.routeApi))
@@ -107,12 +111,17 @@ class MainActivity : AppCompatActivity() {
             if (viewModel.uiState.value.isTimePickerEnabled) {
                 showTimePicker()
             } else {
-                ToastManager(this).showToast("Сначала выберите обе точки на карте")
+                ToastManager(this).showToast(MSG_WARN)
             }
         }
 
         binding.btnCalculate.setOnClickListener {
-            viewModel.onCalculateClicked()
+            if (viewModel.uiState.value.isCalculateEnabled) {
+                viewModel.onCalculateClicked()
+            } else {
+                ToastManager(this).showToast(MSG_WARN)
+            }
+
         }
     }
 
@@ -210,7 +219,7 @@ class MainActivity : AppCompatActivity() {
         map.overlays.add(routePolyline)
 
         map.post {
-            if (geoPoints.isNotEmpty() && !isFinishing) {
+            if (!isFinishing && !isDestroyed && geoPoints.isNotEmpty()) {
                 val boundingBox = BoundingBox.fromGeoPoints(geoPoints)
                 map.zoomToBoundingBox(boundingBox, true, 100)
             }
