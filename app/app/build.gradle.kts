@@ -1,3 +1,18 @@
+import java.util.Properties
+
+val serverUrl: String by extra {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { properties.load(it) }
+    }
+    val value = properties.getProperty("SERVER_URL", "http://192.168.0.149:8080")
+    if (value.isEmpty()) {
+        throw InvalidUserDataException("Server URL is not provided")
+    }
+    value
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -22,14 +37,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BASE_URL", "\"$serverUrl\"")
     }
 
     buildTypes {
-        debug {
-            buildConfigField("String", "BASE_URL", "\"http://192.168.0.149:8080\"")
-        }
         release {
-            buildConfigField("String", "BASE_URL", "\"http://192.168.0.149:8080\"")
 
             isMinifyEnabled = false
             proguardFiles(
