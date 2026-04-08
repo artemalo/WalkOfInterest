@@ -17,9 +17,9 @@ import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import sfedu.ictis.walkOfInterest.R
-import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
 import sfedu.ictis.walkOfInterest.databinding.ActivityGenerateBinding
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
@@ -102,7 +102,6 @@ class GenerateActivity : AppCompatActivity() {
         val selectingFrom = isSelectingFrom ?: return
         val mockAddress = "${geoPoint.latitude.toString().take(6)}, ${geoPoint.longitude.toString().take(6)}"
 
-        // Просто уведомляем вьюмодель. Она обновит стейт -> стейт обновит карту.
         viewModel.onPointSelected(selectingFrom, geoPoint.latitude, geoPoint.longitude, mockAddress)
 
         isSelectingFrom = null
@@ -126,11 +125,23 @@ class GenerateActivity : AppCompatActivity() {
         }
 
         binding.fieldClock.setOnClickListener {
-            handleClockClick()
+            viewModel.uiState.value.let { state ->
+                if (!state.isLoading && state.isTimePickerEnabled) {
+                    showTimePicker()
+                } else if (!state.isLoading) {
+                    showValidationError(state)
+                }
+            }
         }
 
         binding.fieldBtnCalculate.setOnClickListener {
-           handleCalculateClick()
+            viewModel.uiState.value.let { state ->
+                if (!state.isLoading && state.isCalculateEnabled) {
+                    viewModel.onCalculateClicked()
+                } else if (!state.isLoading) {
+                    showValidationError(state)
+                }
+            }
         }
     }
 
@@ -267,26 +278,6 @@ class GenerateActivity : AppCompatActivity() {
         TimePickerDialog(this, { _, hour, minute ->
             viewModel.onTimeSelected(hour * 60 + minute)
         }, currentMin / 60, currentMin % 60, true).show()
-    }
-
-    private fun handleClockClick() {
-        val state = viewModel.uiState.value
-        if (state.isLoading) return
-
-        when {
-            state.isTimePickerEnabled -> showTimePicker()
-            else -> showValidationError(state)
-        }
-    }
-
-    private fun handleCalculateClick() {
-        val state = viewModel.uiState.value
-        if (state.isLoading) return
-        
-        when {
-            state.isCalculateEnabled -> viewModel.onCalculateClicked()
-            else -> showValidationError(state)
-        }
     }
 
     private fun showValidationError(state: GenerateUiState) {
