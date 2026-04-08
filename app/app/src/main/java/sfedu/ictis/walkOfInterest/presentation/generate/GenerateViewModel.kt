@@ -20,6 +20,7 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
     val uiState: StateFlow<GenerateUiState> = _uiState.asStateFlow()
 
     private var routeJob: Job? = null
+    private var calculationJob: Job? = null
 
     fun onPointSelected(isFrom: Boolean, lat: Double, lon: Double, address: String) {
         val newPoint = DomainPoint(lat, lon)
@@ -50,7 +51,11 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
                 )
                 }
                 validateCalculateButton()
-            }.onFailure { handleFailure("getRoute", it) }
+            }.onFailure {
+                if (it !is kotlinx.coroutines.CancellationException) {
+                    handleFailure("getRoute", it)
+                }
+            }
         }
     }
 
@@ -60,19 +65,37 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
         val to = state.pointTo ?: return
         val time = state.selectedTimeMinutes
 
-        viewModelScope.launch {
+        calculationJob?.cancel()
+
+        calculationJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             calculateWalkUseCase(from, to, time).onSuccess {
                 _uiState.update { it.copy(isLoading = false) }
                 // TODO: Активити Категории
-            }.onFailure { handleFailure("onCalculate", it) }
+            }.onFailure {
+                if (it !is kotlinx.coroutines.CancellationException) {
+                    handleFailure("onCalculate", it)
+                }
+            }
         }
     }
 
     fun onTimeSelected(minutes: Int) {
         _uiState.update { it.copy(selectedTimeMinutes = minutes) }
         validateCalculateButton()
+    }
+
+    fun cancelAllRequests() {
+        routeJob?.cancel()
+        calculationJob?.cancel()
+
+        routeJob = null
+        calculationJob = null
+
+        _uiState.update { it.copy(isLoading = false) }
+
+        Log.i("GenerateViewModel", "All requests cancelled by user")
     }
 
     private fun validateCalculateButton() {

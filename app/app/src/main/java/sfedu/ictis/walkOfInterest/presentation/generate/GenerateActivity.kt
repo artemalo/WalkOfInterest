@@ -106,6 +106,14 @@ class GenerateActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        binding.fieldBtnBack.setOnClickListener {
+            if (viewModel.uiState.value.isLoading) {
+                viewModel.cancelAllRequests()
+            } else {
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+
         binding.fieldFrom.setOnClickListener {
             isSelectingFrom = true
         }
