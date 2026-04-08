@@ -245,19 +245,19 @@ class GenerateActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        Log.w(NAME_ACTIVITY, "Map Destroy")
+        Log.w(NAME_ACTIVITY, "Destroy")
         super.onDestroy()
         binding.map.onDetach()
     }
 
     override fun onResume() {
-        Log.w(NAME_ACTIVITY, "Map Resume")
+        Log.w(NAME_ACTIVITY, "Resume")
         super.onResume()
         binding.map.onResume()
     }
 
     override fun onPause() {
-        Log.w(NAME_ACTIVITY, "Map Pause")
+        Log.w(NAME_ACTIVITY, "Pause")
         super.onPause()
         binding.map.onPause()
     }
@@ -281,6 +281,8 @@ class GenerateActivity : AppCompatActivity() {
 
     private fun handleCalculateClick() {
         val state = viewModel.uiState.value
+        if (state.isLoading) return
+        
         when {
             state.isCalculateEnabled -> viewModel.onCalculateClicked()
             else -> showValidationError(state)
