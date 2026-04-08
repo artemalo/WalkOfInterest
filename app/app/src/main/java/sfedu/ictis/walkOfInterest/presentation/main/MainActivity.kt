@@ -20,6 +20,8 @@ import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.databinding.ActivityMainBinding
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
+import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
 import sfedu.ictis.walkOfInterest.notification.ToastManager
 
@@ -30,7 +32,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory(RouteRepositoryImpl(NetworkModule.routeApi))
+        val repository = RouteRepositoryImpl(NetworkModule.routeApi)
+
+        val getBaseRouteUseCase = GetBaseRouteUseCase(repository)
+        val calculateWalkUseCase = CalculateWalkUseCase(repository)
+
+        MainViewModelFactory(getBaseRouteUseCase, calculateWalkUseCase)
     }
 
     private var isSelectingFrom: Boolean? = null
