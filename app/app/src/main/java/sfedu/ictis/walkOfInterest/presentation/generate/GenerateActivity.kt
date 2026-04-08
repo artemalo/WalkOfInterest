@@ -28,6 +28,9 @@ import sfedu.ictis.walkOfInterest.notification.ToastManager
 class GenerateActivity : AppCompatActivity() {
     private companion object {
         const val MSG_WARN = "Выберите обе точки на карте"
+        const val MSG_WHAT = "Что-то пошло не так"
+
+        const val NAME_ACTIVITY = "GenerateActivity"
     }
 
     private lateinit var binding: ActivityGenerateBinding
@@ -123,20 +126,11 @@ class GenerateActivity : AppCompatActivity() {
         }
 
         binding.fieldClock.setOnClickListener {
-            if (viewModel.uiState.value.isTimePickerEnabled) {
-                showTimePicker()
-            } else {
-                ToastManager(this).showToast(MSG_WARN)
-            }
+            handleClockClick()
         }
 
-        binding.btnCalculate.setOnClickListener {
-            if (viewModel.uiState.value.isCalculateEnabled) {
-                viewModel.onCalculateClicked()
-            } else {
-                ToastManager(this).showToast(MSG_WARN)
-            }
-
+        binding.fieldBtnCalculate.setOnClickListener {
+           handleCalculateClick()
         }
     }
 
@@ -251,19 +245,19 @@ class GenerateActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        Log.w("MainActivity", "Map Destroy")
+        Log.w(NAME_ACTIVITY, "Map Destroy")
         super.onDestroy()
         binding.map.onDetach()
     }
 
     override fun onResume() {
-        Log.w("MainActivity", "Map Resume")
+        Log.w(NAME_ACTIVITY, "Map Resume")
         super.onResume()
         binding.map.onResume()
     }
 
     override fun onPause() {
-        Log.w("MainActivity", "Map Pause")
+        Log.w(NAME_ACTIVITY, "Map Pause")
         super.onPause()
         binding.map.onPause()
     }
@@ -273,5 +267,32 @@ class GenerateActivity : AppCompatActivity() {
         TimePickerDialog(this, { _, hour, minute ->
             viewModel.onTimeSelected(hour * 60 + minute)
         }, currentMin / 60, currentMin % 60, true).show()
+    }
+
+    private fun handleClockClick() {
+        val state = viewModel.uiState.value
+        if (state.isLoading) return
+
+        when {
+            state.isTimePickerEnabled -> showTimePicker()
+            else -> showValidationError(state)
+        }
+    }
+
+    private fun handleCalculateClick() {
+        val state = viewModel.uiState.value
+        when {
+            state.isCalculateEnabled -> viewModel.onCalculateClicked()
+            else -> showValidationError(state)
+        }
+    }
+
+    private fun showValidationError(state: GenerateUiState) {
+        val message = if (state.pointTo == null || state.pointFrom == null) {
+            MSG_WARN
+        } else {
+            MSG_WHAT
+        }
+        ToastManager(this).showToast(message)
     }
 }
