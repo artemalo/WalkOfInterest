@@ -17,11 +17,11 @@ import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import sfedu.ictis.walkOfInterest.R
-import sfedu.ictis.walkOfInterest.data.model.PointDto
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.databinding.ActivityMainBinding
-import sfedu.ictis.walkOfInterest.domain.repository.RouteRepositoryImpl
+import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
-import sfedu.ictis.walkOfInterest.presentation.notification.ToastManager
+import sfedu.ictis.walkOfInterest.notification.ToastManager
 
 class MainActivity : AppCompatActivity() {
     private companion object {
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateMapMarkers(from: PointDto?, to: PointDto?) {
+    private fun updateMapMarkers(from: DomainPoint?, to: DomainPoint?) {
         val map = binding.map
 
         markerFrom?.let { map.overlays.remove(it) }
@@ -196,7 +196,7 @@ class MainActivity : AppCompatActivity() {
         return "${h}ч ${m}м"
     }
 
-    private fun drawRoute(routePoints: List<PointDto>) {
+    private fun drawRoute(routePoints: List<DomainPoint>) {
         val map = binding.map
         clearRoute()
         if (routePoints.isEmpty()) return

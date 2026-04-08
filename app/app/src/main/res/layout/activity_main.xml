@@ -12,6 +12,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <FrameLayout
+        android:id="@+id/fieldBtnBack"
+        android:layout_width="@dimen/btn_field"
+        android:layout_height="@dimen/btn_field"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="@dimen/padding_general"
+        android:layout_marginTop="@dimen/padding_general"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:id="@+id/btnBack"
+            android:layout_width="@dimen/btn_general"
+            android:layout_height="@dimen/btn_general"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/btn_general_alpha"
+            android:minHeight="36dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_l"
+                android:contentDescription="Back" />
+        </FrameLayout>
+    </FrameLayout>
+
     <LinearLayout
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
@@ -169,7 +196,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/btn_general_selector"
+                android:state_enabled="false"
+                android:background="@drawable/btn_next"
                 android:minHeight="36dp">
                 <TextView
                     android:id="@+id/btnCalculateText"

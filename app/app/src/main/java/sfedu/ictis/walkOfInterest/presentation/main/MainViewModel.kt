@@ -9,61 +9,64 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import sfedu.ictis.walkOfInterest.data.model.PointDto
-import sfedu.ictis.walkOfInterest.data.repository.RouteRepository
-import java.io.IOException
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
+import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 
-class MainViewModel(private val repository: RouteRepository) : ViewModel() {
+class MainViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
+                    private val calculateWalkUseCase: CalculateWalkUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
-    private var minTimeJob: Job? = null
+
+    private var routeJob: Job? = null
 
     fun onPointSelected(isFrom: Boolean, lat: Double, lon: Double, address: String) {
+        val newPoint = DomainPoint(lat, lon)
         _uiState.update { state ->
-            if (isFrom) state.copy(pointFrom = PointDto(lat, lon), addressFrom = address)
-            else state.copy(pointTo = PointDto(lat, lon), addressTo = address)
+            if (isFrom) state.copy(pointFrom = newPoint, addressFrom = address)
+            else state.copy(pointTo = newPoint, addressTo = address)
         }
         checkAndFetchRoute()
         Log.i("MainViewModel","onPointSelected(): ${lat},${lon}")
     }
 
     private fun checkAndFetchRoute() {
-        val from = _uiState.value.pointFrom
-        val to = _uiState.value.pointTo
+        val from = _uiState.value.pointFrom ?: return
+        val to = _uiState.value.pointTo ?: return
 
-        if (from != null && to != null) {
-            Log.i("MainViewModel","checkAndFetchMinTime(): ${from},${to}")
-            minTimeJob?.cancel()
-            minTimeJob = viewModelScope.launch {
-                _uiState.update { it.copy(isLoading = true) }
+        Log.i("MainViewModel","checkAndFetchMinTime(): ${from},${to}")
+        routeJob?.cancel()
+        routeJob = viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
 
-                repository.getRoute(from, to).onSuccess { response ->
-                    _uiState.update { it.copy(
-                        minTimeMinutes = response.minTime,
-                        selectedTimeMinutes = response.minTime,
-                        route = response.route,
-                        isTimePickerEnabled = true,
-                        isLoading = false
-                    )
-                    }
-                    validateCalculateButton()
-                    Log.i("MainViewModel","checkAndFetchMinTime: repository.getRoute - OK")
-                }.onFailure { error ->
-                    val message = when (error) {
-                        is IOException -> "Проблема с сетью"
-                        is HttpException -> "Ошибка сервера"
-                        else -> "Неизвестная ошибка"
-                    }
-
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false
-                        )
-                    }
-                    Log.e("MainViewModel","checkAndFetchRoute: $message, $error")
+            getBaseRouteUseCase(from, to).onSuccess { result ->
+                _uiState.update { it.copy(
+                    minTimeMinutes = result.minTime,
+                    selectedTimeMinutes = result.minTime,
+                    route = result.points,
+                    isTimePickerEnabled = true,
+                    isLoading = false
+                )
                 }
-            }
+                validateCalculateButton()
+            }.onFailure { handleFailure("getRoute", it) }
+        }
+    }
+
+    fun onCalculateClicked() {
+        val state = _uiState.value
+        val from = state.pointFrom ?: return
+        val to = state.pointTo ?: return
+        val time = state.selectedTimeMinutes
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            calculateWalkUseCase(from, to, time).onSuccess {
+                _uiState.update { it.copy(isLoading = false) }
+                // TODO: Активити Категории
+            }.onFailure { handleFailure("onCalculate", it) }
         }
     }
 
@@ -81,29 +84,8 @@ class MainViewModel(private val repository: RouteRepository) : ViewModel() {
         _uiState.update { it.copy(isCalculateEnabled = isEnabled) }
     }
 
-    fun onCalculateClicked() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            val state = _uiState.value
-            // Отправляем POST /search
-            repository.searchRoute(state.pointFrom!!, state.pointTo!!, state.selectedTimeMinutes)
-                .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
-                    // Здесь будет навигация к категориям
-                }.onFailure { error ->
-                    val message = when (error) {
-                        is IOException -> "Проблема с сетью"
-                        is HttpException -> "Ошибка сервера"
-                        else -> "Неизвестная ошибка"
-                    }
-
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false
-                        )
-                    }
-                    Log.e("MainViewModel","onCalculateClicked: $message")
-                }
-        }
+    private fun handleFailure(tag: String, error: Throwable) {
+        _uiState.update { it.copy(isLoading = false) }
+        Log.e("MainViewModel", "$tag: ${error.message}")
     }
 }

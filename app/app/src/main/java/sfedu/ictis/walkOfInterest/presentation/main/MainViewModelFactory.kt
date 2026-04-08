@@ -2,7 +2,7 @@ package sfedu.ictis.walkOfInterest.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import sfedu.ictis.walkOfInterest.data.repository.RouteRepository
+import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 
 class MainViewModelFactory(private val repository: RouteRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
