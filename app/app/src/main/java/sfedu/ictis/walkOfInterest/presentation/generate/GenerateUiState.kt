@@ -1,8 +1,8 @@
-package sfedu.ictis.walkOfInterest.presentation.main
+package sfedu.ictis.walkOfInterest.presentation.generate
 
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 
-data class MainUiState(
+data class GenerateUiState(
     val pointFrom: DomainPoint? = null,
     val pointTo: DomainPoint? = null,
     val addressFrom: String = "Откуда",

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.main.MainActivity">
+    tools:context=".presentation.generate.GenerateActivity">
 
     <org.osmdroid.views.MapView
         android:id="@+id/map"
@@ -27,6 +27,7 @@
             android:id="@+id/btnBack"
             android:layout_width="@dimen/btn_general"
             android:layout_height="@dimen/btn_general"
+
             android:layout_gravity="center_vertical"
             android:background="@drawable/btn_general_alpha"
             android:minHeight="36dp">

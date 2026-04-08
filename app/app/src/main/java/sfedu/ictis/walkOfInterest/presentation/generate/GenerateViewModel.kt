@@ -1,4 +1,4 @@
-package sfedu.ictis.walkOfInterest.presentation.main
+package sfedu.ictis.walkOfInterest.presentation.generate
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -13,11 +13,11 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 
-class MainViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
-                    private val calculateWalkUseCase: CalculateWalkUseCase
+class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
+                        private val calculateWalkUseCase: CalculateWalkUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(MainUiState())
-    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(GenerateUiState())
+    val uiState: StateFlow<GenerateUiState> = _uiState.asStateFlow()
 
     private var routeJob: Job? = null
 
