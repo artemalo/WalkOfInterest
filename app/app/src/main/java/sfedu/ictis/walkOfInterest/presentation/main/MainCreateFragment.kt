@@ -33,7 +33,7 @@ class MainCreateFragment : Fragment() {
 
         binding.fieldCreateSpot.setOnClickListener {
             // TODO: Переход на экран создания POI
-            ToastManager(requireContext()).showToast("Скоро будет!")
+            ToastManager.show(requireContext(), "Скоро будет!")
         }
     }
 

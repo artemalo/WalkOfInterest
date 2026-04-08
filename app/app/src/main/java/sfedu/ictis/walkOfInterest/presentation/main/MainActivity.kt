@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.fieldBtnProfile.setOnClickListener {
-            ToastManager(this).showToast("Профиль в разработке")
+            ToastManager.show(this, "Профиль в разработке")
         }
     }
 

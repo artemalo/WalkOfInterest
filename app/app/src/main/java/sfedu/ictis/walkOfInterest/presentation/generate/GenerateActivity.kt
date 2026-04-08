@@ -286,6 +286,7 @@ class GenerateActivity : AppCompatActivity() {
         } else {
             MSG_WHAT
         }
-        ToastManager(this).showToast(message)
+
+        ToastManager.show(this, message)
     }
 }
