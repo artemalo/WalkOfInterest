@@ -13,7 +13,7 @@
     <dimen name="padding_general">24dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
     <dimen name="padding_middle">12dp</dimen>
-    <dimen name="padding_middle_s">6dp</dimen>
+    <dimen name="padding_middle_s">8dp</dimen>
     <dimen name="padding_small">6dp</dimen>
     <dimen name="padding_s_small">4dp</dimen>
 

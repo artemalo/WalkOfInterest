@@ -18,8 +18,8 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
-import sfedu.ictis.walkOfInterest.databinding.ActivityMainBinding
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
+import sfedu.ictis.walkOfInterest.databinding.ActivityGenerateBinding
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
@@ -30,7 +30,7 @@ class GenerateActivity : AppCompatActivity() {
         const val MSG_WARN = "Выберите обе точки на карте"
     }
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityGenerateBinding
     private val viewModel: GenerateViewModel by viewModels {
         val repository = RouteRepositoryImpl(NetworkModule.routeApi)
 
@@ -55,7 +55,7 @@ class GenerateActivity : AppCompatActivity() {
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(applicationContext)
         )
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityGenerateBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupMap()

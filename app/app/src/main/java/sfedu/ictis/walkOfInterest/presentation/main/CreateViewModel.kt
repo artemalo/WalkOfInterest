@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class TripsViewModel(
+class CreateViewModel(
     private val getRoutesUseCase: GetRoutesUseCase
 ) : ViewModel() {
 

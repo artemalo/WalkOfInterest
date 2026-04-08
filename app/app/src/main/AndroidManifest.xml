@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WalkOfInterest">
         <activity
-            android:name=".presentation.main.MainActivity"
+            android:name=".presentation.generate.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="@drawable/field_item_trip_state"
+    android:layout_marginBottom="@dimen/padding_normal"
+    android:id="@+id/Spot" >
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgTrip"
+        android:layout_width="@dimen/image_category"
+        android:layout_height="@dimen/image_category"
+        android:contentDescription="photo Spot"
+        android:scaleType="centerCrop"
+        android:src="@color/white_empty"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentTrip"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/image_category"
+        android:padding="@dimen/padding_small"
+        app:layout_constraintBottom_toBottomOf="@+id/imgTrip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgTrip"
+        app:layout_constraintTop_toTopOf="@+id/imgTrip">
+
+        <TextView
+            android:id="@+id/titleTrip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Место"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/descriptionTrip"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Описание"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/description"
+            app:layout_constraintBottom_toTopOf="@+id/ratingContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleTrip" />
+
+
+        <LinearLayout
+            android:id="@+id/ratingContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTrip">
+
+            <ImageView
+                android:id="@+id/ivRatingStar"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:contentDescription="Rate avg"
+                android:src="@drawable/ic_star"
+                app:tint="@color/object_star" />
+
+            <TextView
+                android:id="@+id/tvRatingInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="none"
+                android:textAppearance="@style/TextAppearance.App.Body2"
+                android:textColor="@color/white_gray"
+                tools:text="4.5 (120)" />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

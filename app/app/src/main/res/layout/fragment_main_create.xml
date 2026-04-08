@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="true"
+    android:background="@drawable/fragment_create_stroke"
+    android:padding="@dimen/padding_middle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fieldCreateTrip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/field_24"
+        android:paddingStart="@dimen/padding_middle_s"
+        android:paddingTop="@dimen/padding_middle"
+        android:paddingEnd="@dimen/padding_middle_s"
+        android:paddingBottom="@dimen/padding_middle"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageWalk"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"
+            android:src="@drawable/ic_walk"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textTitleCreate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_middle_s"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Создать маршрут"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageWalk"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Планируйте свою прогулку"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/description"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textTitleCreate"
+            app:layout_constraintTop_toBottomOf="@+id/textTitleCreate" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fieldCreateSpot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_middle"
+        android:background="@drawable/field_24"
+        android:paddingStart="@dimen/padding_middle_s"
+        android:paddingTop="@dimen/padding_middle"
+        android:paddingEnd="@dimen/padding_middle_s"
+        android:paddingBottom="@dimen/padding_middle"
+        app:layout_constraintTop_toBottomOf="@+id/fieldCreateTrip">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"
+            android:src="@drawable/ic_map"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_middle_s"
+            android:text="Добавить POI"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Создавайте знакомые вам места на КАРТЕ"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/description"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

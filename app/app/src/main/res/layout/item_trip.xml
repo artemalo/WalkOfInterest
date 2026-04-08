@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="@drawable/field_item_trip_state"
+    android:layout_marginBottom="@dimen/padding_normal"
+    android:id="@+id/trip" >
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgTrip"
+        android:layout_width="@dimen/image_category"
+        android:layout_height="@dimen/image_category"
+        android:contentDescription="photo trip"
+        android:scaleType="centerCrop"
+        android:src="@color/white_empty"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentTrip"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/image_category"
+        android:padding="@dimen/padding_small"
+        app:layout_constraintBottom_toBottomOf="@+id/imgTrip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgTrip"
+        app:layout_constraintTop_toTopOf="@+id/imgTrip">
+
+        <TextView
+            android:id="@+id/titleTrip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Маршрут"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fieldFromTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_s_small"
+            app:layout_constraintTop_toBottomOf="@+id/titleTrip"
+            tools:layout_editor_absoluteX="6dp">
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:background="@drawable/handle_shape"
+                app:layout_constraintBottom_toBottomOf="@+id/imgB"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgA"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:contentDescription="Point Start"
+                android:src="@drawable/ic_a"
+                app:layout_constraintStart_toEndOf="@+id/view"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white_gray" />
+
+            <TextView
+                android:id="@+id/textFrom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Откуда"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/imgA"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imgA"
+                app:layout_constraintTop_toTopOf="@+id/imgA" />
+
+            <ImageView
+                android:id="@+id/imgB"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:contentDescription="Point End"
+                android:src="@drawable/ic_b"
+                app:layout_constraintStart_toEndOf="@+id/view"
+                app:layout_constraintTop_toBottomOf="@+id/imgA"
+                app:tint="@color/white_gray" />
+
+            <TextView
+                android:id="@+id/textTo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Куда"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/imgB"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imgB"
+                app:layout_constraintTop_toTopOf="@+id/imgB" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/icon_general"
+            android:layout_height="@dimen/icon_general"
+            android:layout_gravity="center"
+            android:contentDescription="Point Start"
+            android:src="@drawable/ic_point"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fieldFromTo"
+            app:tint="@color/object_not_active" />
+
+        <TextView
+            android:id="@+id/detailPoi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="none"
+            android:textAppearance="@style/TextAppearance.App.Body2"
+            android:textColor="@color/white_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="@dimen/icon_general"
+            android:layout_height="@dimen/icon_general"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/padding_s_small"
+            android:contentDescription="Point Start"
+            android:src="@drawable/ic_clock"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/detailPoi"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:tint="@color/object_not_active" />
+
+        <TextView
+            android:id="@+id/detailTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="none"
+            android:textAppearance="@style/TextAppearance.App.Body2"
+            android:textColor="@color/white_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

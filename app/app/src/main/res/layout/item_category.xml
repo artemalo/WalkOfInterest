@@ -24,11 +24,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgCategory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/field_categ_img"
+            android:src="@color/white_empty"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/RoundedCornerStyle"
             android:contentDescription="Category img" />
     </FrameLayout>
 

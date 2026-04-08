@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCategories"
+        android:id="@+id/itemList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingStart="@dimen/padding_general"
@@ -186,7 +186,7 @@
             android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_field"
-            android:layout_marginTop="@dimen/padding_middle_s"
+            android:layout_marginTop="@dimen/padding_small"
             android:layout_marginBottom="@dimen/padding_small"
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small">
@@ -195,7 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/btn_general_selector"
+                android:background="@drawable/btn_next"
                 android:minHeight="36dp">
                 <TextView
                     android:id="@+id/btnNext"
