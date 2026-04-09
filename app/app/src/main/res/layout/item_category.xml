@@ -9,7 +9,7 @@
     android:layout_marginBottom="@dimen/padding_normal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/item_category"
+    android:background="@drawable/category_item"
     android:orientation="horizontal">
 
     <FrameLayout
