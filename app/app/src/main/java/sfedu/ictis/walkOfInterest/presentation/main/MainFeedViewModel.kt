@@ -25,10 +25,8 @@ class MainFeedViewModel : ViewModel() {
     }
 
     fun onPlusClicked() {
-        // видимость меню создания
         _uiState.update { state ->
             state.copy(
-                selectedTab = MainTab.NONE,
                 isCreateMenuVisible = !state.isCreateMenuVisible
             )
         }

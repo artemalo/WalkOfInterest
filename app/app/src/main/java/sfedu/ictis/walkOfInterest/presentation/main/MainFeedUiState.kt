@@ -7,7 +7,7 @@ sealed class FeedItem {
     data class Spot(val id: String, val title: String) : FeedItem()
 }
 enum class MainTab {
-    TRIPS, SPOTS, NONE
+    TRIPS, SPOTS
 }
 
 data class MainFeedUiState(
