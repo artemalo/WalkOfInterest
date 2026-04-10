@@ -42,8 +42,6 @@ class GenerateActivity : AppCompatActivity() {
 
         GenerateViewModelFactory(getBaseRouteUseCase, calculateWalkUseCase)
     }
-
-    private var isSelectingFrom: Boolean? = null
     private var markerFrom: Marker? = null
     private var markerTo: Marker? = null
     private var routePolyline: Polyline? = null
@@ -86,8 +84,8 @@ class GenerateActivity : AppCompatActivity() {
 
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                if (p != null && isSelectingFrom != null) {
-                    handleMapClick(p)
+                if (p != null) {
+                    viewModel.onMapPointClicked(p.latitude, p.longitude)
                     return true
                 }
                 return false
@@ -96,15 +94,6 @@ class GenerateActivity : AppCompatActivity() {
             override fun longPressHelper(p: GeoPoint?): Boolean = false
         }
         map.overlays.add(MapEventsOverlay(mapEventsReceiver))
-    }
-
-    private fun handleMapClick(geoPoint: GeoPoint) {
-        val selectingFrom = isSelectingFrom ?: return
-        val mockAddress = "${geoPoint.latitude.toString().take(6)}, ${geoPoint.longitude.toString().take(6)}"
-
-        viewModel.onPointSelected(selectingFrom, geoPoint.latitude, geoPoint.longitude, mockAddress)
-
-        isSelectingFrom = null
     }
 
     private fun setupListeners() {
@@ -117,11 +106,11 @@ class GenerateActivity : AppCompatActivity() {
         }
 
         binding.fieldFrom.setOnClickListener {
-            isSelectingFrom = true
+            viewModel.onSelectFromClicked()
         }
 
         binding.fieldTo.setOnClickListener {
-            isSelectingFrom = false
+            viewModel.onSelectToClicked()
         }
 
         binding.fieldClock.setOnClickListener {

@@ -22,12 +22,34 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
     private var routeJob: Job? = null
     private var calculationJob: Job? = null
 
-    fun onPointSelected(isFrom: Boolean, lat: Double, lon: Double, address: String) {
-        val newPoint = DomainPoint(lat, lon)
+    private var selectingFrom: Boolean? = null
+
+    fun onSelectFromClicked() {
+        if (_uiState.value.isLoading) return
+        selectingFrom = true
+    }
+
+    fun onSelectToClicked() {
+        if (_uiState.value.isLoading) return
+        selectingFrom = false
+    }
+
+    fun onMapPointClicked(lat: Double, lon: Double) {
+        val isFrom = selectingFrom ?: return
+
+        val address = "${lat.toString().take(6)}, ${lon.toString().take(6)}"
+        val point = DomainPoint(lat, lon)
+
         _uiState.update { state ->
-            if (isFrom) state.copy(pointFrom = newPoint, addressFrom = address)
-            else state.copy(pointTo = newPoint, addressTo = address)
+            if (isFrom) {
+                state.copy(pointFrom = point, addressFrom = address)
+            } else {
+                state.copy(pointTo = point, addressTo = address)
+            }
         }
+
+        selectingFrom = null
+
         checkAndFetchRoute()
         Log.i("MainViewModel","onPointSelected(): ${lat},${lon}")
     }
