@@ -62,6 +62,7 @@ class GenerateActivity : AppCompatActivity() {
         setupMap()
         setupListeners()
         observeState()
+        observeEvents()
     }
 
     private fun setupMap() {
@@ -98,11 +99,8 @@ class GenerateActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.fieldBtnBack.setOnClickListener {
-            if (viewModel.uiState.value.isLoading) {
-                viewModel.cancelAllRequests()
-            } else {
-                onBackPressedDispatcher.onBackPressed()
-            }
+            viewModel.onBackClicked()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         binding.fieldFrom.setOnClickListener {
@@ -114,23 +112,11 @@ class GenerateActivity : AppCompatActivity() {
         }
 
         binding.fieldClock.setOnClickListener {
-            viewModel.uiState.value.let { state ->
-                if (!state.isLoading && state.isTimePickerEnabled) {
-                    showTimePicker()
-                } else if (!state.isLoading) {
-                    showValidationError(state)
-                }
-            }
+            viewModel.onClockClicked()
         }
 
         binding.fieldBtnCalculate.setOnClickListener {
-            viewModel.uiState.value.let { state ->
-                if (!state.isLoading && state.isCalculateEnabled) {
-                    viewModel.onCalculateClicked()
-                } else if (!state.isLoading) {
-                    showValidationError(state)
-                }
-            }
+            viewModel.onCalculateClicked()
         }
     }
 
@@ -142,6 +128,21 @@ class GenerateActivity : AppCompatActivity() {
 
                     if (isMapReady) {
                         drawCurrentState(state)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        GenerateEvent.OpenTimePicker -> showTimePicker()
+
+                        is GenerateEvent.ShowError ->
+                            ToastManager.show(this@GenerateActivity, event.message)
                     }
                 }
             }
@@ -197,12 +198,6 @@ class GenerateActivity : AppCompatActivity() {
 
         binding.btnCalculateText.text =
             if (state.isLoading) "Загрузка..." else "Рассчитать"
-    }
-
-    private fun formatMinutes(totalMinutes: Int): String {
-        val h = totalMinutes / 60
-        val m = totalMinutes % 60
-        return "${h}ч ${m}м"
     }
 
     private fun drawRoute(routePoints: List<DomainPoint>) {
@@ -262,20 +257,16 @@ class GenerateActivity : AppCompatActivity() {
         binding.map.onPause()
     }
 
+    private fun formatMinutes(totalMinutes: Int): String {
+        val h = totalMinutes / 60
+        val m = totalMinutes % 60
+        return "${h}ч ${m}м"
+    }
+
     private fun showTimePicker() {
         val currentMin = viewModel.uiState.value.minTimeMinutes ?: 0
         TimePickerDialog(this, { _, hour, minute ->
             viewModel.onTimeSelected(hour * 60 + minute)
         }, currentMin / 60, currentMin % 60, true).show()
-    }
-
-    private fun showValidationError(state: GenerateUiState) {
-        val message = if (state.pointTo == null || state.pointFrom == null) {
-            MSG_WARN
-        } else {
-            MSG_WHAT
-        }
-
-        ToastManager.show(this, message)
     }
 }

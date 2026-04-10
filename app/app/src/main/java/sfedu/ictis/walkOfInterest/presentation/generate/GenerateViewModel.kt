@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,6 +20,11 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(GenerateUiState())
     val uiState: StateFlow<GenerateUiState> = _uiState.asStateFlow()
+
+    private val _events = MutableSharedFlow<GenerateEvent>(
+        extraBufferCapacity = 1
+    )
+    val events = _events.asSharedFlow()
 
     private var routeJob: Job? = null
     private var calculationJob: Job? = null
@@ -83,6 +90,22 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
 
     fun onCalculateClicked() {
         val state = _uiState.value
+        if (state.isLoading) return
+
+        if (!state.isCalculateEnabled) {
+            viewModelScope.launch {
+                _events.emit(
+                    GenerateEvent.ShowError(
+                        if (state.pointFrom == null || state.pointTo == null)
+                            "Выберите обе точки на карте"
+                        else
+                            "Неизвестная ошибка. Попробуйте выбрать другие точки"
+                    )
+                )
+            }
+            return
+        }
+
         val from = state.pointFrom ?: return
         val to = state.pointTo ?: return
         val time = state.selectedTimeMinutes
@@ -103,9 +126,35 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
         }
     }
 
+    fun onClockClicked() {
+        val state = _uiState.value
+        if (state.isLoading) return
+
+        viewModelScope.launch {
+            if (state.isTimePickerEnabled) {
+                _events.emit(GenerateEvent.OpenTimePicker)
+            } else {
+                _events.emit(
+                    GenerateEvent.ShowError(
+                        if (state.pointFrom == null || state.pointTo == null)
+                            "Выберите обе точки на карте"
+                        else
+                            "Что-то пошло не так"
+                    )
+                )
+            }
+        }
+    }
+
     fun onTimeSelected(minutes: Int) {
         _uiState.update { it.copy(selectedTimeMinutes = minutes) }
         validateCalculateButton()
+    }
+
+    fun onBackClicked() {
+        if (_uiState.value.isLoading) {
+            cancelAllRequests()
+        }
     }
 
     fun cancelAllRequests() {
@@ -131,6 +180,11 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
 
     private fun handleFailure(tag: String, error: Throwable) {
         _uiState.update { it.copy(isLoading = false) }
+
         Log.e("MainViewModel", "$tag: ${error.message}")
+
+        viewModelScope.launch {
+            _events.emit(GenerateEvent.ShowError(error.message ?: "Ошибка"))
+        }
     }
 }
