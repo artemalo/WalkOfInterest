@@ -183,8 +183,26 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
 
         Log.e("MainViewModel", "$tag: ${error.message}")
 
+        // временно
+        val userMessage = when (error) {
+            is java.net.SocketTimeoutException ->
+                "Превышено время ожидания. Проверьте подключение к сети"
+            is java.net.UnknownHostException ->
+                "Нет соединения с интернетом"
+            is java.net.ConnectException ->
+                "Не удалось подключиться к серверу"
+            is retrofit2.HttpException -> {
+                when (error.code()) {
+                    404 -> "Маршрут не найден"
+                    500 -> "Ошибка на сервере. Попробуйте позже"
+                    else -> "Ошибка сервера (${error.code()})"
+                }
+            }
+            else -> "Что-то пошло не так. Попробуйте снова"
+        }
+
         viewModelScope.launch {
-            _events.emit(GenerateEvent.ShowError(error.message ?: "Ошибка"))
+            _events.emit(GenerateEvent.ShowError(userMessage))
         }
     }
 }
