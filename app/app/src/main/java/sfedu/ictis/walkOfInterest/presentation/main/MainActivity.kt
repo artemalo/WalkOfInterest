@@ -9,7 +9,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityMainBinding
-import sfedu.ictis.walkOfInterest.notification.ToastManager
+import sfedu.ictis.walkOfInterest.utils.ToastManager
 
 class MainActivity : AppCompatActivity() {
 

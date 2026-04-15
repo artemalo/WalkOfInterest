@@ -1,4 +1,4 @@
-package sfedu.ictis.walkOfInterest.notification
+package sfedu.ictis.walkOfInterest.utils
 
 import android.content.Context
 import android.widget.Toast

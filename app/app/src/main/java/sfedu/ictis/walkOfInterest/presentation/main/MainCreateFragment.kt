@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import sfedu.ictis.walkOfInterest.databinding.FragmentMainCreateBinding
-import sfedu.ictis.walkOfInterest.notification.ToastManager
+import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.presentation.generate.GenerateActivity
 
 class MainCreateFragment : Fragment() {

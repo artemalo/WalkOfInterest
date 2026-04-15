@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
+import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
                         private val calculateWalkUseCase: CalculateWalkUseCase
@@ -147,7 +148,17 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
     }
 
     fun onTimeSelected(minutes: Int) {
-        _uiState.update { it.copy(selectedTimeMinutes = minutes) }
+        val min = _uiState.value.minTimeMinutes ?: 0
+
+        val finalMinutes = if (minutes < min) min else minutes
+
+        if (minutes < min) {
+            viewModelScope.launch {
+                _events.emit(GenerateEvent.ShowError("Время не может быть меньше минимального маршрута (${formatMinutes(min)})"))
+            }
+        }
+
+        _uiState.update { it.copy(selectedTimeMinutes = finalMinutes) }
         validateCalculateButton()
     }
 
@@ -171,10 +182,9 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
 
     private fun validateCalculateButton() {
         val state = _uiState.value
-        val isEnabled = state.pointFrom != null &&
-                state.pointTo != null &&
-                state.minTimeMinutes != null &&
-                state.selectedTimeMinutes >= state.minTimeMinutes
+        val isEnabled = state.pointFrom != null && state.pointTo != null &&
+                state.selectedTimeMinutes >= (state.minTimeMinutes ?: 0)
+
         _uiState.update { it.copy(isCalculateEnabled = isEnabled) }
     }
 

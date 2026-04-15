@@ -23,7 +23,8 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
-import sfedu.ictis.walkOfInterest.notification.ToastManager
+import sfedu.ictis.walkOfInterest.utils.ToastManager
+import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class GenerateActivity : AppCompatActivity() {
     private companion object {
@@ -190,7 +191,11 @@ class GenerateActivity : AppCompatActivity() {
         binding.textFrom.text = state.addressFrom
         binding.textTo.text = state.addressTo
 
-        binding.textClock.text = state.minTimeMinutes?.let { formatMinutes(it) } ?: "Выберите точки"
+        binding.textClock.text = if (state.selectedTimeMinutes > 0) {
+            formatMinutes(state.selectedTimeMinutes)
+        } else {
+            "Выберите точки"
+        }
 
         binding.fieldClock.alpha = if (state.isTimePickerEnabled) 1.0f else 0.5f
         binding.btnCalculate.isEnabled = state.isCalculateEnabled
@@ -257,16 +262,11 @@ class GenerateActivity : AppCompatActivity() {
         binding.map.onPause()
     }
 
-    private fun formatMinutes(totalMinutes: Int): String {
-        val h = totalMinutes / 60
-        val m = totalMinutes % 60
-        return "${h}ч ${m}м"
-    }
-
     private fun showTimePicker() {
-        val currentMin = viewModel.uiState.value.minTimeMinutes ?: 0
+        val currentTime = viewModel.uiState.value.selectedTimeMinutes
+
         TimePickerDialog(this, { _, hour, minute ->
             viewModel.onTimeSelected(hour * 60 + minute)
-        }, currentMin / 60, currentMin % 60, true).show()
+        }, currentTime / 60, currentTime % 60, true).show()
     }
 }
