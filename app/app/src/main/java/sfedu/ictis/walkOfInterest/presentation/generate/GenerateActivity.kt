@@ -144,6 +144,17 @@ class GenerateActivity : AppCompatActivity() {
 
                         is GenerateEvent.ShowError ->
                             ToastManager.show(this@GenerateActivity, event.message)
+
+                        is GenerateEvent.NavigateToCategories -> {
+                            val state = viewModel.uiState.value
+
+                            val intent = android.content.Intent(this@GenerateActivity, sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity::class.java).apply {
+                                putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_ADDRESS_FROM, state.addressFrom)
+                                putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_ADDRESS_TO, state.addressTo)
+                            }
+
+                            startActivity(intent)
+                        }
                     }
                 }
             }

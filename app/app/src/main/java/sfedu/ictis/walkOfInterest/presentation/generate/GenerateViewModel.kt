@@ -118,7 +118,7 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
 
             calculateWalkUseCase(from, to, time).onSuccess {
                 _uiState.update { it.copy(isLoading = false) }
-                // TODO: Активити Категории
+                _events.emit(GenerateEvent.NavigateToCategories)
             }.onFailure {
                 if (it !is kotlinx.coroutines.CancellationException) {
                     handleFailure("onCalculate", it)

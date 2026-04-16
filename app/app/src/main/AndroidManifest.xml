@@ -30,6 +30,10 @@
             android:name=".presentation.generate.GenerateActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".presentation.categories.CategoriesActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
