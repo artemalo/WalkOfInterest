@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import sfedu.ictis.walkOfInterest.data.model.dto.CategoryDto
 import sfedu.ictis.walkOfInterest.databinding.ItemCategoryBinding
+import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class CategoriesAdapter(
-    private val onItemClicked: (CategoryDto) -> Unit
-) : ListAdapter<CategoryDto, CategoriesAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
+    private val onItemClicked: (DomainCategory) -> Unit
+) : ListAdapter<DomainCategory, CategoriesAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val binding = ItemCategoryBinding.inflate(
@@ -37,24 +37,24 @@ class CategoriesAdapter(
             }
         }
 
-        fun bind(category: CategoryDto) {
+        fun bind(category: DomainCategory) {
             binding.nameCategory.text = category.name
 
             binding.totalCountPois.text = category.totalPois.toString()
             binding.detailTime.text = formatMinutes(category.time)
-            binding.detailPoi.text = "${category.totalPois}"
+            binding.detailPoi.text = "${category.selected}"
 
             // TODO: Для загрузки иконки (category.icon) в binding.imgCategory
             // Glide или Coil.
         }
     }
 
-    class CategoryDiffCallback : DiffUtil.ItemCallback<CategoryDto>() {
-        override fun areItemsTheSame(oldItem: CategoryDto, newItem: CategoryDto): Boolean {
+    class CategoryDiffCallback : DiffUtil.ItemCallback<DomainCategory>() {
+        override fun areItemsTheSame(oldItem: DomainCategory, newItem: DomainCategory): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: CategoryDto, newItem: CategoryDto): Boolean {
+        override fun areContentsTheSame(oldItem: DomainCategory, newItem: DomainCategory): Boolean {
             return oldItem == newItem
         }
     }

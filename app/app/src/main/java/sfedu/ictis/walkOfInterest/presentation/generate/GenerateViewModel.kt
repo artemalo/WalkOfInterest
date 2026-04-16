@@ -116,9 +116,9 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
         calculationJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            calculateWalkUseCase(from, to, time).onSuccess {
+            calculateWalkUseCase(from, to, time).onSuccess { categories ->
                 _uiState.update { it.copy(isLoading = false) }
-                _events.emit(GenerateEvent.NavigateToCategories)
+                _events.emit(GenerateEvent.NavigateToCategories(categories))
             }.onFailure {
                 if (it !is kotlinx.coroutines.CancellationException) {
                     handleFailure("onCalculate", it)

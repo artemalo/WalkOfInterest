@@ -151,6 +151,8 @@ class GenerateActivity : AppCompatActivity() {
                             val intent = android.content.Intent(this@GenerateActivity, sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity::class.java).apply {
                                 putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_ADDRESS_FROM, state.addressFrom)
                                 putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_ADDRESS_TO, state.addressTo)
+
+                                putParcelableArrayListExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_CATEGORIES, ArrayList(event.categories))
                             }
 
                             startActivity(intent)

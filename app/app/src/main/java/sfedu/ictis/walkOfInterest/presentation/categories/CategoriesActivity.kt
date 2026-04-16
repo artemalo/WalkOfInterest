@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import sfedu.ictis.walkOfInterest.data.model.dto.CategoryDto
 import sfedu.ictis.walkOfInterest.databinding.ActivityCategoriesBinding
+import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 
 class CategoriesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCategoriesBinding
@@ -20,17 +20,28 @@ class CategoriesActivity : AppCompatActivity() {
         setupRecyclerView()
         setupUI()
         setupListeners()
-
-
-        loadMockData()
     }
 
     private fun setupUI() {
         val addressFrom = intent.getStringExtra(EXTRA_ADDRESS_FROM) ?: "Откуда"
         val addressTo = intent.getStringExtra(EXTRA_ADDRESS_TO) ?: "Куда"
 
+        // (безопасное извлечение для новых версий)
+        val categories = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableArrayListExtra(EXTRA_CATEGORIES, DomainCategory::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableArrayListExtra(EXTRA_CATEGORIES)
+        }
+
         binding.textFrom.text = addressFrom
         binding.textTo.text = addressTo
+
+        if (categories != null) {
+            adapter.submitList(categories)
+        } else {
+            Toast.makeText(this, "Категории не найдены", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -54,19 +65,11 @@ class CategoriesActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadMockData() {
-        val mockCategories = listOf(
-            CategoryDto(1, "Парки и скверы", "Зеленые зоны", null, 0, 12, 120),
-            CategoryDto(2, "Музеи", "Исторические места", null, 0, 5, 240),
-            CategoryDto(3, "Кафе и рестораны", "Где перекусить", null, 0, 20, 60)
-        )
-        adapter.submitList(mockCategories)
-    }
-
     companion object {
         const val EXTRA_ADDRESS_FROM = "extra_address_from"
         const val EXTRA_ADDRESS_TO = "extra_address_to"
+        const val EXTRA_CATEGORIES = "extra_categories"
 
-        // requestId или сами категории
+        // requestId
     }
 }
