@@ -12,5 +12,6 @@ data class DomainCategory(
     val selected: Int,
     val totalPois: Int,
     val time: Int,
-    val subcategories: List<DomainSubCategory>
+    val subcategories: List<DomainSubCategory>,
+    val isSelect: Boolean = false
 ) : Parcelable

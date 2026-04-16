@@ -187,7 +187,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_field"
             android:layout_marginTop="@dimen/padding_small"
-            android:layout_marginBottom="@dimen/padding_small"
+            android:layout_marginBottom="@dimen/padding_normal"
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small">
             <FrameLayout

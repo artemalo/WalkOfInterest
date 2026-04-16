@@ -151,7 +151,9 @@ class GenerateActivity : AppCompatActivity() {
                             val intent = android.content.Intent(this@GenerateActivity, sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity::class.java).apply {
                                 putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_ADDRESS_FROM, state.addressFrom)
                                 putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_ADDRESS_TO, state.addressTo)
+                                putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_TIME_SELECTED, state.selectedTimeMinutes)
 
+                                // TODO: исправить >1мб данные (FileCache, проще Clean Architecture Way - Кэширование в Репозитории)
                                 putParcelableArrayListExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_CATEGORIES, ArrayList(event.categories))
                             }
 

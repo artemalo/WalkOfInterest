@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ItemCategoryBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class CategoriesAdapter(
-    private val onItemClicked: (DomainCategory) -> Unit
+    private val onItemClicked: (DomainCategory) -> Unit,
+    private val onPictureClicked: (DomainCategory) -> Unit
 ) : ListAdapter<DomainCategory, CategoriesAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -35,17 +37,36 @@ class CategoriesAdapter(
                     onItemClicked(getItem(position))
                 }
             }
+
+            binding.framePicture.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onPictureClicked(getItem(position))
+                }
+            }
         }
 
         fun bind(category: DomainCategory) {
             binding.nameCategory.text = category.name
-
             binding.totalCountPois.text = category.totalPois.toString()
             binding.detailTime.text = formatMinutes(category.time)
             binding.detailPoi.text = "${category.selected}"
 
-            // TODO: Для загрузки иконки (category.icon) в binding.imgCategory
-            // Glide или Coil.
+            val isSelected = category.isSelect
+            binding.root.isSelected = isSelected
+
+            val paddingPx = if (isSelected) {
+                itemView.context.resources.getDimensionPixelSize(R.dimen.padding_middle)
+            } else 0
+            binding.framePicture.setPadding(paddingPx, paddingPx, paddingPx, paddingPx)
+
+            binding.root.setOnClickListener { onItemClicked(category) }
+
+            binding.framePicture.setOnClickListener {
+                // TODO: подкатегории
+                onPictureClicked(category)
+            }
+            // TODO: Glide или Coil.
         }
     }
 
