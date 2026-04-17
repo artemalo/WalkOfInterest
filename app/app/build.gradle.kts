@@ -6,7 +6,7 @@ val serverUrl: String by extra {
     if (localPropertiesFile.exists()) {
         localPropertiesFile.inputStream().use { properties.load(it) }
     }
-    val value = properties.getProperty("SERVER_URL", "http://192.168.0.149:8080")
+    val value = properties.getProperty("SERVER_URL", "http://192.168.0.149:8080") // 10.0.2.2
     if (value.isEmpty()) {
         throw InvalidUserDataException("Server URL is not provided")
     }

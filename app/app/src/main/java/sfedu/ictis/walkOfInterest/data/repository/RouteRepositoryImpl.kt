@@ -46,7 +46,7 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
 
             if (response.isSuccessful && response.body() != null) {
                 val domainCategories = response.body()!!.categories.map { dto ->
-                    dto.toDomain().copy(isSelect = dto.selected > 0)
+                    dto.toDomain().copy(isSelect = dto.selected > 0 && dto.time > 0)
                 }
 
                 Result.success(domainCategories)
