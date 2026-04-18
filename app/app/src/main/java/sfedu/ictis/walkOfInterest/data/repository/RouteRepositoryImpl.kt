@@ -11,11 +11,14 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
+import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.model.RouteResult
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import java.util.UUID
 
 class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
+    private var currentTrip: DomainTrip? = null
+
     override suspend fun getRoute(from: DomainPoint, to: DomainPoint): Result<RouteResult> {
         return try {
             val request = RouteRequest(from.toDto(), to.toDto())
@@ -45,9 +48,9 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
             val response = api.searchRoute(dto)
 
             if (response.isSuccessful && response.body() != null) {
-                val domainCategories = response.body()!!.categories.map { dto ->
+                val domainCategories = response.body()?.categories?.map { dto ->
                     dto.toDomain().copy(isSelect = dto.selected > 0 && dto.time > 0)
-                }
+                } ?: emptyList()
 
                 Result.success(domainCategories)
             } else {
@@ -57,6 +60,12 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
             Result.failure(e)
         }
     }
+
+    override fun saveCurrentTrip(trip: DomainTrip) {
+        currentTrip = trip
+    }
+
+    override fun getCurrentTrip(): DomainTrip? = currentTrip
 
     private fun DomainPoint.toDto() = PointDto(lat, lon)
     private fun PointDto.toDomain() = DomainPoint(lat, lon)

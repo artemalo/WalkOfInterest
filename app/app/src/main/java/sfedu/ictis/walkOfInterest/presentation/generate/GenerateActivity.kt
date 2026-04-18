@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.BoundingBox
@@ -23,6 +24,7 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
+import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
@@ -35,14 +37,7 @@ class GenerateActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityGenerateBinding
-    private val viewModel: GenerateViewModel by viewModels {
-        val repository = RouteRepositoryImpl(NetworkModule.routeApi)
-
-        val getBaseRouteUseCase = GetBaseRouteUseCase(repository)
-        val calculateWalkUseCase = CalculateWalkUseCase(repository)
-
-        GenerateViewModelFactory(getBaseRouteUseCase, calculateWalkUseCase)
-    }
+    private val viewModel: GenerateViewModel by viewModel()
     private var markerFrom: Marker? = null
     private var markerTo: Marker? = null
     private var routePolyline: Polyline? = null
@@ -51,12 +46,10 @@ class GenerateActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ВАЖНО: Инициализация OSMDroid ДО setContentView
         Configuration.getInstance().load(
             applicationContext,
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(applicationContext)
         )
-
         binding = ActivityGenerateBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -148,13 +141,19 @@ class GenerateActivity : AppCompatActivity() {
                         is GenerateEvent.NavigateToCategories -> {
                             val state = viewModel.uiState.value
 
-                            val intent = android.content.Intent(this@GenerateActivity, sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity::class.java).apply {
-                                putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_ADDRESS_FROM, state.addressFrom)
-                                putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_ADDRESS_TO, state.addressTo)
-                                putExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_TIME_SELECTED, state.selectedTimeMinutes)
+                            val from = state.pointFrom ?: return@collect
+                            val to = state.pointTo ?: return@collect
+
+                            val intent = android.content.Intent(this@GenerateActivity, CategoriesActivity::class.java).apply {
+                                putExtra(CategoriesActivity.EXTRA_ADDRESS_FROM, state.addressFrom)
+                                putExtra(CategoriesActivity.EXTRA_ADDRESS_TO, state.addressTo)
+                                putExtra(CategoriesActivity.EXTRA_TIME_SELECTED, state.selectedTimeMinutes)
+
+                                putExtra(CategoriesActivity.EXTRA_FROM, from)
+                                putExtra(CategoriesActivity.EXTRA_TO, to)
 
                                 // TODO: исправить >1мб данные (FileCache, проще Clean Architecture Way - Кэширование в Репозитории)
-                                putParcelableArrayListExtra(sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity.EXTRA_CATEGORIES, ArrayList(event.categories))
+                                putParcelableArrayListExtra(CategoriesActivity.EXTRA_CATEGORIES, ArrayList(event.categories))
                             }
 
                             startActivity(intent)
