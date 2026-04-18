@@ -1,7 +1,7 @@
 package sfedu.ictis.walkOfInterest.presentation.routes
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,17 +26,21 @@ class RoutesViewModel(
         if (trip != null) {
             _uiState.update { it.copy(
                 trip = trip,
-                mapPoints = trip.selectedPois, // По умолчанию показываем все выбранные точки
-                // Здесь будет загрузка вариантов маршрутов от бэкенда (GraphHopper)
+                mapPoints = trip.selectedPois,
+                // TODO init routes
                 routes = emptyList()
             )}
+
+            val str = trip.selectedPois.joinToString(separator = "\n") { poi ->
+                "${poi.id}, ${poi.lat}, ${poi.lon}, ${poi.categoryId}"
+            }
+            Log.i("LOAD", str)
         }
     }
 
-    // Когда пользователь кликает на конкретный вариант маршрута в списке
     fun selectRoute(route: DomainRoute) {
         val points = route.pois.map {
-            RoutePoint(it.id, it.lat, it.lon, 1) // Мапим во вью-модели
+            RoutePoint(it.id, it.lat, it.lon, it.categoryId)
         }
         _uiState.update { it.copy(mapPoints = points) }
     }

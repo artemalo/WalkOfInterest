@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import sfedu.ictis.walkOfInterest.databinding.ItemRouteBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
-import sfedu.ictis.walkOfInterest.utils.formatMinutes // Твоя функция форматирования времени
+import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class RoutesAdapter(
     private val onRouteClicked: (DomainRoute) -> Unit,
@@ -18,7 +18,6 @@ class RoutesAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            // Клик по всей карточке (для отрисовки на карте)
             binding.route.setOnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
@@ -26,7 +25,6 @@ class RoutesAdapter(
                 }
             }
 
-            // Клик по кнопке "about" (для редактирования POI)
             binding.btnAbout.setOnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
