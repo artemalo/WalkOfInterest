@@ -3,8 +3,8 @@ package sfedu.ictis.walkOfInterest.presentation.routes
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
@@ -20,7 +20,7 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow
 import sfedu.ictis.walkOfInterest.databinding.ActivityRoutesBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
-import sfedu.ictis.walkOfInterest.presentation.generate.GenerateUiState
+import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class RoutesActivity : AppCompatActivity() {
@@ -41,6 +41,7 @@ class RoutesActivity : AppCompatActivity() {
         setupMap()
         setupListeners()
         observeState()
+        observeEvents()
 
         // TODO: Получить отфильтрованные данные (isSelect == true) из кэша/репозитория
     }
@@ -74,6 +75,24 @@ class RoutesActivity : AppCompatActivity() {
                 }
 
                 adapter.submitList(state.routes)
+
+                if (state.routes.isEmpty()) {
+                    binding.textEmpty.visibility = View.VISIBLE
+                    binding.itemList.visibility = View.GONE
+
+                    ToastManager.show(this@RoutesActivity, "Маршруты не найдены", Toast.LENGTH_SHORT)
+                } else {
+                    binding.textEmpty.visibility = View.GONE
+                    binding.itemList.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            viewModel.events.collect { message ->
+                Toast.makeText(this@RoutesActivity, message, Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -83,7 +102,6 @@ class RoutesActivity : AppCompatActivity() {
 
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                // Закрываем все открытые title (InfoWindow)
                 InfoWindow.closeAllInfoWindowsOn(binding.map)
                 return true
             }
@@ -132,7 +150,7 @@ class RoutesActivity : AppCompatActivity() {
 
         // Сдвигаем цвет на 45 градусов по кругу для каждой новой категории
         val hue = (categoryId * 45f) % 360f
-        val hsv = floatArrayOf(hue, 0.8f, 0.9f) // hue, saturation, value
+        val hsv = floatArrayOf(hue, 0.8f, 0.9f)
 
         return Color.HSVToColor(hsv)
     }

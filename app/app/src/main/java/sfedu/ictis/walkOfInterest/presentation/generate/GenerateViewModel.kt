@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
@@ -78,8 +79,8 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
                     route = result.points,
                     isTimePickerEnabled = true,
                     isLoading = false
-                )
-                }
+                )}
+
                 validateCalculateButton()
             }.onFailure {
                 if (it !is kotlinx.coroutines.CancellationException) {
@@ -191,16 +192,14 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
     private fun handleFailure(tag: String, error: Throwable) {
         _uiState.update { it.copy(isLoading = false) }
 
-        Log.e("MainViewModel", "$tag: ${error.message}")
+        Log.e("GenerateViewModel", "$tag: ${error.message}")
 
         // временно
         val userMessage = when (error) {
-            is java.net.SocketTimeoutException ->
-                "Превышено время ожидания. Проверьте подключение к сети"
-            is java.net.UnknownHostException ->
-                "Нет соединения с интернетом"
-            is java.net.ConnectException ->
-                "Не удалось подключиться к серверу"
+            is ServerException -> error.message ?: "Ошибка данных"
+            is java.net.SocketTimeoutException -> "Превышено время ожидания. Проверьте подключение к сети"
+            is java.net.UnknownHostException -> "Нет соединения с интернетом"
+            is java.net.ConnectException -> "Не удалось подключиться к серверу"
             is retrofit2.HttpException -> {
                 when (error.code()) {
                     404 -> "Маршрут не найден"

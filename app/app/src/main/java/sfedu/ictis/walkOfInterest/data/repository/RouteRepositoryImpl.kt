@@ -1,5 +1,8 @@
 package sfedu.ictis.walkOfInterest.data.repository
 
+import android.util.Log
+import org.json.JSONObject
+import retrofit2.HttpException
 import sfedu.ictis.walkOfInterest.data.api.RouteApi
 import sfedu.ictis.walkOfInterest.data.model.dto.PointDto
 import sfedu.ictis.walkOfInterest.data.model.RouteRequest
@@ -7,6 +10,7 @@ import sfedu.ictis.walkOfInterest.data.model.SearchRequest
 import sfedu.ictis.walkOfInterest.data.model.dto.CategoryDto
 import sfedu.ictis.walkOfInterest.data.model.dto.PoiDto
 import sfedu.ictis.walkOfInterest.data.model.dto.SubCategoryDto
+import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
@@ -36,7 +40,7 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
     }
 
     override suspend fun searchWalk(from: DomainPoint, to: DomainPoint, time: Int, lang: String): Result<List<DomainCategory>> {
-        return try {
+        return runCatching {
             val dto = SearchRequest(
                 p1 = PointDto(from.lat, from.lon),
                 p2 = PointDto(to.lat, to.lon),
@@ -48,16 +52,19 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
             val response = api.searchRoute(dto)
 
             if (response.isSuccessful && response.body() != null) {
-                val domainCategories = response.body()?.categories?.map { dto ->
+                response.body()?.categories?.map { dto ->
                     dto.toDomain().copy(isSelect = dto.selected > 0 && dto.time > 0)
                 } ?: emptyList()
-
-                Result.success(domainCategories)
             } else {
-                Result.failure(Exception("Ошибка сервера: ${response.code()}"))
+                if (response.code() == 400) {
+                    val errorMsg = response.errorBody()?.string()?.let {
+                        JSONObject(it).getString(JSONObject(it).keys().next())
+                    } ?: "Ошибка данных"
+                    throw ServerException(errorMsg)
+                } else {
+                    throw Exception("Ошибка ${response.code()}")
+                }
             }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 

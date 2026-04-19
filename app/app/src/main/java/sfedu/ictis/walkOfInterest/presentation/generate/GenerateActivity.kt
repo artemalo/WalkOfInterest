@@ -18,12 +18,8 @@ import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import sfedu.ictis.walkOfInterest.R
-import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
 import sfedu.ictis.walkOfInterest.databinding.ActivityGenerateBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
-import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
-import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
-import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
