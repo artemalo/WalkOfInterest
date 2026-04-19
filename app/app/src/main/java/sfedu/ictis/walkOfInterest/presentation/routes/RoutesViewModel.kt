@@ -40,7 +40,15 @@ class RoutesViewModel(
 
     fun selectRoute(route: DomainRoute) {
         val points = route.pois.map {
-            RoutePoint(it.id, it.lat, it.lon, it.categoryId)
+            RoutePoint(
+                it.id,
+                it.lat,
+                it.lon,
+                it.categoryId,
+                it.name,
+                it.nameCat,
+                it.nameSubcat
+            )
         }
         _uiState.update { it.copy(mapPoints = points) }
     }

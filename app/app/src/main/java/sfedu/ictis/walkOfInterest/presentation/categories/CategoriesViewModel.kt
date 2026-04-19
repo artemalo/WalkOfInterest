@@ -70,7 +70,10 @@ class CategoriesViewModel(private val repository: RouteRepository) : ViewModel()
                             id = poi.id,
                             lat = poi.lat,
                             lon = poi.lon,
-                            categoryId = category.id
+                            categoryId = category.id,
+                            name = poi.name ?: "-",
+                            nameCat = category.name,
+                            nameSubcat = subCategory.name
                         )
                     }
             }
