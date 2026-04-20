@@ -71,7 +71,7 @@ class RoutesActivity : AppCompatActivity() {
                 state.trip?.let { trip ->
                     binding.userTime.text = formatMinutes(trip.totalTime)
 
-                    updateMapMarkers(state.mapPoints, trip.from, trip.to)
+                    updateMapMarkers(state.trip.selectedPois, trip.from, trip.to)
                 }
 
                 adapter.submitList(state.routes)

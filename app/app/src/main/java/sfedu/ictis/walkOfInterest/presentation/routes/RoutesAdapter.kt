@@ -34,8 +34,8 @@ class RoutesAdapter(
         }
 
         fun bind(route: DomainRoute) {
-            binding.routeTime.text = formatMinutes(route.timeMinutes)
-            binding.routeSteps.text = route.stepsCount.toString()
+            binding.routeTime.text = formatMinutes(route.minTime)
+            binding.routeSteps.text = route.steps.toString()
         }
     }
 

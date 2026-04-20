@@ -10,12 +10,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
-import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
+import sfedu.ictis.walkOfInterest.domain.usecase.GenerateRoutesUseCase
 
 class RoutesViewModel(
-    private val repository: RouteRepository
+    private val repository: RouteRepository,
+    private val generateRoutesUseCase: GenerateRoutesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RoutesUiState())
@@ -31,40 +33,53 @@ class RoutesViewModel(
     private fun loadTripData() {
         val trip = repository.getCurrentTrip()
         if (trip != null) {
-            val loadedRoutes = emptyList<DomainRoute>() // TODO
+            //val loadedRoutes  // TODO
 
             _uiState.update { it.copy(
                 trip = trip,
-                mapPoints = trip.selectedPois,
                 // TODO init routes
-                routes = loadedRoutes
+                //routes = loadedRoutes
+                isLoading = true
             )}
-
-            if (loadedRoutes.isEmpty()) {
-                viewModelScope.launch {
-                    _events.emit("Не удалось сгенерировать маршрут")
-                }
-            }
 
             val str = trip.selectedPois.joinToString(separator = "\n") { poi ->
                 "${poi.id}, ${poi.lat}, ${poi.lon}, ${poi.categoryId}"
             }
             Log.i("LOAD", str)
+
+            viewModelScope.launch {
+                val result = generateRoutesUseCase(trip)
+
+                result.onSuccess { loadedRoutes ->
+                    _uiState.update { state ->
+                        state.copy(
+                            routes = loadedRoutes,
+                            isLoading = false
+                        )
+                    }
+
+                    if (loadedRoutes.isEmpty()) {
+                        _events.emit("Вернулся пустой список маршрутов")
+                    }
+                }.onFailure { error ->
+                     _uiState.update { it.copy(isLoading = false) }
+                    _events.emit(error.message ?: "Не удалось сгенерировать маршрут")
+                }
+            }
+        } else {
+            viewModelScope.launch {
+                _events.emit("Данные не найдены")
+            }
         }
     }
 
     fun selectRoute(route: DomainRoute) {
-        val points = route.pois.map {
-            RoutePoint(
-                it.id,
+        val points = route.points.map {
+            DomainPoint(
                 it.lat,
-                it.lon,
-                it.categoryId,
-                it.name,
-                it.nameCat,
-                it.nameSubcat
+                it.lon
             )
         }
-        _uiState.update { it.copy(mapPoints = points) }
+        _uiState.update { it.copy(route = points) }
     }
 }

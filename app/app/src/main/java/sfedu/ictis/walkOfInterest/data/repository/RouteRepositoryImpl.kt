@@ -1,36 +1,36 @@
 package sfedu.ictis.walkOfInterest.data.repository
 
-import android.util.Log
 import org.json.JSONObject
-import retrofit2.HttpException
 import sfedu.ictis.walkOfInterest.data.api.RouteApi
 import sfedu.ictis.walkOfInterest.data.model.dto.PointDto
 import sfedu.ictis.walkOfInterest.data.model.RouteRequest
 import sfedu.ictis.walkOfInterest.data.model.SearchRequest
 import sfedu.ictis.walkOfInterest.data.model.dto.CategoryDto
 import sfedu.ictis.walkOfInterest.data.model.dto.PoiDto
+import sfedu.ictis.walkOfInterest.data.model.dto.RouteDto
 import sfedu.ictis.walkOfInterest.data.model.dto.SubCategoryDto
 import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
+import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
 import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
-import sfedu.ictis.walkOfInterest.domain.model.RouteResult
+import sfedu.ictis.walkOfInterest.domain.model.RouteFromToResult
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import java.util.UUID
 
 class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
     private var currentTrip: DomainTrip? = null
 
-    override suspend fun getRoute(from: DomainPoint, to: DomainPoint): Result<RouteResult> {
+    override suspend fun getRoute(from: DomainPoint, to: DomainPoint): Result<RouteFromToResult> {
         return try {
             val request = RouteRequest(from.toDto(), to.toDto())
             val response = api.getRoute(request)
             val body = response.body()
 
             if (response.isSuccessful && body != null) {
-                Result.success(RouteResult(
+                Result.success(RouteFromToResult(
                     minTime = body.minTime,
                     distance = body.distance,
                     points = body.route.map { it.toDomain() }
@@ -74,6 +74,28 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
 
     override fun getCurrentTrip(): DomainTrip? = currentTrip
 
+    override suspend fun getRoutes(points: List<DomainPoint>): Result<List<DomainRoute>> {
+        return runCatching {
+            val request = points.map { PointDto(it.lat, it.lon) }
+
+            val response = api.getRoutes(request)
+            val body = response.body()
+
+            if (response.isSuccessful && body != null) {
+                body.map { it.toDomain() }
+            } else {
+                if (response.code() == 400) {
+                    val errorMsg = response.errorBody()?.string()?.let {
+                        JSONObject(it).getString(JSONObject(it).keys().next())
+                    } ?: "Ошибка данных"
+                    throw ServerException(errorMsg)
+                } else {
+                    throw Exception("Ошибка ${response.code()}")
+                }
+            }
+        }
+    }
+
     private fun DomainPoint.toDto() = PointDto(lat, lon)
     private fun PointDto.toDomain() = DomainPoint(lat, lon)
 
@@ -89,5 +111,12 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
     private fun PoiDto.toDomain() = DomainPoi(
         id = id, name = name, description = description, lang = lang,
         lat = lat, lon = lon, selected = selected, rate = rate, count = count
+    )
+
+    private fun RouteDto.toDomain() = DomainRoute(
+        minTime = minTime.toInt(),
+        distance = distance,
+        steps = steps.toInt(),
+        points = route.map { it.toDomain() }
     )
 }
