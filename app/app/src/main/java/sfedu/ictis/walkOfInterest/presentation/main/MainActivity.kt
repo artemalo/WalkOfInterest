@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
          binding.itemList.adapter = feedAdapter
          binding.itemList.layoutManager = LinearLayoutManager(this)
 
-        // Добавляем фрагмент в контейнер (если его там еще нет)
         if (supportFragmentManager.findFragmentById(R.id.fragmentMainCreate) == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentMainCreate, MainCreateFragment())

@@ -1,6 +1,7 @@
 package sfedu.ictis.walkOfInterest.presentation.details
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.databinding.FragmentTripDetailsBinding
 
 class TripDetailsFragment : Fragment() {
-
     private var _binding: FragmentTripDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -31,12 +31,19 @@ class TripDetailsFragment : Fragment() {
             viewModel.loadTripDetails(tripId)
         }
 
+        setupListeners(view)
+    }
+
+    private fun setupListeners(view: View) {
+        view.setOnClickListener { }
         binding.fieldBtnClose.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }
 
     override fun onDestroyView() {
+        Log.i("TripFragment", "onDestroy ${arguments?.getString(ARG_TRIP_ID)}")
+
         super.onDestroyView()
         _binding = null
     }
