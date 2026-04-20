@@ -3,6 +3,7 @@ package sfedu.ictis.walkOfInterest.presentation.routes
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,11 +14,11 @@ import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
-import sfedu.ictis.walkOfInterest.domain.usecase.GenerateRoutesUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 
 class RoutesViewModel(
     private val repository: RouteRepository,
-    private val generateRoutesUseCase: GenerateRoutesUseCase
+    private val getRoutesUseCase: GetRoutesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RoutesUiState())
@@ -27,18 +28,18 @@ class RoutesViewModel(
     val events = _events.asSharedFlow()
 
     init {
-        loadTripData()
+        viewModelScope.launch {
+            delay(100)
+            loadTripData()
+        }
     }
 
-    private fun loadTripData() {
+    private suspend fun loadTripData() {
         val trip = repository.getCurrentTrip()
-        if (trip != null) {
-            //val loadedRoutes  // TODO
 
+        if (trip != null) {
             _uiState.update { it.copy(
                 trip = trip,
-                // TODO init routes
-                //routes = loadedRoutes
                 isLoading = true
             )}
 
@@ -47,39 +48,31 @@ class RoutesViewModel(
             }
             Log.i("LOAD", str)
 
-            viewModelScope.launch {
-                val result = generateRoutesUseCase(trip)
+            val result = getRoutesUseCase(trip)
 
-                result.onSuccess { loadedRoutes ->
-                    _uiState.update { state ->
-                        state.copy(
-                            routes = loadedRoutes,
-                            isLoading = false
-                        )
-                    }
-
-                    if (loadedRoutes.isEmpty()) {
-                        _events.emit("Вернулся пустой список маршрутов")
-                    }
-                }.onFailure { error ->
-                     _uiState.update { it.copy(isLoading = false) }
-                    _events.emit(error.message ?: "Не удалось сгенерировать маршрут")
+            result.onSuccess { loadedRoutes ->
+                _uiState.update { state ->
+                    state.copy(
+                        routes = loadedRoutes,
+                        isLoading = false
+                    )
                 }
+
+                if (loadedRoutes.isEmpty()) {
+                    _events.emit("Вернулся пустой список маршрутов")
+                }
+            }.onFailure { error ->
+                _uiState.update { it.copy(isLoading = false) }
+                _events.emit(error.message ?: "Не удалось сгенерировать маршрут")
             }
         } else {
-            viewModelScope.launch {
-                _events.emit("Данные не найдены")
-            }
+            _events.emit("Данные о поездке не найдены в памяти")
         }
+
     }
 
     fun selectRoute(route: DomainRoute) {
-        val points = route.points.map {
-            DomainPoint(
-                it.lat,
-                it.lon
-            )
-        }
+        val points = route.points.map { DomainPoint(it.lat, it.lon) }
         _uiState.update { it.copy(route = points) }
     }
 }

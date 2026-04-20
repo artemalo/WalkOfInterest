@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,18 +17,27 @@ import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import sfedu.ictis.walkOfInterest.databinding.ActivityRoutesBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import org.osmdroid.util.BoundingBox
+import sfedu.ictis.walkOfInterest.R
 
 class RoutesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRoutesBinding
     private val viewModel: RoutesViewModel by viewModel()
     private lateinit var adapter: RoutesAdapter
 
+    private var markerFrom: Marker? = null
+    private var markerTo: Marker? = null
+    private var poiMarkers: List<Marker> = emptyList()
+    private var routePolyline: Polyline? = null
     private var isMapReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +52,6 @@ class RoutesActivity : AppCompatActivity() {
         setupListeners()
         observeState()
         observeEvents()
-
-        // TODO: Получить отфильтрованные данные (isSelect == true) из кэша/репозитория
     }
 
     private fun setupRecyclerView() {
@@ -56,9 +64,14 @@ class RoutesActivity : AppCompatActivity() {
     }
 
     private fun setupMap() {
-        val map = binding.map
+        binding.map.setMultiTouchControls(true)
 
-        map.setMultiTouchControls(true)
+        binding.map.addOnFirstLayoutListener { _, _, _, _, _ ->
+            isMapReady = true
+            viewModel.uiState.value.trip?.let { trip ->
+                centerMapOnce(trip.from, trip.to)
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -76,14 +89,19 @@ class RoutesActivity : AppCompatActivity() {
 
                 adapter.submitList(state.routes)
 
-                if (state.routes.isEmpty()) {
-                    binding.textEmpty.visibility = View.VISIBLE
-                    binding.itemList.visibility = View.GONE
+                drawRoute(state.route)
 
-                    ToastManager.show(this@RoutesActivity, "Маршруты не найдены", Toast.LENGTH_SHORT)
-                } else {
+                if (state.isLoading) {
                     binding.textEmpty.visibility = View.GONE
-                    binding.itemList.visibility = View.VISIBLE
+                    binding.itemList.visibility = View.GONE
+                } else {
+                    if (state.routes.isEmpty() && state.trip != null) {
+                        binding.textEmpty.visibility = View.VISIBLE
+                        binding.itemList.visibility = View.GONE
+                    } else {
+                        binding.textEmpty.visibility = View.GONE
+                        binding.itemList.visibility = View.VISIBLE
+                    }
                 }
             }
         }
@@ -91,30 +109,37 @@ class RoutesActivity : AppCompatActivity() {
 
     private fun observeEvents() {
         lifecycleScope.launch {
-            viewModel.events.collect { message ->
-                Toast.makeText(this@RoutesActivity, message, Toast.LENGTH_LONG).show()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { message ->
+                    ToastManager.show(this@RoutesActivity, message, Toast.LENGTH_LONG)
+                }
             }
         }
     }
 
     private fun updateMapMarkers(points: List<RoutePoint>, from: DomainPoint, to: DomainPoint) {
-        binding.map.overlays.clear()
+        val map = binding.map
 
-        val mapEventsReceiver = object : MapEventsReceiver {
-            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                InfoWindow.closeAllInfoWindowsOn(binding.map)
-                return true
-            }
+        markerFrom?.let { map.overlays.remove(it) }
+        markerTo?.let { map.overlays.remove(it) }
+        poiMarkers.forEach { map.overlays.remove(it) }
 
-            override fun longPressHelper(p: GeoPoint?): Boolean {
-                return false
-            }
+        markerFrom = Marker(map).apply {
+            position = GeoPoint(from.lat, from.lon)
+            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            icon = ContextCompat.getDrawable(this@RoutesActivity, R.drawable.ic_a)
         }
+        map.overlays.add(markerFrom)
+        markerTo = Marker(map).apply {
+            position = GeoPoint(to.lat, to.lon)
+            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            icon = ContextCompat.getDrawable(this@RoutesActivity, R.drawable.ic_b)
+        }
+        map.overlays.add(markerTo)
 
-        binding.map.overlays.add(MapEventsOverlay(mapEventsReceiver))
-
+        val newPoiMarkers = mutableListOf<Marker>()
         points.forEach { point ->
-            val marker = Marker(binding.map).apply {
+            val marker = Marker(map).apply {
                 position = GeoPoint(point.lat, point.lon)
                 title = """
                     |${point.name}
@@ -127,17 +152,60 @@ class RoutesActivity : AppCompatActivity() {
                 newIcon?.setTint(calculateColorByCategory(point.categoryId))
                 this.icon = newIcon
             }
-            binding.map.overlays.add(marker)
+            map.overlays.add(marker)
+            newPoiMarkers.add(marker)
+        }
+        poiMarkers = newPoiMarkers
+
+        if (map.overlays.none { it is MapEventsOverlay }) {
+            val mapEventsReceiver = object : MapEventsReceiver {
+                override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                    InfoWindow.closeAllInfoWindowsOn(map)
+                    return true
+                }
+                override fun longPressHelper(p: GeoPoint?): Boolean = false
+            }
+            map.overlays.add(MapEventsOverlay(mapEventsReceiver))
         }
 
-        if (!isMapReady) {
-            val center = GeoPoint((from.lat + to.lat) / 2.0, (from.lon + to.lon) / 2.0)
-            binding.map.controller.setCenter(center)
-            binding.map.controller.setZoom(14.5)
-            isMapReady = true
+        if (isMapReady && map.zoomLevelDouble < 2.0) {
+            centerMapOnce(from, to)
         }
 
-        binding.map.invalidate()
+        map.invalidate()
+    }
+
+    private fun drawRoute(points: List<DomainPoint>) {
+        val map = binding.map
+
+        routePolyline?.let { map.overlays.remove(it) }
+
+        if (points.isEmpty()) {
+            map.invalidate()
+            return
+        }
+
+        val geoPoints = points.map { GeoPoint(it.lat, it.lon) }
+
+        routePolyline = Polyline().apply {
+            setPoints(geoPoints)
+            outlinePaint.color = ContextCompat.getColor(this@RoutesActivity, R.color.route_color)
+            outlinePaint.strokeWidth = 14f
+            outlinePaint.strokeCap = android.graphics.Paint.Cap.ROUND
+            outlinePaint.strokeJoin = android.graphics.Paint.Join.ROUND
+            outlinePaint.isAntiAlias = true
+        }
+
+        map.overlays.add(0, routePolyline) // под маркер
+
+        map.post {
+            if (!isFinishing && !isDestroyed && geoPoints.isNotEmpty()) {
+                val boundingBox = BoundingBox.fromGeoPoints(geoPoints)
+                map.zoomToBoundingBox(boundingBox, true, 100)
+            }
+        }
+
+        map.invalidate()
     }
 
     /**
@@ -153,5 +221,40 @@ class RoutesActivity : AppCompatActivity() {
         val hsv = floatArrayOf(hue, 0.8f, 0.9f)
 
         return Color.HSVToColor(hsv)
+    }
+
+    private fun centerMapOnce(from: DomainPoint, to: DomainPoint) {
+        if (isMapReady) {
+            val center = GeoPoint((from.lat + to.lat) / 2.0, (from.lon + to.lon) / 2.0)
+
+            binding.map.post {
+                binding.map.controller.setZoom(14.5)
+                binding.map.controller.animateTo(center)
+                Log.i("centerMapOnce", "${center.latitude}, ${center.longitude}")
+            }
+        }
+    }
+
+
+
+    override fun onDestroy() {
+        Log.i(this.localClassName, "onDestroy")
+
+        super.onDestroy()
+        binding.map.onDetach()
+    }
+
+    override fun onResume() {
+        Log.i(this.localClassName, "onResume")
+
+        super.onResume()
+        binding.map.onResume()
+    }
+
+    override fun onPause() {
+        Log.i(this.localClassName, "onPause")
+
+        super.onPause()
+        binding.map.onPause()
     }
 }

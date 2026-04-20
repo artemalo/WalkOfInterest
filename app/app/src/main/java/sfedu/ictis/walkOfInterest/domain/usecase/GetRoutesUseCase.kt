@@ -5,13 +5,17 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 
-class GenerateRoutesUseCase(private val repository: RouteRepository) {
+class GetRoutesUseCase(private val repository: RouteRepository) {
     suspend operator fun invoke(trip: DomainTrip): Result<List<DomainRoute>> {
         if (trip.selectedPois.isEmpty()) {
             return Result.failure(Exception("Список выбранных точек пуст"))
         }
 
-        val requestPoints = trip.selectedPois.map { DomainPoint(it.lat, it.lon) }
+        val requestPoints = buildList {
+            add(trip.from)
+            addAll(trip.selectedPois.map { DomainPoint(it.lat, it.lon) })
+            add(trip.to)
+        }
 
         return repository.getRoutes(requestPoints)
     }

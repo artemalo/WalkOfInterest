@@ -5,7 +5,7 @@ import org.koin.dsl.module
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
-import sfedu.ictis.walkOfInterest.domain.usecase.GenerateRoutesUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
@@ -23,7 +23,7 @@ val appModule = module {
     // 2. Domain Layer: Use Cases
     factory { GetBaseRouteUseCase(get()) } // factory — создает новый экземпляр при каждом запросе
     factory { CalculateWalkUseCase(get()) }
-    factory { GenerateRoutesUseCase(get()) }
+    factory { GetRoutesUseCase(get()) }
 
     // 3. Presentation Layer: ViewModels
     viewModel { GenerateViewModel(get(), get()) }
