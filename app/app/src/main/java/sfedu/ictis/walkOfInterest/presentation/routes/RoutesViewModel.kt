@@ -14,12 +14,12 @@ import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
 import sfedu.ictis.walkOfInterest.domain.repository.MapRepository
-import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
+import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 
 class RoutesViewModel(
     private val repositoryMap: MapRepository,
-    private val repository: RouteRepository,
+    private val repositoryTrip: TripRepository,
     private val getRoutesUseCase: GetRoutesUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RoutesUiState())
@@ -38,7 +38,7 @@ class RoutesViewModel(
     }
 
     private suspend fun loadTripData() {
-        val trip = repository.getCurrentTrip()
+        val trip = repositoryTrip.getCurrentTrip()
 
         if (trip != null) {
             _uiState.update { it.copy(

@@ -1,10 +1,17 @@
 package sfedu.ictis.walkOfInterest.presentation.main
 
 
-// TODO потом из Domain
+
 sealed class FeedItem {
-    data class Trip(val id: String, val title: String) : FeedItem()
-    data class Spot(val id: String, val title: String) : FeedItem()
+    data class Trip(
+        val id: String,
+        val title: String,
+        val addressFrom: String,
+        val addressTo: String,
+        val totalTime: Int,
+        val totalPois: Int
+        ) : FeedItem()
+    data class Spot(val id: String, val title: String) : FeedItem() // TODO как из Domain
 }
 enum class MainTab {
     TRIPS, SPOTS

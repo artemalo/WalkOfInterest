@@ -13,10 +13,12 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
-import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
+import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
 import java.util.UUID
 
-class CategoriesViewModel(private val repository: RouteRepository) : ViewModel() {
+class CategoriesViewModel(
+    private val repositoryTrip: TripRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(CategoriesUiState())
     val uiState: StateFlow<CategoriesUiState> = _uiState.asStateFlow()
 
@@ -91,7 +93,7 @@ class CategoriesViewModel(private val repository: RouteRepository) : ViewModel()
             selectedPois = routePoints
         )
 
-        repository.saveCurrentTrip(trip)
+        repositoryTrip.saveCurrentTrip(trip)
 
         viewModelScope.launch {
             _events.emit(CategoriesEvent.NavigateToRoutes)

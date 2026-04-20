@@ -15,14 +15,11 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
 import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
-import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.model.RouteFromToResult
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import java.util.UUID
 
 class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
-    private var currentTrip: DomainTrip? = null
-
     override suspend fun getRoute(from: DomainPoint, to: DomainPoint): Result<RouteFromToResult> {
         return try {
             val request = RouteRequest(from.toDto(), to.toDto())
@@ -67,12 +64,6 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
             }
         }
     }
-
-    override fun saveCurrentTrip(trip: DomainTrip) {
-        currentTrip = trip
-    }
-
-    override fun getCurrentTrip(): DomainTrip? = currentTrip
 
     override suspend fun getRoutes(points: List<DomainPoint>): Result<List<DomainRoute>> {
         return runCatching {

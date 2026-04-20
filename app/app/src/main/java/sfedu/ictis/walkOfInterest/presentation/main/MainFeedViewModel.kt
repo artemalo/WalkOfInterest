@@ -1,14 +1,26 @@
 package sfedu.ictis.walkOfInterest.presentation.main
 
+import android.icu.util.LocaleData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import sfedu.ictis.walkOfInterest.domain.usecase.GetTripsUseCase
 
-class MainFeedViewModel : ViewModel() {
+class MainFeedViewModel(
+    private val getTripsUseCase: GetTripsUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(MainFeedUiState())
     val uiState: StateFlow<MainFeedUiState> = _uiState.asStateFlow()
+
+    fun refreshData() {
+        if (uiState.value.selectedTab == MainTab.TRIPS) {
+            loadTrips()
+        } else {
+            loadSpots()
+        }
+    }
 
     init {
         loadTrips()
@@ -37,9 +49,19 @@ class MainFeedViewModel : ViewModel() {
     }
 
     private fun loadTrips() {
-        // TODO: UseCase из Domain
-        val mockTrips = listOf(FeedItem.Trip("1", "Прогулка по набережной"))
-        _uiState.update { it.copy(items = mockTrips) }
+        val domainTrips = getTripsUseCase()
+
+        val uiTrips = domainTrips.map { trip ->
+            FeedItem.Trip(
+                id = trip.id,
+                title = "${trip.addressFrom} → ${trip.addressTo}",
+                addressFrom = trip.addressFrom,
+                addressTo = trip.addressTo,
+                totalTime = trip.totalTime,
+                totalPois = trip.totalPois
+            )
+        }
+        _uiState.update { it.copy(items = uiTrips) }
     }
 
     private fun loadSpots() {
