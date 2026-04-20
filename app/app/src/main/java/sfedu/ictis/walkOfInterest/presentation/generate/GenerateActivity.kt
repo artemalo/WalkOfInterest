@@ -3,7 +3,6 @@ package sfedu.ictis.walkOfInterest.presentation.generate
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -28,8 +27,6 @@ class GenerateActivity : AppCompatActivity() {
     private companion object {
         const val MSG_WARN = "Выберите обе точки на карте"
         const val MSG_WHAT = "Что-то пошло не так"
-
-        const val NAME_ACTIVITY = "GenerateActivity"
     }
 
     private lateinit var binding: ActivityGenerateBinding
@@ -254,19 +251,22 @@ class GenerateActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        Log.w(NAME_ACTIVITY, "Destroy")
+        Log.i(this.localClassName, "onDestroy")
+
         super.onDestroy()
         binding.map.onDetach()
     }
 
     override fun onResume() {
-        Log.w(NAME_ACTIVITY, "Resume")
+        Log.i(this.localClassName, "onResume")
+
         super.onResume()
         binding.map.onResume()
     }
 
     override fun onPause() {
-        Log.w(NAME_ACTIVITY, "Pause")
+        Log.i(this.localClassName, "onPause")
+
         super.onPause()
         binding.map.onPause()
     }

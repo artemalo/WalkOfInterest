@@ -2,7 +2,9 @@ package sfedu.ictis.walkOfInterest.di
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import sfedu.ictis.walkOfInterest.data.repository.MapRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
+import sfedu.ictis.walkOfInterest.domain.repository.MapRepository
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
@@ -14,19 +16,20 @@ import sfedu.ictis.walkOfInterest.presentation.routes.RoutesViewModel
 
 val appModule = module {
 
-    // 1. Data Layer: Network & Repository
-    single { NetworkModule.routeApi } // Используем твой существующий API
+    // Data Layer: Network & Repository
+    single { NetworkModule.routeApi }
 
-    // single — создает объект один раз (синглтон)
+    // single
+    single<MapRepository> { MapRepositoryImpl() }
     single<RouteRepository> { RouteRepositoryImpl(get()) }
 
-    // 2. Domain Layer: Use Cases
-    factory { GetBaseRouteUseCase(get()) } // factory — создает новый экземпляр при каждом запросе
+    // Domain Layer: Use Cases
+    factory { GetBaseRouteUseCase(get()) }
     factory { CalculateWalkUseCase(get()) }
     factory { GetRoutesUseCase(get()) }
 
-    // 3. Presentation Layer: ViewModels
+    // Presentation Layer: ViewModels
     viewModel { GenerateViewModel(get(), get(), get()) }
-    viewModel { CategoriesViewModel(get()) } // если там будут UseCase, добавь get()
-    viewModel { RoutesViewModel(get(), get()) }
+    viewModel { CategoriesViewModel(get()) }
+    viewModel { RoutesViewModel(get(), get(), get()) }
 }

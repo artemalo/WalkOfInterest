@@ -21,17 +21,7 @@ import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import java.util.UUID
 
 class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
-    private var userMapCenter: DomainPoint? = null
-    private val hardcodedDefault = DomainPoint(47.207564, 38.938756)
-
     private var currentTrip: DomainTrip? = null
-    override fun getDefaultMapCenter(): DomainPoint {
-        return userMapCenter ?: hardcodedDefault
-    }
-
-    override fun setDefaultMapCenter(point: DomainPoint) {
-        userMapCenter = point
-    }
 
     override suspend fun getRoute(from: DomainPoint, to: DomainPoint): Result<RouteFromToResult> {
         return try {

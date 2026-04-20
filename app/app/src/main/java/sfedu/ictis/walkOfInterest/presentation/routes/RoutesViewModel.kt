@@ -13,10 +13,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
+import sfedu.ictis.walkOfInterest.domain.repository.MapRepository
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 
 class RoutesViewModel(
+    private val repositoryMap: MapRepository,
     private val repository: RouteRepository,
     private val getRoutesUseCase: GetRoutesUseCase
 ) : ViewModel() {
@@ -26,7 +28,7 @@ class RoutesViewModel(
     private val _events = MutableSharedFlow<String>()
     val events = _events.asSharedFlow()
 
-    val defaultCenter: DomainPoint get() = repository.getDefaultMapCenter()
+    val defaultCenter: DomainPoint get() = repositoryMap.getMapCenter()
 
     init {
         viewModelScope.launch {
