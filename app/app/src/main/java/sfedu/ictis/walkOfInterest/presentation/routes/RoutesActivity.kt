@@ -26,6 +26,8 @@ import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import org.osmdroid.util.BoundingBox
 import sfedu.ictis.walkOfInterest.R
 
@@ -87,27 +89,44 @@ class RoutesActivity : AppCompatActivity() {
 
     private fun observeState() {
         lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
-                state.trip?.let { trip ->
-                    binding.userTime.text = formatMinutes(trip.totalTime)
-
-                    updateMapMarkers(state.trip.selectedPois, trip.from, trip.to)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.uiState
+                        .map { it.trip }
+                        .distinctUntilChanged()
+                        .collect { trip ->
+                            trip?.let {
+                                binding.userTime.text = formatMinutes(it.totalTime)
+                                updateMapMarkers(it.selectedPois, it.from, it.to)
+                            }
+                        }
                 }
 
-                adapter.submitList(state.routes)
+                launch {
+                    viewModel.uiState
+                        .map { it.route }
+                        .distinctUntilChanged()
+                        .collect { routePoints ->
+                            drawRoute(routePoints)
+                        }
+                }
 
-                drawRoute(state.route)
+                launch {
+                    viewModel.uiState.collect { state ->
+                        adapter.submitList(state.routes)
 
-                if (state.isLoading) {
-                    binding.textEmpty.visibility = View.GONE
-                    binding.itemList.visibility = View.GONE
-                } else {
-                    if (state.routes.isEmpty() && state.trip != null) {
-                        binding.textEmpty.visibility = View.VISIBLE
-                        binding.itemList.visibility = View.GONE
-                    } else {
-                        binding.textEmpty.visibility = View.GONE
-                        binding.itemList.visibility = View.VISIBLE
+                        if (state.isLoading) {
+                            binding.textEmpty.visibility = View.GONE
+                            binding.itemList.visibility = View.GONE
+                        } else {
+                            if (state.routes.isEmpty() && state.trip != null) {
+                                binding.textEmpty.visibility = View.VISIBLE
+                                binding.itemList.visibility = View.GONE
+                            } else {
+                                binding.textEmpty.visibility = View.GONE
+                                binding.itemList.visibility = View.VISIBLE
+                            }
+                        }
                     }
                 }
             }
