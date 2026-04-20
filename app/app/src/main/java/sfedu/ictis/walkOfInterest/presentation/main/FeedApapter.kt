@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import sfedu.ictis.walkOfInterest.databinding.ItemSpotBinding
 import sfedu.ictis.walkOfInterest.databinding.ItemTripBinding
 
-class FeedAdapter : ListAdapter<FeedItem, RecyclerView.ViewHolder>(FeedItemDiffCallback()) {
+class FeedAdapter(
+    private val onTripClicked: (String) -> Unit
+) : ListAdapter<FeedItem, RecyclerView.ViewHolder>(FeedItemDiffCallback()) {
 
     private companion object {
         const val TYPE_TRIP = 0
@@ -45,6 +47,10 @@ class FeedAdapter : ListAdapter<FeedItem, RecyclerView.ViewHolder>(FeedItemDiffC
             binding.textTo.text = item.addressTo
             binding.detailPoi.text = item.totalPois.toString()
             binding.detailTime.text = item.totalTime.toString()
+
+            binding.root.setOnClickListener {
+                onTripClicked(item.id)
+            }
         }
     }
 

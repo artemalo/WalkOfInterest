@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -62,6 +63,13 @@ android {
 }
 
 dependencies {
+    //room
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:${room_version}")
+    implementation("androidx.room:room-ktx:${room_version}")
+    ksp("androidx.room:room-compiler:$room_version")
+
+    implementation("com.google.code.gson:gson:2.10.1")
     //koin
     implementation("io.insert-koin:koin-android:3.5.0")
     //

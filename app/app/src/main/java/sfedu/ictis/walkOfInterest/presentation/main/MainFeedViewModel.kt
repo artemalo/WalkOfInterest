@@ -1,10 +1,12 @@
 package sfedu.ictis.walkOfInterest.presentation.main
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripsUseCase
 
 class MainFeedViewModel(
@@ -48,19 +50,21 @@ class MainFeedViewModel(
     }
 
     private fun loadTrips() {
-        val domainTrips = getTripsUseCase()
+        viewModelScope.launch {
+            val domainTrips = getTripsUseCase()
 
-        val uiTrips = domainTrips.map { trip ->
-            FeedItem.Trip(
-                id = trip.id,
-                title = "${trip.addressFrom} → ${trip.addressTo}",
-                addressFrom = trip.addressFrom,
-                addressTo = trip.addressTo,
-                totalTime = trip.totalTime,
-                totalPois = trip.totalPois
-            )
+            val uiTrips = domainTrips.map { trip ->
+                FeedItem.Trip(
+                    id = trip.id,
+                    title = "${trip.addressFrom} → ${trip.addressTo}",
+                    addressFrom = trip.addressFrom,
+                    addressTo = trip.addressTo,
+                    totalTime = trip.totalTime,
+                    totalPois = trip.totalPois
+                )
+            }
+            _uiState.update { it.copy(items = uiTrips) }
         }
-        _uiState.update { it.copy(items = uiTrips) }
     }
 
     private fun loadSpots() {

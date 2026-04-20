@@ -10,12 +10,15 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityMainBinding
+import sfedu.ictis.walkOfInterest.presentation.details.TripDetailsFragment
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainFeedViewModel by viewModel()
-    private val feedAdapter = FeedAdapter()
+    private val feedAdapter = FeedAdapter { tripId ->
+        openTripDetails(tripId)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +28,14 @@ class MainActivity : AppCompatActivity() {
         setupUI()
         setupListeners()
         observeState()
+    }
+
+    private fun openTripDetails(tripId: String) {
+        val fragment = TripDetailsFragment.newInstance(tripId)
+        supportFragmentManager.beginTransaction()
+            .replace(binding.root.id, fragment) // Заменяем корневой контейнер или нужный FrameLayout
+            .addToBackStack(null) // Добавляем в стек, чтобы кнопка "Назад" работала
+            .commit()
     }
 
     private fun setupUI() {

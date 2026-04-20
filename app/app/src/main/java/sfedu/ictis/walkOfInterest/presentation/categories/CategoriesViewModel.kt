@@ -93,9 +93,10 @@ class CategoriesViewModel(
             selectedPois = routePoints
         )
 
-        saveTripUseCase(trip)
 
         viewModelScope.launch {
+            saveTripUseCase(trip)
+
             _events.emit(CategoriesEvent.NavigateToRoutes)
         }
     }

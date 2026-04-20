@@ -1,22 +1,30 @@
 package sfedu.ictis.walkOfInterest.data.repository
 
+import sfedu.ictis.walkOfInterest.data.local.TripDao
+import sfedu.ictis.walkOfInterest.data.mapper.toDomain
+import sfedu.ictis.walkOfInterest.data.mapper.toEntity
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
 
-class TripRepositoryImpl : TripRepository {
+class TripRepositoryImpl(
+    private val tripDao: TripDao
+) : TripRepository {
     private var currentTrip: DomainTrip? = null
     private val tripsList = mutableListOf<DomainTrip>() // TODO DB
 
 
-    override fun saveCurrentTrip(trip: DomainTrip) {
+    override suspend fun saveCurrentTrip(trip: DomainTrip) {
         currentTrip = trip
-
-        if (!tripsList.any { it.id == trip.id }) {
-            tripsList.add(trip)
-        }
+        tripDao.insertTrip(trip.toEntity())
     }
 
-    override fun getCurrentTrip(): DomainTrip? = currentTrip
+    override suspend fun getCurrentTrip(): DomainTrip? = currentTrip
 
-    override fun getAllTrips(): List<DomainTrip> = tripsList.toList()
+    override suspend fun getAllTrips(): List<DomainTrip> {
+        return tripDao.getAllTrips().map { it.toDomain() }
+    }
+
+    override suspend fun getTripById(id: String): DomainTrip? {
+        return tripDao.getTripById(id)?.toDomain()
+    }
 }
