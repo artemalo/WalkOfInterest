@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
     private fun openTripDetails(tripId: String) {
         val fragment = TripDetailsFragment.newInstance(tripId)
         supportFragmentManager.beginTransaction()
-            .replace(binding.root.id, fragment) // Заменяем корневой контейнер или нужный FrameLayout
-            .addToBackStack(null) // Добавляем в стек, чтобы кнопка "Назад" работала
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 
