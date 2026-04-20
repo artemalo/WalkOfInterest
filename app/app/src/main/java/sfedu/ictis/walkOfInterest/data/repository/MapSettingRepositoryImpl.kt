@@ -1,9 +1,9 @@
 package sfedu.ictis.walkOfInterest.data.repository
 
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
-import sfedu.ictis.walkOfInterest.domain.repository.MapRepository
+import sfedu.ictis.walkOfInterest.domain.repository.MapSettingRepository
 
-class MapRepositoryImpl : MapRepository {
+class MapSettingRepositoryImpl : MapSettingRepository {
     private var userMapCenter: DomainPoint? = null
     private val hardcodedDefault = DomainPoint(47.207564, 38.938756)
 

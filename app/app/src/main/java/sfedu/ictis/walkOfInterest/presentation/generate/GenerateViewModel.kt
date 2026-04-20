@@ -13,13 +13,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
-import sfedu.ictis.walkOfInterest.domain.repository.MapRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class GenerateViewModel(
-    private val repositoryMap: MapRepository,
+    private val getMapCenterUseCase: GetMapCenterUseCase,
     private val getBaseRouteUseCase: GetBaseRouteUseCase,
     private val calculateWalkUseCase: CalculateWalkUseCase
 ) : ViewModel() {
@@ -31,7 +31,7 @@ class GenerateViewModel(
     )
     val events = _events.asSharedFlow()
 
-    val defaultCenter: DomainPoint get() = repositoryMap.getMapCenter()
+    val defaultCenter: DomainPoint get() = getMapCenterUseCase()
 
     private var routeJob: Job? = null
     private var calculationJob: Job? = null

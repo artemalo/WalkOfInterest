@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
-import sfedu.ictis.walkOfInterest.domain.repository.MapRepository
-import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
+import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 
 class RoutesViewModel(
-    private val repositoryMap: MapRepository,
-    private val repositoryTrip: TripRepository,
+    private val getMapCenterUseCase: GetMapCenterUseCase,
+    private val getCurrentTripUseCase: GetCurrentTripUseCase,
     private val getRoutesUseCase: GetRoutesUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RoutesUiState())
@@ -29,7 +29,7 @@ class RoutesViewModel(
     private val _events = MutableSharedFlow<RoutesEvent>(extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 
-    val defaultCenter: DomainPoint get() = repositoryMap.getMapCenter()
+    val defaultCenter: DomainPoint get() = getMapCenterUseCase()
 
     init {
         viewModelScope.launch {
@@ -39,38 +39,39 @@ class RoutesViewModel(
     }
 
     private suspend fun loadTripData() {
-        val trip = repositoryTrip.getCurrentTrip()
+        val trip = getCurrentTripUseCase()
 
-        if (trip != null) {
-            _uiState.update { it.copy(
-                trip = trip,
-                isLoading = true
-            )}
+        if (trip == null) {
+            _events.emit(RoutesEvent.ShowError("Данные о поездке не найдены"))
+            return
+        }
 
-            val str = trip.selectedPois.joinToString(separator = "\n") { poi ->
-                "${poi.id}, ${poi.lat}, ${poi.lon}, ${poi.categoryId}"
+        _uiState.update { it.copy(
+            trip = trip,
+            isLoading = true
+        )}
+
+        val str = trip.selectedPois.joinToString(separator = "\n") { poi ->
+            "${poi.id}, ${poi.lat}, ${poi.lon}, ${poi.categoryId}"
+        }
+        Log.i("LOAD", str)
+
+        val result = getRoutesUseCase(trip)
+
+        result.onSuccess { loadedRoutes ->
+            _uiState.update { state ->
+                state.copy(
+                    routes = loadedRoutes,
+                    isLoading = false
+                )
             }
-            Log.i("LOAD", str)
 
-            val result = getRoutesUseCase(trip)
-
-            result.onSuccess { loadedRoutes ->
-                _uiState.update { state ->
-                    state.copy(
-                        routes = loadedRoutes,
-                        isLoading = false
-                    )
-                }
-
-                if (loadedRoutes.isEmpty()) {
-                    _events.emit(RoutesEvent.ShowError("Вернулся пустой список маршрутов"))
-                }
-            }.onFailure { error ->
-                _uiState.update { it.copy(isLoading = false) }
-                _events.emit(RoutesEvent.ShowError(error.message ?: "Не удалось сгенерировать маршрут"))
+            if (loadedRoutes.isEmpty()) {
+                _events.emit(RoutesEvent.ShowError("Вернулся пустой список маршрутов"))
             }
-        } else {
-            _events.emit(RoutesEvent.ShowError("Данные о поездке не найдены в памяти"))
+        }.onFailure { error ->
+            _uiState.update { it.copy(isLoading = false) }
+            _events.emit(RoutesEvent.ShowError(error.message ?: "Не удалось сгенерировать маршрут"))
         }
 
     }
