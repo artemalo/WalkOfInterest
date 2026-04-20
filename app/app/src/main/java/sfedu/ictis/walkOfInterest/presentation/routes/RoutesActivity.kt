@@ -26,6 +26,7 @@ import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.osmdroid.util.BoundingBox
@@ -35,6 +36,8 @@ class RoutesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRoutesBinding
     private val viewModel: RoutesViewModel by viewModel()
     private lateinit var adapter: RoutesAdapter
+
+    private lateinit var behavior: BottomSheetBehavior<View>
 
     private var markerFrom: Marker? = null
     private var markerTo: Marker? = null
@@ -53,6 +56,7 @@ class RoutesActivity : AppCompatActivity() {
         setupRecyclerView()
         setupMap()
         setupListeners()
+        setupBottomSheet()
         observeState()
         observeEvents()
     }
@@ -87,9 +91,37 @@ class RoutesActivity : AppCompatActivity() {
         binding.fieldBtnBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
+    private fun setupBottomSheet() {
+        behavior = BottomSheetBehavior.from(binding.bottomSheet)
+
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // Сообщаем ViewModel, что состояние изменилось (например, юзер потянул рукой)
+                viewModel.onBottomSheetStateChanged(newState)
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // Живая анимация: отодвигаем карту или меняем прозрачность
+                // slideOffset: 0.0 (свернуто) до 1.0 (развернуто)
+                updateMapPadding(slideOffset)
+            }
+        })
+    }
+
     private fun observeState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.uiState.map { it.bottomSheetState }
+                        .distinctUntilChanged()
+                        .collect { state ->
+                            if (state != BottomSheetBehavior.STATE_DRAGGING &&
+                                state != BottomSheetBehavior.STATE_SETTLING) {
+                                behavior.state = state
+                            }
+                        }
+                }
+
                 launch {
                     viewModel.uiState
                         .map { it.trip }
@@ -136,8 +168,15 @@ class RoutesActivity : AppCompatActivity() {
     private fun observeEvents() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.events.collect { message ->
-                    ToastManager.show(this@RoutesActivity, message, Toast.LENGTH_LONG)
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is RoutesEvent.ShowError -> {
+                            ToastManager.show(this@RoutesActivity, event.message, Toast.LENGTH_LONG)
+                        }
+                        RoutesEvent.CollapseBottomSheet -> {
+                            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                        }
+                    }
                 }
             }
         }
@@ -191,7 +230,7 @@ class RoutesActivity : AppCompatActivity() {
                 }
                 override fun longPressHelper(p: GeoPoint?): Boolean = false
             }
-            map.overlays.add(MapEventsOverlay(mapEventsReceiver))
+            map.overlays.add(0, MapEventsOverlay(mapEventsReceiver))
         }
 
         if (isMapReady && !wasCentered) {
@@ -260,6 +299,14 @@ class RoutesActivity : AppCompatActivity() {
                 Log.i("centerMapOnce", "${center.latitude}, ${center.longitude}")
             }
         }
+    }
+
+    private fun updateMapPadding(slideOffset: Float) {
+        val peekHeight = behavior.peekHeight
+        val fullHeight = binding.bottomSheet.height
+        val currentHeight = peekHeight + (fullHeight - peekHeight) * slideOffset
+
+        binding.map.setPadding(0, 0, 0, currentHeight.toInt())
     }
 
 

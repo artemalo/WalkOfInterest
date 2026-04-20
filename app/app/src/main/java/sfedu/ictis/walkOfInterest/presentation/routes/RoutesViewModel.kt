@@ -3,6 +3,7 @@ package sfedu.ictis.walkOfInterest.presentation.routes
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,7 @@ class RoutesViewModel(
     private val _uiState = MutableStateFlow(RoutesUiState())
     val uiState: StateFlow<RoutesUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<String>()
+    private val _events = MutableSharedFlow<RoutesEvent>(extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 
     val defaultCenter: DomainPoint get() = repositoryMap.getMapCenter()
@@ -62,14 +63,14 @@ class RoutesViewModel(
                 }
 
                 if (loadedRoutes.isEmpty()) {
-                    _events.emit("Вернулся пустой список маршрутов")
+                    _events.emit(RoutesEvent.ShowError("Вернулся пустой список маршрутов"))
                 }
             }.onFailure { error ->
                 _uiState.update { it.copy(isLoading = false) }
-                _events.emit(error.message ?: "Не удалось сгенерировать маршрут")
+                _events.emit(RoutesEvent.ShowError(error.message ?: "Не удалось сгенерировать маршрут"))
             }
         } else {
-            _events.emit("Данные о поездке не найдены в памяти")
+            _events.emit(RoutesEvent.ShowError("Данные о поездке не найдены в памяти"))
         }
 
     }
@@ -77,5 +78,20 @@ class RoutesViewModel(
     fun selectRoute(route: DomainRoute) {
         val points = route.points.map { DomainPoint(it.lat, it.lon) }
         _uiState.update { it.copy(route = points) }
+
+        viewModelScope.launch {
+            _events.emit(RoutesEvent.CollapseBottomSheet)
+        }
+    }
+
+    fun onBottomSheetStateChanged(newState: Int) {
+        when (newState) {
+            BottomSheetBehavior.STATE_COLLAPSED,
+            BottomSheetBehavior.STATE_EXPANDED,
+            BottomSheetBehavior.STATE_HIDDEN,
+            BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                _uiState.update { it.copy(bottomSheetState = newState) }
+            }
+        }
     }
 }
