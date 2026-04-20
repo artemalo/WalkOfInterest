@@ -26,7 +26,7 @@ val appModule = module {
     factory { GetRoutesUseCase(get()) }
 
     // 3. Presentation Layer: ViewModels
-    viewModel { GenerateViewModel(get(), get()) }
+    viewModel { GenerateViewModel(get(), get(), get()) }
     viewModel { CategoriesViewModel(get()) } // если там будут UseCase, добавь get()
     viewModel { RoutesViewModel(get(), get()) }
 }

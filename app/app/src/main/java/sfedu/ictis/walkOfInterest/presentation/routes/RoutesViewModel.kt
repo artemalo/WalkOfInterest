@@ -20,12 +20,13 @@ class RoutesViewModel(
     private val repository: RouteRepository,
     private val getRoutesUseCase: GetRoutesUseCase
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(RoutesUiState())
     val uiState: StateFlow<RoutesUiState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<String>()
     val events = _events.asSharedFlow()
+
+    val defaultCenter: DomainPoint get() = repository.getDefaultMapCenter()
 
     init {
         viewModelScope.launch {

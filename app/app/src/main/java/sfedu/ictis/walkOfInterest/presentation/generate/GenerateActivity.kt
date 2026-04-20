@@ -57,6 +57,12 @@ class GenerateActivity : AppCompatActivity() {
 
     private fun setupMap() {
         val map = binding.map
+        map.setMultiTouchControls(true)
+
+        val start = viewModel.defaultCenter
+        val startGeoPoint = GeoPoint(start.lat, start.lon)
+        map.controller.setZoom(15.0)
+        map.controller.setCenter(startGeoPoint)
 
         map.addOnFirstLayoutListener { _, _, _, _, _ ->
             isMapReady = true
@@ -65,13 +71,6 @@ class GenerateActivity : AppCompatActivity() {
                 drawCurrentState(viewModel.uiState.value)
             }
         }
-
-        map.setMultiTouchControls(true)
-
-        val startPoint = GeoPoint(47.207564,38.938756)
-        map.controller.setZoom(15.0)
-        map.controller.setCenter(startPoint)
-
 
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {

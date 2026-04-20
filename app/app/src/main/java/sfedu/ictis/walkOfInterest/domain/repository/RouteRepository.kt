@@ -7,6 +7,9 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.model.RouteFromToResult
 
 interface RouteRepository {
+    fun getDefaultMapCenter(): DomainPoint
+    fun setDefaultMapCenter(point: DomainPoint)
+
     suspend fun getRoute(from: DomainPoint, to: DomainPoint): Result<RouteFromToResult>
     suspend fun searchWalk(from: DomainPoint, to: DomainPoint, time: Int, lang: String = "ru"): Result<List<DomainCategory>>
 

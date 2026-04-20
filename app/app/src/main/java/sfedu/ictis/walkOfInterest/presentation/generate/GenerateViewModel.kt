@@ -13,12 +13,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
+import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
-class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
-                        private val calculateWalkUseCase: CalculateWalkUseCase
+class GenerateViewModel(
+    private val repository: RouteRepository,
+    private val getBaseRouteUseCase: GetBaseRouteUseCase,
+    private val calculateWalkUseCase: CalculateWalkUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(GenerateUiState())
     val uiState: StateFlow<GenerateUiState> = _uiState.asStateFlow()
@@ -27,6 +30,8 @@ class GenerateViewModel(private val getBaseRouteUseCase: GetBaseRouteUseCase,
         extraBufferCapacity = 1
     )
     val events = _events.asSharedFlow()
+
+    val defaultCenter: DomainPoint get() = repository.getDefaultMapCenter()
 
     private var routeJob: Job? = null
     private var calculationJob: Job? = null

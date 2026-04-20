@@ -39,6 +39,7 @@ class RoutesActivity : AppCompatActivity() {
     private var poiMarkers: List<Marker> = emptyList()
     private var routePolyline: Polyline? = null
     private var isMapReady = false
+    private var wasCentered = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,9 +65,15 @@ class RoutesActivity : AppCompatActivity() {
     }
 
     private fun setupMap() {
-        binding.map.setMultiTouchControls(true)
+        val map = binding.map
+        map.setMultiTouchControls(true)
 
-        binding.map.addOnFirstLayoutListener { _, _, _, _, _ ->
+        val start = viewModel.defaultCenter
+        val startGeoPoint = GeoPoint(start.lat, start.lon)
+        map.controller.setZoom(15.0)
+        map.controller.setCenter(startGeoPoint)
+
+        map.addOnFirstLayoutListener { _, _, _, _, _ ->
             isMapReady = true
             viewModel.uiState.value.trip?.let { trip ->
                 centerMapOnce(trip.from, trip.to)
@@ -168,8 +175,9 @@ class RoutesActivity : AppCompatActivity() {
             map.overlays.add(MapEventsOverlay(mapEventsReceiver))
         }
 
-        if (isMapReady && map.zoomLevelDouble < 2.0) {
+        if (isMapReady && !wasCentered) {
             centerMapOnce(from, to)
+            wasCentered = true
         }
 
         map.invalidate()
