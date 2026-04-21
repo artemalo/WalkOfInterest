@@ -10,8 +10,6 @@ class TripRepositoryImpl(
     private val tripDao: TripDao
 ) : TripRepository {
     private var currentTrip: DomainTrip? = null
-    private val tripsList = mutableListOf<DomainTrip>() // TODO DB
-
 
     override suspend fun saveCurrentTrip(trip: DomainTrip) {
         currentTrip = trip
@@ -26,5 +24,9 @@ class TripRepositoryImpl(
 
     override suspend fun getTripById(id: String): DomainTrip? {
         return tripDao.getTripById(id)?.toDomain()
+    }
+
+    override suspend fun delTripById(id: String): Boolean   {
+        return tripDao.deleteTripById(id) > 0
     }
 }

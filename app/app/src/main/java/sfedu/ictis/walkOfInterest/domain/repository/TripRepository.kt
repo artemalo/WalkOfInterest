@@ -7,4 +7,5 @@ interface TripRepository {
     suspend fun getCurrentTrip(): DomainTrip?
     suspend fun getAllTrips(): List<DomainTrip>
     suspend fun getTripById(id: String): DomainTrip?
+    suspend fun delTripById(id: String): Boolean
 }

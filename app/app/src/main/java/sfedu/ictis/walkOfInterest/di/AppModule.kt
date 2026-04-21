@@ -12,6 +12,7 @@ import sfedu.ictis.walkOfInterest.domain.repository.MapSettingRepository
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.DeleteTripByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
@@ -55,9 +56,10 @@ val appModule = module {
     factory { GetMapCenterUseCase(get()) }
     factory { SaveTripUseCase(get()) }
     factory { GetTripByIdUseCase(get()) }
+    factory { DeleteTripByIdUseCase(get()) }
 
     // Presentation Layer: ViewModels
-    viewModel { TripDetailsViewModel(get()) }
+    viewModel { TripDetailsViewModel(get(), get()) }
     viewModel { MainFeedViewModel(get()) }
     viewModel { GenerateViewModel(get(), get(), get()) }
     viewModel { CategoriesViewModel(get())}

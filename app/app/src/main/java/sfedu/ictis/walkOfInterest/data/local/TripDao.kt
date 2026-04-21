@@ -15,4 +15,7 @@ interface TripDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrip(trip: TripEntity)
+
+    @Query("DELETE FROM trips WHERE id = :tripId")
+    suspend fun deleteTripById(tripId: String): Int
 }

@@ -1,5 +1,6 @@
 package sfedu.ictis.walkOfInterest.presentation.main
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import sfedu.ictis.walkOfInterest.databinding.ItemSpotBinding
 import sfedu.ictis.walkOfInterest.databinding.ItemTripBinding
+import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class FeedAdapter(
     private val onTripClicked: (String) -> Unit
@@ -25,6 +27,7 @@ class FeedAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        Log.i("FeedAdapter", "onCreateViewHolder: $viewType")
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_TRIP -> TripViewHolder(ItemTripBinding.inflate(inflater, parent, false))
@@ -46,7 +49,7 @@ class FeedAdapter(
             binding.textFrom.text = item.addressFrom
             binding.textTo.text = item.addressTo
             binding.countSelected.text = item.totalPois.toString()
-            binding.time.text = item.totalTime.toString()
+            binding.time.text = formatMinutes(item.totalTime)
 
             binding.root.setOnClickListener {
                 onTripClicked(item.id)

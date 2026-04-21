@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.databinding.FragmentTripDetailsBinding
 
@@ -31,13 +33,27 @@ class TripDetailsFragment : Fragment() {
             viewModel.loadTripDetails(tripId)
         }
 
+        observeDeleted()
         setupListeners(view)
+    }
+
+    private fun observeDeleted() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.deleted.collect { isDeleted ->
+                if (isDeleted) parentFragmentManager.popBackStack()
+            }
+        }
     }
 
     private fun setupListeners(view: View) {
         view.setOnClickListener { }
         binding.fieldBtnClose.setOnClickListener {
             parentFragmentManager.popBackStack()
+        }
+
+        binding.btnTrash.setOnClickListener {
+            viewModel.deleteTrip()
+            //parentFragmentManager.popBackStack()
         }
     }
 
