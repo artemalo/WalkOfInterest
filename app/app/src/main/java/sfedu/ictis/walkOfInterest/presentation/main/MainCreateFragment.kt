@@ -2,6 +2,7 @@ package sfedu.ictis.walkOfInterest.presentation.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,22 +12,26 @@ import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.presentation.generate.GenerateActivity
 
 class MainCreateFragment : Fragment() {
-
     private var _binding: FragmentMainCreateBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        Log.i("MainCreateFragment", "onCreateView")
         _binding = FragmentMainCreateBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.i("MainCreateFragment", "onViewCreated")
 
+        setupListeners()
+    }
+
+    private fun setupListeners() {
         binding.fieldCreateTrip.setOnClickListener {
-            // Переход на экран генерации маршрута
             val intent = Intent(requireContext(), GenerateActivity::class.java)
             startActivity(intent)
         }
@@ -37,8 +42,11 @@ class MainCreateFragment : Fragment() {
         }
     }
 
+
+
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.i("MainCreateFragment", "onDestroyView")
         _binding = null
     }
 }

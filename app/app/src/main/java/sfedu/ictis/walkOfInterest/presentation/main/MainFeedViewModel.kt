@@ -69,7 +69,11 @@ class MainFeedViewModel(
 
     private fun loadSpots() {
         // TODO: UseCase из Domain
-        val mockSpots = listOf(FeedItem.Spot("1", "Памятник Чехову"))
+        val mockSpots = listOf(
+            FeedItem.Spot("1", "", "Памятник Чехову", "1"),
+            FeedItem.Spot("2", "", "Памятник Чехову2", "2"),
+            FeedItem.Spot("3", "", "Памятник Чехову3", "3")
+        )
         _uiState.update { it.copy(items = mockSpots) }
     }
 }

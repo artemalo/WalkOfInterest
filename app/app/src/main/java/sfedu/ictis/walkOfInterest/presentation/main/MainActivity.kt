@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
                     binding.titleList.text = when (state.selectedTab) {
                         MainTab.TRIPS -> "Маршруты"
-                        MainTab.SPOTS -> "Интересные места"
+                        MainTab.SPOTS -> "Сохраненные места"
                     }
 
                     feedAdapter.submitList(state.items)

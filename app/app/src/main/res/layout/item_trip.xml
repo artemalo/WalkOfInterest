@@ -23,7 +23,7 @@
         app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contentTrip"
+        android:id="@+id/contentSpot"
         android:layout_width="0dp"
         android:layout_height="@dimen/image_category"
         android:padding="@dimen/padding_small"

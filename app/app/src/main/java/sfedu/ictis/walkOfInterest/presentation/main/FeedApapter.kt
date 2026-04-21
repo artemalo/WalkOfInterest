@@ -56,7 +56,8 @@ class FeedAdapter(
 
     inner class SpotViewHolder(private val binding: ItemSpotBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FeedItem.Spot) {
-            // binding.spotTitle.text = item.title
+            binding.titleSpot.text = item.title
+            binding.addressSpot.text = item.address
         }
     }
 }

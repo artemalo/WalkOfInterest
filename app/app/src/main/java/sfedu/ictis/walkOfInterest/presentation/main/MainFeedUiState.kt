@@ -11,7 +11,12 @@ sealed class FeedItem {
         val totalTime: Int,
         val totalPois: Int
         ) : FeedItem()
-    data class Spot(val id: String, val title: String) : FeedItem() // TODO как из Domain
+    data class Spot(
+        val id: String,
+        val photo: String,
+        val title: String,
+        val address: String
+    ) : FeedItem() // TODO как из Domain
 }
 enum class MainTab {
     TRIPS, SPOTS
