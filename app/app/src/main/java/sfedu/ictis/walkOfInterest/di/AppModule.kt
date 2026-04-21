@@ -21,6 +21,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.GetTripsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
 import sfedu.ictis.walkOfInterest.infrastructure.network.NetworkModule
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
+import sfedu.ictis.walkOfInterest.presentation.category.CategoryViewModel
 import sfedu.ictis.walkOfInterest.presentation.details.TripDetailsViewModel
 import sfedu.ictis.walkOfInterest.presentation.generate.GenerateViewModel
 import sfedu.ictis.walkOfInterest.presentation.main.MainFeedViewModel
@@ -60,5 +61,6 @@ val appModule = module {
     viewModel { MainFeedViewModel(get()) }
     viewModel { GenerateViewModel(get(), get(), get()) }
     viewModel { CategoriesViewModel(get())}
+    viewModel { CategoryViewModel() }
     viewModel { RoutesViewModel(get(), get(), get()) }
 }

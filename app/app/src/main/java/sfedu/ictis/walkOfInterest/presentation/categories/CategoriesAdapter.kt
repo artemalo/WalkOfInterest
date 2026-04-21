@@ -49,8 +49,8 @@ class CategoriesAdapter(
         fun bind(category: DomainCategory) {
             binding.nameCategory.text = category.name
             binding.totalCountPois.text = category.totalPois.toString()
-            binding.detailTime.text = formatMinutes(category.time)
-            binding.detailPoi.text = "${category.selected}"
+            binding.time.text = formatMinutes(category.time)
+            binding.countSelected.text = "${category.selected}"
 
             val isSelected = category.isSelect
             binding.root.isSelected = isSelected

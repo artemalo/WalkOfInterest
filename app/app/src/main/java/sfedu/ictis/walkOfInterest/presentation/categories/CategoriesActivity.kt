@@ -2,6 +2,7 @@ package sfedu.ictis.walkOfInterest.presentation.categories
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +13,7 @@ import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityCategoriesBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
+import sfedu.ictis.walkOfInterest.presentation.category.CategoryFragment
 import sfedu.ictis.walkOfInterest.presentation.routes.RoutesActivity
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
@@ -87,13 +89,8 @@ class CategoriesActivity : AppCompatActivity() {
                 viewModel.toggleCategorySelection(category.id)
             },
             onPictureClicked = { category ->
-                // TODO: activity Subcategories
-//                val intent = Intent(this, SubcategoriesActivity::class.java).apply {
-//                    putExtra("EXTRA_CATEGORY", category)
-//                }
-//                startActivity(intent)
-
-                Toast.makeText(this, "Переход к ${category.name}", Toast.LENGTH_SHORT).show()
+                openCategoryFragment(category)
+                    //Toast.makeText(this, "Переход к ${category.name}", Toast.LENGTH_SHORT).show()
             }
         )
 
@@ -151,6 +148,22 @@ class CategoriesActivity : AppCompatActivity() {
 
         binding.btnSwap.setOnClickListener {
             // TODO: sort categories
+        }
+    }
+
+    private fun openCategoryFragment(category: DomainCategory) {
+        binding.fragmentContainer.visibility = View.VISIBLE
+
+        val fragment = CategoryFragment.newInstance(category)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                binding.fragmentContainer.visibility = View.GONE
+            }
         }
     }
 

@@ -1,0 +1,41 @@
+package sfedu.ictis.walkOfInterest.presentation.category
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import sfedu.ictis.walkOfInterest.databinding.ItemPoiBinding
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
+
+class PoiAdapter(
+    private val onPoiClick: (DomainPoi) -> Unit
+) : ListAdapter<DomainPoi, PoiAdapter.PoiViewHolder>(PoiDiffCallback()) {
+
+    inner class PoiViewHolder(private val binding: ItemPoiBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(poi: DomainPoi) {
+            binding.nameCategory.text = poi.name ?: "Без названия"
+            binding.tvRate.text = if (poi.rate != null) "${poi.rate} (${poi.count ?: 0})" else "Нет оценок"
+
+            binding.root.alpha = if (poi.selected) 1.0f else 0.5f
+
+            binding.root.setOnClickListener {
+                onPoiClick(poi)
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PoiViewHolder {
+        val binding = ItemPoiBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PoiViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: PoiViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+}
+
+class PoiDiffCallback : DiffUtil.ItemCallback<DomainPoi>() {
+    override fun areItemsTheSame(oldItem: DomainPoi, newItem: DomainPoi) = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: DomainPoi, newItem: DomainPoi) = oldItem == newItem
+}

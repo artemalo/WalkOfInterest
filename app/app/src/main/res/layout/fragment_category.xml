@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
     android:background="@color/general"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -27,13 +29,25 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/btnBack"
             android:layout_width="@dimen/btn_field"
             android:layout_height="@dimen/btn_field"
-            android:layout_marginStart="24dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="button back"
             android:src="@drawable/ic_arrow_l"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnOk"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"
+
+            android:visibility="gone"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="button back"
+            android:src="@drawable/ic_done"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -152,6 +166,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/fieldBtnEdit"
             android:clickable="true"
             android:focusable="true"
             android:layout_width="match_parent"
@@ -161,7 +176,7 @@
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small">
             <FrameLayout
-                android:id="@+id/fieldBtn"
+                android:id="@+id/btnEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -169,7 +184,7 @@
                 android:backgroundTint="@color/object_orange"
                 android:minHeight="36dp">
                 <TextView
-                    android:id="@+id/btnEdit"
+                    android:id="@+id/btnEditText"
                     android:text="Редактировать"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -45,8 +45,8 @@ class FeedAdapter(
             binding.titleTrip.text = item.title
             binding.textFrom.text = item.addressFrom
             binding.textTo.text = item.addressTo
-            binding.detailPoi.text = item.totalPois.toString()
-            binding.detailTime.text = item.totalTime.toString()
+            binding.countSelected.text = item.totalPois.toString()
+            binding.time.text = item.totalTime.toString()
 
             binding.root.setOnClickListener {
                 onTripClicked(item.id)

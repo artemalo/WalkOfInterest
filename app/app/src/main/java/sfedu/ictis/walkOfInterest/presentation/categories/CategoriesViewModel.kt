@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
+import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
@@ -98,6 +99,22 @@ class CategoriesViewModel(
             saveTripUseCase(trip)
 
             _events.emit(CategoriesEvent.NavigateToRoutes)
+        }
+    }
+
+    fun updateCategoryPois(category: DomainCategory, time: Int, allPoisCount: Int, selectedCount: Int) {
+        _uiState.update { state ->
+            val updatedCategories = state.categories.map { cat ->
+                if (cat.id == category.id)
+                    cat.copy(
+                        subcategories = category.subcategories,
+                        totalPois = allPoisCount,
+                        selected = selectedCount,
+                        time = time
+                    )
+                else cat
+            }
+            state.copy(categories = updatedCategories)
         }
     }
 }
