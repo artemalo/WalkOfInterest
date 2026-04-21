@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.databinding.FragmentTripDetailsBinding
+import sfedu.ictis.walkOfInterest.utils.ToastManager
 
 class TripDetailsFragment : Fragment() {
     private var _binding: FragmentTripDetailsBinding? = null
@@ -39,8 +40,12 @@ class TripDetailsFragment : Fragment() {
 
     private fun observeDeleted() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.deleted.collect { isDeleted ->
-                if (isDeleted) parentFragmentManager.popBackStack()
+            viewModel.deleteState.collect { state ->
+                when (state) {
+                    is DeleteState.Success -> parentFragmentManager.popBackStack()
+                    is DeleteState.Error -> ToastManager.show(requireContext(), "Ошибка удаления маршрута")
+                    is DeleteState.Idle -> Unit
+                }
             }
         }
     }
@@ -53,9 +58,10 @@ class TripDetailsFragment : Fragment() {
 
         binding.btnTrash.setOnClickListener {
             viewModel.deleteTrip()
-            //parentFragmentManager.popBackStack()
         }
     }
+
+
 
     override fun onDestroyView() {
         Log.i("TripFragment", "onDestroy ${arguments?.getString(ARG_TRIP_ID)}")

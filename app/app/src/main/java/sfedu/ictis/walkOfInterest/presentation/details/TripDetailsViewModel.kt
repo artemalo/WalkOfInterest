@@ -13,8 +13,8 @@ class TripDetailsViewModel(
     private val getTripByIdUseCase: GetTripByIdUseCase,
     private val deleteTripByIdUseCase: DeleteTripByIdUseCase
 ) : ViewModel() {
-    private val _deleted = MutableStateFlow(false)
-    val deleted: StateFlow<Boolean> = _deleted
+    private val _deleteState = MutableStateFlow<DeleteState>(DeleteState.Idle)
+    val deleteState: StateFlow<DeleteState> = _deleteState
 
     private var currentTripId: String? = null
 
@@ -37,7 +37,8 @@ class TripDetailsViewModel(
     fun deleteTrip() {
         val id = currentTripId ?: return
         viewModelScope.launch {
-            _deleted.value = deleteTripByIdUseCase(id)
+            val success = deleteTripByIdUseCase(id)
+            _deleteState.value = if (success) DeleteState.Success else DeleteState.Error
         }
     }
 }

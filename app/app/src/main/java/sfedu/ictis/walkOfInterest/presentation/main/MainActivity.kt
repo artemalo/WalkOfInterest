@@ -1,6 +1,7 @@
 package sfedu.ictis.walkOfInterest.presentation.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -16,9 +17,7 @@ import sfedu.ictis.walkOfInterest.utils.ToastManager
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainFeedViewModel by viewModel()
-    private val feedAdapter = FeedAdapter { tripId ->
-        openTripDetails(tripId)
-    }
+    private val feedAdapter = FeedAdapter { tripId -> openTripDetails(tripId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +27,16 @@ class MainActivity : AppCompatActivity() {
         setupUI()
         setupListeners()
         observeState()
+        onBackStackChangedListener()
+    }
+
+    private fun onBackStackChangedListener() {
+        supportFragmentManager.addOnBackStackChangedListener {
+            val isFragmentVisible = supportFragmentManager.backStackEntryCount > 0
+            if (!isFragmentVisible) {
+                viewModel.refreshData()
+            }
+        }
     }
 
     private fun openTripDetails(tripId: String) {
