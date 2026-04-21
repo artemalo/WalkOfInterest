@@ -10,6 +10,7 @@
     <color name="white_gray">#DDDDDD</color>
     <color name="white_empty">#D9D9D9</color>
     <color name="green">#4B8F65</color>
+    <color name="green_alpha">#264B8F65</color>
 
     <color name="description">#BBBBBB</color>
 

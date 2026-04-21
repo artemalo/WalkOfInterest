@@ -41,8 +41,9 @@
             app:layout_constraintTop_toTopOf="parent" >
 
             <ImageView
-                android:id="@+id/btnBack"
-                android:layout_gravity="center"
+                android:id="@+id/btnClose"
+                android:layout_gravity="center_vertical"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="Back"
@@ -71,14 +72,13 @@
             android:layout_height="@dimen/btn_field"
             android:clickable="true"
             android:focusable="true"
-            android:padding="@dimen/padding_small"
             android:layout_marginTop="@dimen/padding_general"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_width="@dimen/btn_general"
+                android:layout_height="@dimen/btn_general"
+                android:layout_gravity="end|center_vertical"
                 android:background="@drawable/btn_field_stroke" >
                 <ImageView
                     android:id="@+id/btnProfile"

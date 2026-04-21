@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <FrameLayout
-            android:id="@+id/btnBack"
+            android:id="@+id/btnClose"
             android:layout_width="@dimen/btn_general"
             android:layout_height="@dimen/btn_general"
             android:layout_gravity="center_vertical"

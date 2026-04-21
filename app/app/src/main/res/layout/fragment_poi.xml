@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/general">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/general">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_field"
+                android:layout_marginTop="@dimen/padding_general"
+                android:layout_marginStart="@dimen/padding_general"
+                android:layout_marginEnd="@dimen/padding_general"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Space
+                    android:id="@+id/space"
+                    android:layout_width="@dimen/btn_field"
+                    android:layout_height="@dimen/btn_field"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Название"
+                    android:textAppearance="@style/TextAppearance.App.H1"
+                    android:textColor="@color/white_gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/fieldBtnClose"
+                    app:layout_constraintStart_toEndOf="@+id/space"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <FrameLayout
+                    android:id="@+id/fieldBtnClose"
+                    android:layout_width="@dimen/btn_field"
+                    android:layout_height="@dimen/btn_field"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+                    <ImageView
+                        android:id="@+id/btnClose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:contentDescription="button back"
+                        android:src="@drawable/ic_x"/>
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_marginTop="@dimen/padding_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_general"
+                android:layout_marginEnd="@dimen/padding_general"
+                app:layout_constraintTop_toBottomOf="@+id/header">
+
+                <TextView
+                    android:id="@+id/rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLength="4"
+                    android:text="none"
+                    android:textAppearance="@style/TextAppearance.App.H2"
+                    android:textColor="@color/white_gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="-0.0" />
+
+                <LinearLayout
+                    android:id="@+id/stars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_s_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="@+id/rate"
+                    app:layout_constraintStart_toEndOf="@+id/rate"
+                    app:layout_constraintTop_toTopOf="@+id/rate">
+
+                    <ImageView
+                        android:id="@+id/star1"
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:contentDescription="star 1"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/object_not_active" />
+
+                    <ImageView
+                        android:id="@+id/star2"
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:contentDescription="star 2"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/object_not_active" />
+
+                    <ImageView
+                        android:id="@+id/star3"
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:contentDescription="star 3"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/object_not_active" />
+
+                    <ImageView
+                        android:id="@+id/star4"
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:contentDescription="star 4"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/object_not_active" />
+
+                    <ImageView
+                        android:id="@+id/star5"
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:contentDescription="star 5"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/object_not_active" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/countRate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_s_small"
+
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text=""
+
+                    android:textAppearance="@style/TextAppearance.App.Body2"
+                    android:textColor="@color/white_gray"
+                    app:layout_constraintBottom_toBottomOf="@+id/stars"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/stars"
+                    app:layout_constraintTop_toTopOf="@+id/stars"
+                    tools:text="(-1)" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/itemList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_normal"
+
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+
+                android:paddingStart="@dimen/padding_general"
+                android:paddingEnd="@dimen/padding_general"
+
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
+                tools:listitem="@layout/item_poi_tag" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_normal"
+                android:layout_marginStart="@dimen/padding_general"
+                android:layout_marginEnd="@dimen/padding_general"
+
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/itemList">
+
+                <FrameLayout
+                    android:id="@+id/frameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/photo_poi"
+                    android:paddingStart="@dimen/padding_small"
+                    android:paddingEnd="@dimen/padding_small"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@color/white_empty"
+                        app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_normal"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:text="Адрес"
+                    android:textAppearance="@style/TextAppearance.App.H2"
+                    android:textColor="@color/white"
+                    app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_normal"
+                    android:ellipsize="end"
+                    android:maxLines="10"
+                    android:text="Описание"
+                    android:textAppearance="@style/TextAppearance.App.Body2"
+                    android:textColor="@color/description"
+                    app:layout_constraintTop_toBottomOf="@+id/address" />
+
+                <TextView
+                    android:id="@+id/titleReviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_normal"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Отзывы"
+                    android:textAppearance="@style/TextAppearance.App.H2"
+                    android:textColor="@color/white"
+                    app:layout_constraintTop_toBottomOf="@+id/description" />
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="@dimen/padding_normal"
+                    android:layout_gravity="center"
+                    android:background="@drawable/handle_shape"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/titleReviews" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_normal"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="none"
+                    android:textAppearance="@style/TextAppearance.App.H2"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+                <TextView
+                    android:id="@+id/titleAllReviews"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_s_small"
+                    android:layout_marginEnd="@dimen/padding_s_small"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="отзывов"
+                    android:textAppearance="@style/TextAppearance.App.H2"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView3"
+                    app:layout_constraintEnd_toStartOf="@+id/iconSwap"
+                    app:layout_constraintStart_toEndOf="@+id/textView3"
+                    app:layout_constraintTop_toTopOf="@+id/textView3" />
+
+                <ImageView
+                    android:id="@+id/iconSwap"
+                    android:layout_width="@dimen/icon_general"
+                    android:layout_height="@dimen/icon_general"
+                    android:contentDescription="swap"
+                    android:src="@drawable/ic_swap"
+                    app:layout_constraintBottom_toBottomOf="@+id/titleAllReviews"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/titleAllReviews" />
+                    <FrameLayout
+                        android:id="@+id/btnSort"
+                        android:layout_width="@dimen/btn_field"
+                        android:layout_height="@dimen/btn_field"
+                        android:clickable="true"
+                        android:contentDescription="Sort reviews"
+                        android:focusable="true"
+                        app:layout_constraintBottom_toBottomOf="@+id/iconSwap"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/iconSwap"
+                        tools:ignore="MissingConstraints,UselessLeaf" />
+
+                <View
+                    android:id="@+id/view3"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="@dimen/padding_normal"
+                    android:layout_gravity="center"
+                    android:background="@drawable/handle_shape"
+                    app:layout_constraintTop_toBottomOf="@+id/btnSort"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerReviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:paddingTop="@dimen/padding_normal"
+                    android:paddingBottom="@dimen/padding_normal"
+                    app:layout_constraintTop_toBottomOf="@+id/view3"
+                    tools:listitem="" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/btnEdit"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/btn_field"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="edit or added review"
+        app:layout_constraintBottom_toBottomOf="@+id/fieldBtnEdit"
+        app:layout_constraintEnd_toEndOf="@+id/fieldBtnEdit"
+        app:layout_constraintStart_toStartOf="@+id/fieldBtnEdit"
+        app:layout_constraintTop_toTopOf="@+id/fieldBtnEdit"
+        tools:ignore="MissingConstraints,UselessLeaf" />
+
+    <LinearLayout
+        android:id="@+id/fieldBtnEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_normal"
+        android:layout_marginStart="@dimen/padding_general"
+        android:layout_marginEnd="@dimen/padding_general"
+        android:padding="@dimen/padding_small"
+        android:background="@drawable/btn_poi_edit"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <ImageView
+            android:layout_width="@dimen/icon_general"
+            android:layout_height="@dimen/icon_general"
+            android:layout_marginEnd="@dimen/padding_s_small"
+            android:contentDescription="edit review"
+            android:src="@drawable/ic_edit"
+            app:tint="@color/white" />
+        <TextView
+            android:id="@+id/textBtnEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Добавить отзыв"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
