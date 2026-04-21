@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/subcategory"
+    android:contentDescription="Subcategory"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_marginBottom="@dimen/padding_general"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/itemList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/padding_general"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+
+        android:clipToPadding="false"
+        tools:listitem="@layout/item_poi" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/nameSubcategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Название категории"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/SeeAll"
+            app:layout_constraintEnd_toStartOf="@+id/SeeAll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/SeeAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:minWidth="@dimen/btn_field"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:layout_gravity="center_vertical"
+            android:text="Подробно >"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -81,7 +81,7 @@
         app:tint="@color/object" />
 
     <TextView
-        android:id="@+id/detailPoi"
+        android:id="@+id/countSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="none"
@@ -101,12 +101,12 @@
         android:contentDescription="Point Start"
         android:src="@drawable/ic_clock"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toEndOf="@+id/detailPoi"
+        app:layout_constraintStart_toEndOf="@+id/countSelected"
         app:layout_constraintTop_toTopOf="@+id/imageView"
         app:tint="@color/object_orange" />
 
     <TextView
-        android:id="@+id/detailTime"
+        android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="none"

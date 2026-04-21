@@ -10,16 +10,10 @@
         android:id="@+id/itemList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingStart="@dimen/padding_general"
-        android:paddingEnd="@dimen/padding_general"
-
-        android:paddingBottom="@dimen/padding_normal"
-        android:paddingTop="@dimen/padding_normal"
-        android:clipToPadding="false"
-
+        android:layout_marginTop="@dimen/padding_normal"
         app:layout_constraintBottom_toTopOf="@+id/bottomSheet"
         app:layout_constraintTop_toBottomOf="@+id/searchBar"
-        tools:listitem="@layout/item_category" />
+        tools:listitem="@layout/item_subcategory" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
@@ -45,11 +39,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/categoryName"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="Категории"
+            android:text="Категория"
             android:textAppearance="@style/TextAppearance.App.H1"
             android:textColor="@color/white_gray"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -94,96 +89,66 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
-            android:layout_marginTop="@dimen/padding_middle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:id="@+id/imgA"
-                android:layout_width="@dimen/icon_general"
-                android:layout_height="@dimen/icon_general"
-                android:layout_gravity="center"
-                android:contentDescription="Point Start"
-                app:tint="@color/white_gray"
-                android:src="@drawable/ic_a" />
-            <TextView
-                android:id="@+id/textFrom"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/padding_s_small"
-                android:text="Откуда"
-                android:textAppearance="@style/TextAppearance.App.Body2"
-                android:textColor="@color/white_gray"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:id="@+id/imgB"
-                android:layout_width="@dimen/icon_general"
-                android:layout_height="@dimen/icon_general"
-                android:layout_gravity="center"
-                android:contentDescription="Point Start"
-                app:tint="@color/white_gray"
-                android:src="@drawable/ic_b" />
-            <TextView
-                android:id="@+id/textTo"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/padding_s_small"
-                android:text="Куда"
-                android:textAppearance="@style/TextAppearance.App.Body2"
-                android:textColor="@color/white_gray"/>
-        </LinearLayout>
-
-        <LinearLayout
             android:layout_marginTop="@dimen/padding_normal"
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/icon_general">
-            <LinearLayout
-                android:layout_marginEnd="@dimen/padding_middle"
-                android:orientation="horizontal"
+            <ImageView
+                android:id="@+id/imagePoi1"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:layout_gravity="center"
+                android:contentDescription="Point Start"
+                android:src="@drawable/ic_point"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/framePicture"
+                app:tint="@color/object_not_active" />
+
+            <TextView
+                android:id="@+id/allPois"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    app:tint="@color/green"
-                    android:src="@drawable/ic_walk" />
-                <TextView
-                    android:id="@+id/timeTotal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="none"
-                    android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/white_gray"/>
-            </LinearLayout>
-            <LinearLayout
-                android:gravity="center"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:text="none"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/imagePoi2"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:layout_gravity="center"
+                android:contentDescription="Point Start"
+                android:src="@drawable/ic_point"
+                app:tint="@color/object" />
+
+            <TextView
+                android:id="@+id/countSelected"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/icon_general">
-                <ImageView
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    app:tint="@color/object_orange"
-                    android:src="@drawable/ic_clock" />
-                <TextView
-                    android:id="@+id/timeCurrent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="none"
-                    android:textAlignment="textStart"
-                    android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/white_gray"/>
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:text="none"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white" />
+
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:layout_gravity="center"
+                android:contentDescription="Point Start"
+                android:src="@drawable/ic_clock"
+                app:tint="@color/object_orange" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="none"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <FrameLayout
@@ -201,10 +166,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/btn_next"
+                android:backgroundTint="@color/object_orange"
                 android:minHeight="36dp">
                 <TextView
-                    android:id="@+id/btnNext"
-                    android:text="Далее"
+                    android:id="@+id/btnEdit"
+                    android:text="Редактировать"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
