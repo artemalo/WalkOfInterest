@@ -56,8 +56,9 @@ class CategoryViewModel : ViewModel() {
         Log.d("CategoryViewModel", "${category.id}: allCount: $allCount, selectedCount: $selectedCount")
     }
 
-    fun saveChanges() { // TODO: Сохранить данные
-        val currentCategory = _uiState.value.category ?: return
+    fun saveChanges(onSaved: (DomainCategory, Int, Int, Int) -> Unit) {
+        val currentState = _uiState.value
+        val currentCategory = currentState.category ?: return
         val updatedCategory = sortCategoryPois(currentCategory)
 
         _uiState.update {
@@ -73,6 +74,8 @@ class CategoryViewModel : ViewModel() {
         viewModelScope.launch {
             val newTime = fetchTimeFromServer(updatedCategory)
             _uiState.update { it.copy(time = newTime, isTimeLoading = false) }
+
+            onSaved(updatedCategory, newTime, currentState.allPoisCount, currentState.selectedCount)
         }
     }
 

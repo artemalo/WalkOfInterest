@@ -79,12 +79,8 @@ class CategoryFragment : Fragment() {
         }
 
         binding.btnOk.setOnClickListener {
-            viewModel.uiState.value.let { state ->
-                val currentCategory = state.category ?: return@setOnClickListener
-                val time = state.time ?: return@setOnClickListener// TODO: time
-
-                viewModel.saveChanges()// TODO: time
-                categoriesViewModel.updateCategoryPois(currentCategory, time, state.allPoisCount, state.selectedCount)
+            viewModel.saveChanges { category, time, allPoisCount, selectedCount ->
+                categoriesViewModel.updateCategoryPois(category, time, allPoisCount, selectedCount)
             }
         }
     }
