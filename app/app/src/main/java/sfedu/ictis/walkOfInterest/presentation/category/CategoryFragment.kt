@@ -3,16 +3,16 @@ package sfedu.ictis.walkOfInterest.presentation.category
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentCategoryBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
@@ -24,8 +24,8 @@ class CategoryFragment : Fragment() {
     private var _binding: FragmentCategoryBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: CategoryViewModel by viewModel()
-    private val categoriesViewModel: CategoriesViewModel by activityViewModels()
+    private val viewModel: CategoryViewModel by activityViewModel()
+    private val categoriesViewModel: CategoriesViewModel by activityViewModel()
     private lateinit var adapter: SubcategoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,18 +131,18 @@ class CategoryFragment : Fragment() {
     }
 
     private fun openSubcategoryFragment(subcategory: DomainSubCategory) {
-        // TODO: SubcategoryFragment
-//        val fragment = SubcategoryFragment.newInstance(subcategory)
-//        parentFragmentManager.beginTransaction()
-//            .replace(R.id., fragment)
-//            .addToBackStack(null)
-//            .commit()
+        val fragment = SubcategoryFragment.newInstance(subcategory)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_subcategory, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
 
 
 
     override fun onDestroyView() {
+        Log.i("CategoryFragment", "onDestroyView")
         super.onDestroyView()
         _binding = null
     }

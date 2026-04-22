@@ -6,10 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ItemPoiBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 
 class PoiAdapter(
+    private val isVerticalList: Boolean = false,
     private val onPoiClick: (DomainPoi) -> Unit
 ) : ListAdapter<DomainPoi, PoiAdapter.PoiViewHolder>(PoiDiffCallback()) {
 
@@ -36,6 +38,15 @@ class PoiAdapter(
         Log.i("PoiAdapter", "onCreateViewHolder")
 
         val binding = ItemPoiBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        if (isVerticalList) {
+            val layoutParams = binding.root.layoutParams as ViewGroup.MarginLayoutParams
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams.marginEnd = 0
+            layoutParams.bottomMargin = parent.context.resources.getDimensionPixelSize(R.dimen.padding_general)
+            binding.root.layoutParams = layoutParams
+        }
+
         return PoiViewHolder(binding)
     }
 
