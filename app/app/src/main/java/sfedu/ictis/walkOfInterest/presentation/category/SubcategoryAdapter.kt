@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import sfedu.ictis.walkOfInterest.databinding.ItemSubcategoryBinding
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
 
 class SubcategoryAdapter(
@@ -13,18 +14,31 @@ class SubcategoryAdapter(
     private val onPoiClick: (subcategoryId: Int, poiId: Long) -> Unit
 ) : ListAdapter<DomainSubCategory, SubcategoryAdapter.SubcatViewHolder>(SubcatDiffCallback()) {
     inner class SubcatViewHolder(private val binding: ItemSubcategoryBinding) : RecyclerView.ViewHolder(binding.root) {
+        private var currentSubcategoryId: Int = -1
+
+        private val poiAdapter = PoiAdapter { poi ->
+            if (currentSubcategoryId != -1) {
+                onPoiClick(currentSubcategoryId, poi.id)
+            }
+        }
+
+        init {
+            binding.itemList.adapter = poiAdapter
+        }
+
         fun bind(subcategory: DomainSubCategory) {
+            currentSubcategoryId = subcategory.id
             binding.nameSubcategory.text = subcategory.name
 
             binding.SeeAll.setOnClickListener {
                 onSeeAllClick(subcategory)
             }
 
-            val poiAdapter = PoiAdapter { poi ->
-                onPoiClick(subcategory.id, poi.id)
-            }
-            binding.itemList.adapter = poiAdapter
-            poiAdapter.submitList(subcategory.pois)
+            updatePois(subcategory.pois)
+        }
+
+        fun updatePois(pois: List<DomainPoi>) {
+            poiAdapter.submitList(pois)
         }
     }
 
@@ -36,9 +50,26 @@ class SubcategoryAdapter(
     override fun onBindViewHolder(holder: SubcatViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
+    override fun onBindViewHolder(holder: SubcatViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            if (payloads[0] == "POIS_CHANGED") {
+                holder.updatePois(getItem(position).pois)
+                return
+            }
+        }
+        super.onBindViewHolder(holder, position, payloads)
+    }
 }
 
 class SubcatDiffCallback : DiffUtil.ItemCallback<DomainSubCategory>() {
     override fun areItemsTheSame(oldItem: DomainSubCategory, newItem: DomainSubCategory) = oldItem.id == newItem.id
     override fun areContentsTheSame(oldItem: DomainSubCategory, newItem: DomainSubCategory) = oldItem == newItem
+
+    override fun getChangePayload(oldItem: DomainSubCategory, newItem: DomainSubCategory): Any? {
+        if (oldItem.pois != newItem.pois) {
+            return "POIS_CHANGED"
+        }
+        return super.getChangePayload(oldItem, newItem)
+    }
 }

@@ -1,5 +1,6 @@
 package sfedu.ictis.walkOfInterest.presentation.category
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -25,11 +26,15 @@ class PoiAdapter(
         }
 
         fun bindSelected(selected: Boolean) {
+            Log.i("PoiViewHolder", "bindSelected: $selected")
+
             binding.root.alpha = if (selected) 1.0f else 0.5f
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PoiViewHolder {
+        Log.i("PoiAdapter", "onCreateViewHolder")
+
         val binding = ItemPoiBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PoiViewHolder(binding)
     }
@@ -37,9 +42,28 @@ class PoiAdapter(
     override fun onBindViewHolder(holder: PoiViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
+    override fun onBindViewHolder(holder: PoiViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            val isSelected = payloads[0] as? Boolean
+            if (isSelected != null) {
+                holder.bindSelected(isSelected)
+                return
+            }
+        }
+
+        super.onBindViewHolder(holder, position, payloads)
+    }
 }
 
 class PoiDiffCallback : DiffUtil.ItemCallback<DomainPoi>() {
     override fun areItemsTheSame(oldItem: DomainPoi, newItem: DomainPoi) = oldItem.id == newItem.id
     override fun areContentsTheSame(oldItem: DomainPoi, newItem: DomainPoi) = oldItem == newItem
+
+    override fun getChangePayload(oldItem: DomainPoi, newItem: DomainPoi): Any? {
+        if (oldItem.selected != newItem.selected) {
+            return newItem.selected
+        }
+        return super.getChangePayload(oldItem, newItem)
+    }
 }
