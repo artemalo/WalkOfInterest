@@ -2,6 +2,7 @@ graphhopper:
   datareader.file: /data/map.osm.pbf
   graph.location: /data/cache
 
+  # TODO: remove some ways
   import.osm.ignored_highways: |
     motorway, trunk, primary, secondary, busway,
     motorway_link, trunk_link, primary_link, secondary_link,

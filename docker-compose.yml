@@ -38,5 +38,6 @@ services:
       - DB_PASSWORD=walk
       - GH_URL=http://graphhopper:8989
       - SHOW_SQL=true
-      - JWT_EXPIRATION=86400000
+      - JWT_EXPIRATION=900000
+      - JWT_REFRESH_EXPIRATION=2592000000
       - JWT_SECRET=9a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b # I hope you are going to use it :)
