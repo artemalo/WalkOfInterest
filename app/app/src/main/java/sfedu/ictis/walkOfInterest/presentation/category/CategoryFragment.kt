@@ -70,7 +70,7 @@ class CategoryFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        binding.btnBack.setOnClickListener {
+        binding.btnClose.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
@@ -97,14 +97,14 @@ class CategoryFragment : Fragment() {
                 }
 
                 if (state.isEditMode) {
-                    binding.btnBack.visibility = View.GONE
+                    binding.btnClose.visibility = View.GONE
                     binding.btnOk.visibility = View.VISIBLE
                     binding.btnEditText.text = "Отмена"
                     binding.btnEdit.backgroundTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(requireContext(), R.color.object_red)
                     )
                 } else {
-                    binding.btnBack.visibility = View.VISIBLE
+                    binding.btnClose.visibility = View.VISIBLE
                     binding.btnOk.visibility = View.GONE
                     binding.btnEditText.text = "Редактировать"
                     binding.btnEdit.backgroundTintList = ColorStateList.valueOf(

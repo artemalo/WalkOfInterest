@@ -14,14 +14,18 @@ class PoiAdapter(
 
     inner class PoiViewHolder(private val binding: ItemPoiBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(poi: DomainPoi) {
-            binding.nameCategory.text = poi.name ?: "Без названия"
+            binding.nameCategory.text = poi.name ?: "-"
             binding.tvRate.text = if (poi.rate != null) "${poi.rate} (${poi.count ?: 0})" else "Нет оценок"
 
-            binding.root.alpha = if (poi.selected) 1.0f else 0.5f
+            bindSelected(poi.selected)
 
             binding.root.setOnClickListener {
                 onPoiClick(poi)
             }
+        }
+
+        fun bindSelected(selected: Boolean) {
+            binding.root.alpha = if (selected) 1.0f else 0.5f
         }
     }
 
