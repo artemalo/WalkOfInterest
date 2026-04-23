@@ -59,8 +59,6 @@ class AuthActivity : AppCompatActivity() {
                         viewModel.errorConsumed()
                     }
 
-                    state.error?.let { ToastManager.show(this@AuthActivity, it) }
-
                     if (state.isSuccess) {
                         ToastManager.show(this@AuthActivity, "Успешно!")
 

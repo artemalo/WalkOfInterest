@@ -38,7 +38,20 @@ class AuthViewModel(
             result.onSuccess { authResponse ->
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
             }.onFailure { exception ->
-                _uiState.update { it.copy(isLoading = false, error = exception.message ?: "Ошибка авторизации") }
+                val errorMessage = when (exception) {
+                    is retrofit2.HttpException -> {
+                        when (exception.code()) {
+                            401 -> "Неверные данные"
+                            409 -> "Пользователь с такой почтой или ником уже существует"
+                            400 -> "Ошибка в данных. Проверьте их точность"
+                            else -> "Ошибка сервера: ${exception.code()}"
+                        }
+                    }
+                    is java.io.IOException -> "Проверьте соединение с интернетом"
+                    else -> exception.message ?: "Неизвестная ошибка"
+                }
+
+                _uiState.update { it.copy(isLoading = false, error = errorMessage) }
             }
         }
     }
