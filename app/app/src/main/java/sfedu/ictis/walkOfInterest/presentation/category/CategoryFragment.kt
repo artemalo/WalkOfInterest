@@ -3,12 +3,10 @@ package sfedu.ictis.walkOfInterest.presentation.category
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
@@ -17,16 +15,21 @@ import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentCategoryBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
+import sfedu.ictis.walkOfInterest.presentation.BaseFragment
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
-class CategoryFragment : Fragment() {
-    private var _binding: FragmentCategoryBinding? = null
-    private val binding get() = _binding!!
-
+class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
     private val viewModel: CategoryViewModel by activityViewModel()
     private val categoriesViewModel: CategoriesViewModel by activityViewModel()
     private lateinit var adapter: SubcategoryAdapter
+
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentCategoryBinding {
+        return FragmentCategoryBinding.inflate(inflater, container, false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,14 +41,6 @@ class CategoryFragment : Fragment() {
         }
 
         category?.let { viewModel.initCategory(it) }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentCategoryBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -136,15 +131,6 @@ class CategoryFragment : Fragment() {
             .replace(R.id.fragment_subcategory, fragment)
             .addToBackStack(null)
             .commit()
-    }
-
-
-
-
-    override fun onDestroyView() {
-        Log.i("CategoryFragment", "onDestroyView")
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

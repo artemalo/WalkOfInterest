@@ -1,29 +1,24 @@
 package sfedu.ictis.walkOfInterest.presentation.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.databinding.FragmentTripDetailsBinding
+import sfedu.ictis.walkOfInterest.presentation.BaseFragment
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 
-class TripDetailsFragment : Fragment() {
-    private var _binding: FragmentTripDetailsBinding? = null
-    private val binding get() = _binding!!
-
+class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
     private val viewModel: TripDetailsViewModel by viewModel()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentTripDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentTripDetailsBinding {
+        return FragmentTripDetailsBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,13 +57,6 @@ class TripDetailsFragment : Fragment() {
     }
 
 
-
-    override fun onDestroyView() {
-        Log.i("TripFragment", "onDestroy ${arguments?.getString(ARG_TRIP_ID)}")
-
-        super.onDestroyView()
-        _binding = null
-    }
 
     companion object {
         private const val ARG_TRIP_ID = "arg_trip_id"
