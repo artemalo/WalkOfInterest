@@ -1,5 +1,6 @@
 package sfedu.ictis.walkOfInterest.presentation.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityAuthBinding
+import sfedu.ictis.walkOfInterest.presentation.main.MainActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 
 
@@ -52,11 +54,21 @@ class AuthActivity : AppCompatActivity() {
 
                     binding.fieldBtnAuth.isEnabled = !state.isLoading
 
+                    state.error?.let {
+                        ToastManager.show(this@AuthActivity, it)
+                        viewModel.errorConsumed()
+                    }
+
                     state.error?.let { ToastManager.show(this@AuthActivity, it) }
 
                     if (state.isSuccess) {
                         ToastManager.show(this@AuthActivity, "Успешно!")
-                        // TODO: Переход на MainActivity
+
+                        val intent = Intent(this@AuthActivity, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
+                        startActivity(intent)
+                        finish()
                     }
                 }
             }

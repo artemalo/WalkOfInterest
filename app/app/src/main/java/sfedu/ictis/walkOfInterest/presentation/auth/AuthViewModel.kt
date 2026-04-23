@@ -42,4 +42,8 @@ class AuthViewModel(
             }
         }
     }
+
+    fun errorConsumed() {
+        _uiState.update { it.copy(error = null) }
+    }
 }

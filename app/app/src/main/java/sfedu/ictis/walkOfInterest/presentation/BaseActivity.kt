@@ -2,6 +2,7 @@ package sfedu.ictis.walkOfInterest.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +14,8 @@ import sfedu.ictis.walkOfInterest.presentation.auth.AuthActivity
 import sfedu.ictis.walkOfInterest.utils.SessionManager
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
+    protected val TAG = "Lifecycle_${this::class.java.simpleName}"
+
     protected val sessionManager: SessionManager by inject()
 
     protected lateinit var binding: VB
@@ -20,6 +23,8 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
+
         binding = inflateBinding()
         setContentView(binding.root)
 
@@ -42,5 +47,31 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         }
         startActivity(intent)
         finish()
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy")
     }
 }
