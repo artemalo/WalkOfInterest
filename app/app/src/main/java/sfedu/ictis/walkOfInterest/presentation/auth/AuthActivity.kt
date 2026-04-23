@@ -13,7 +13,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityAuthBinding
 import sfedu.ictis.walkOfInterest.presentation.main.MainActivity
-import sfedu.ictis.walkOfInterest.utils.ToastManager
 
 
 class AuthActivity : AppCompatActivity() {
@@ -54,13 +53,12 @@ class AuthActivity : AppCompatActivity() {
 
                     binding.fieldBtnAuth.isEnabled = !state.isLoading
 
-                    state.error?.let {
-                        ToastManager.show(this@AuthActivity, it)
-                        viewModel.errorConsumed()
-                    }
+                    binding.textError.text = state.error ?: ""
+                    binding.textError.visibility = if (state.error != null) View.VISIBLE else View.GONE
+
 
                     if (state.isSuccess) {
-                        ToastManager.show(this@AuthActivity, "Успешно!")
+                        binding.btnAuthText.text = getString(R.string.success)
 
                         val intent = Intent(this@AuthActivity, MainActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

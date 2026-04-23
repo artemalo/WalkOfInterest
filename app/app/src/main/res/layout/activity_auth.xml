@@ -214,6 +214,25 @@
         </FrameLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/padding_general"
+        android:layout_marginStart="@dimen/padding_general"
+        android:layout_marginEnd="@dimen/padding_general"
+        android:includeFontPadding="false"
+        android:text="@string/error"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.App.Body"
+        android:textColor="@color/object_red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
 
 
     <TextView
