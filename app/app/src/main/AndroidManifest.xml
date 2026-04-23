@@ -27,6 +27,11 @@
         </activity>
 
         <activity
+            android:name=".presentation.auth.AuthActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".presentation.generate.GenerateActivity"
             android:exported="false" />
 

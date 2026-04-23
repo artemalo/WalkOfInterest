@@ -53,8 +53,6 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
         super.onCreate(savedInstanceState)
 
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
-        binding = ActivityRoutesBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         setupRecyclerView()
         setupMap()

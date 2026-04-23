@@ -15,7 +15,12 @@ class TokenAuthenticator(
     private val sessionManager: SessionManager
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
-        val refreshToken = tokenStorage.getRefreshToken() ?: return null
+        val refreshToken = tokenStorage.getRefreshToken()
+
+        if (refreshToken == null) {
+            sessionManager.triggerLogout()
+            return null
+        }
 
         val refreshResponse = runBlocking {
             try {

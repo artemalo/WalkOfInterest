@@ -27,8 +27,6 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCategoriesBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         setupRecyclerView()
         setupUI()

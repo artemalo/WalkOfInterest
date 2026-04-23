@@ -41,8 +41,6 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
             applicationContext,
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(applicationContext)
         )
-        binding = ActivityGenerateBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         setupMap()
         setupListeners()
