@@ -7,6 +7,7 @@
     <color name="divider">#33FFFFFF</color>
 
     <color name="white">#FFFFFFFF</color>
+    <color name="white_hint">#99FFFFFF</color>
     <color name="white_gray">#DDDDDD</color>
     <color name="white_empty">#D9D9D9</color>
     <color name="green">#4B8F65</color>

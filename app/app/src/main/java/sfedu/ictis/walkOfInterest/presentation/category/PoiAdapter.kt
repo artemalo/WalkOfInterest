@@ -14,7 +14,6 @@ class PoiAdapter(
     private val isVerticalList: Boolean = false,
     private val onPoiClick: (DomainPoi) -> Unit
 ) : ListAdapter<DomainPoi, PoiAdapter.PoiViewHolder>(PoiDiffCallback()) {
-
     inner class PoiViewHolder(private val binding: ItemPoiBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(poi: DomainPoi) {
             binding.nameCategory.text = poi.name ?: "-"

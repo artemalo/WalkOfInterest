@@ -11,4 +11,23 @@
         <item name="cornerSizeTopLeft">@dimen/corner_radius_general</item>
         <item name="cornerSizeTopRight">@dimen/corner_radius_general</item>
     </style>
+
+    <style name="CompactTextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="editTextColor">@color/white</item>
+        <item name="hintTextColor">@color/white_hint</item>
+
+        <item name="boxStrokeErrorColor">@color/object_red</item>
+
+        <item name="boxStrokeColor">@drawable/text_input_stroke</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+
+        <item name="boxCornerRadiusTopStart">@dimen/corner_category_selected</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/corner_category_selected</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/corner_category_selected</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/corner_category_selected</item>
+
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="boxBackgroundMode">outline</item>
+    </style>
 </resources>

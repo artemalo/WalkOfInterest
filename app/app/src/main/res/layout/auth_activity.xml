@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/general">
+
+    <TextView
+        android:id="@+id/textApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_general"
+        android:layout_marginStart="@dimen/padding_general"
+        android:layout_marginEnd="@dimen/padding_general"
+        android:layout_gravity="center"
+        android:includeFontPadding="false"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.App.H1"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textAuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/padding_title"
+        android:layout_marginStart="@dimen/padding_general"
+        android:layout_marginEnd="@dimen/padding_general"
+        android:includeFontPadding="false"
+        android:text="@string/Register"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.App.H0"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textApp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="@dimen/input_width_min"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_general"
+        android:maxWidth="@dimen/input_width_max"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textAuth">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/CompactTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/padding_middle_s"
+                android:layout_weight="1"
+                android:textColorHint="@color/white_hint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/firstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:hint="@string/firstName"
+                    android:paddingVertical="@dimen/padding_middle"
+                    android:textAppearance="@style/TextAppearance.App.Body"
+                    android:textColor="@color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/CompactTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_middle_s"
+                android:layout_weight="1"
+                android:textColorHint="@color/white_hint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/secondName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:hint="@string/secondName"
+                    android:paddingVertical="@dimen/padding_middle"
+                    android:textAppearance="@style/TextAppearance.App.Body"
+                    android:textColor="@color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/CompactTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_middle"
+            android:textColorHint="@color/white_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:hint="@string/username"
+                android:paddingVertical="@dimen/padding_middle"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/CompactTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_middle"
+            android:textColorHint="@color/white_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:hint="@string/email"
+                android:paddingVertical="@dimen/padding_middle"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/CompactTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_middle"
+            android:textColorHint="@color/white_hint"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/white">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:paddingVertical="@dimen/padding_middle"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/CompactTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_middle"
+            android:textColorHint="@color/white_hint"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/white">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:hint="@string/confirmPassword"
+                android:inputType="textPassword"
+                android:paddingVertical="@dimen/padding_middle"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <FrameLayout
+            android:id="@+id/fieldBtnAuth"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_field"
+            android:layout_marginTop="@dimen/padding_general"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small">
+            <FrameLayout
+                android:id="@+id/btnAuth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_next"
+                android:minHeight="36dp"
+                android:state_enabled="false"
+                tools:ignore="UselessParent">
+                <TextView
+                    android:id="@+id/btnAuthText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@string/auth_text_register"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.App.H2" />
+            </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/textIsAlready"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/padding_title"
+        android:includeFontPadding="false"
+        android:text="@string/auth_combined"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.App.Body"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
