@@ -201,6 +201,7 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
 
         binding.fieldClock.alpha = if (state.isTimePickerEnabled) 1.0f else 0.5f
         binding.btnCalculate.isEnabled = state.isCalculateEnabled
+        binding.btnCalculate.isEnabled = !state.isLoading
         binding.btnCalculate.alpha = if (state.isCalculateEnabled) 1.0f else 0.5f
 
         binding.btnCalculateText.text =

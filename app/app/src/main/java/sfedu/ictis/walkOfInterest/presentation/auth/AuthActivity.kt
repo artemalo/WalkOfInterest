@@ -52,6 +52,7 @@ class AuthActivity : AppCompatActivity() {
                     updateUiMode(state.mode)
 
                     binding.fieldBtnAuth.isEnabled = !state.isLoading
+                    binding.btnAuth.isEnabled = !state.isLoading
 
                     binding.textError.text = state.error ?: ""
                     binding.textError.visibility = if (state.error != null) View.VISIBLE else View.GONE

@@ -5,7 +5,7 @@ object AuthValidator {
 
     const val MIN_PASSWORD_LENGTH = 8
     const val MAX_PASSWORD_LENGTH = 64
-    const val MAX_FIELD_LENGTH = 50 // Для имени, фамилии, логина
+    const val MAX_FIELD_LENGTH = 50
     const val MAX_EMAIL_LENGTH = 254
 
     fun isValidEmail(email: String): Boolean {

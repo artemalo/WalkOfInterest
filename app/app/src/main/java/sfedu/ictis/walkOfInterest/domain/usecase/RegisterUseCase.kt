@@ -27,7 +27,7 @@ class RegisterUseCase(private val repository: AuthRepository) {
         }
 
         if (!AuthValidator.isValidPassword(pass) || !AuthValidator.isValidPassword(pass2)) {
-            return Result.failure(Exception("Пароль от 8 до 64 символов, буквы и цифры"))
+            return Result.failure(Exception("Пароль должен быть умеренной длины"))
         }
 
         if (pass != pass2) {

@@ -106,7 +106,6 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-            tools:layout_editor_absoluteX="24dp"
             tools:listitem="@layout/item_route" />
 
         <TextView

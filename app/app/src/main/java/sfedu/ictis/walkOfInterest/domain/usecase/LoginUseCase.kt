@@ -16,7 +16,7 @@ class LoginUseCase(private val repository: AuthRepository) {
         }
 
         if (!AuthValidator.isValidPassword(pass)) {
-            return Result.failure(Exception("Пароль должен содержать минимум 8 символов"))
+            return Result.failure(Exception("Пароль должен быть умеренной длины"))
         }
 
         return repository.login(LoginRequest(email, pass))
