@@ -4,8 +4,9 @@ graphhopper:
 
   # TODO: remove some ways
   import.osm.ignored_highways: |
-    motorway, trunk, primary,
-    motorway_link
+    motorway, trunk, primary, secondary, busway,
+    motorway_link, trunk_link, primary_link, secondary_link,
+    cycleway
 
   profiles:
     - name: foot
