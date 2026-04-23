@@ -7,15 +7,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import sfedu.ictis.walkOfInterest.data.local.TokenStorage
-import sfedu.ictis.walkOfInterest.data.model.LoginRequest
-import sfedu.ictis.walkOfInterest.data.model.RegisterRequest
-import sfedu.ictis.walkOfInterest.domain.repository.AuthRepository
+import sfedu.ictis.walkOfInterest.domain.usecase.LoginUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.RegisterUseCase
 
 
 class AuthViewModel(
-    private val repository: AuthRepository,
-    private val tokenStorage: TokenStorage
+    private val loginUseCase: LoginUseCase,
+    private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
@@ -31,20 +29,13 @@ class AuthViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
-            val currentState = _uiState.value
-            val result = if (currentState.mode == AuthMode.REGISTER) {
-                if (pass != pass2) {
-                    _uiState.update { it.copy(isLoading = false, error = "Пароли не совпадают") }
-                    return@launch
-                }
-                repository.register(RegisterRequest(user, email, pass, first, second))
+            val result = if (_uiState.value.mode == AuthMode.REGISTER) {
+                registerUseCase(email, pass, pass2, user, first, second)
             } else {
-                repository.login(LoginRequest(email, pass))
+                loginUseCase(email, pass)
             }
 
             result.onSuccess { authResponse ->
-                // TODO: Сохранить токены
-                tokenStorage.saveTokens(authResponse.accessToken, authResponse.refreshToken)
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
             }.onFailure { exception ->
                 _uiState.update { it.copy(isLoading = false, error = exception.message ?: "Ошибка авторизации") }

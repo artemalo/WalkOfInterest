@@ -32,6 +32,8 @@ import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripsUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.LoginUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.RegisterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
 import sfedu.ictis.walkOfInterest.presentation.auth.AuthViewModel
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
@@ -94,12 +96,14 @@ val appModule = module {
     single { get<AppDatabase>().tripDao() }
 
     // single
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(named("auth_api")), get()) }
     single<MapSettingRepository> { MapSettingRepositoryImpl() }
     single<TripRepository> { TripRepositoryImpl(get()) }
     single<RouteRepository> { RouteRepositoryImpl(get()) }
 
     // Domain Layer: Use Cases
+    factory { RegisterUseCase(get()) }
+    factory { LoginUseCase(get()) }
     factory { GetBaseRouteUseCase(get()) }
     factory { CalculateWalkUseCase(get()) }
     factory { GetRoutesUseCase(get()) }
@@ -111,7 +115,7 @@ val appModule = module {
     factory { DeleteTripByIdUseCase(get()) }
 
     // Presentation Layer: ViewModels
-    viewModel { AuthViewModel(get()) }
+    viewModel { AuthViewModel(get(), get()) }
     viewModel { TripDetailsViewModel(get(), get()) }
     viewModel { MainFeedViewModel(get()) }
     viewModel { GenerateViewModel(get(), get(), get()) }
