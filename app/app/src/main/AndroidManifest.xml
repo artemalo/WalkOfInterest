@@ -18,7 +18,7 @@
         android:theme="@style/Theme.WalkOfInterest">
 
         <activity
-            android:name=".presentation.main.MainActivity"
+            android:name=".presentation.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +26,9 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".presentation.main.MainActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.auth.AuthActivity"
             android:exported="false"

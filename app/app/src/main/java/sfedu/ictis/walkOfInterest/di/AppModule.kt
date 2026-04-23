@@ -42,6 +42,7 @@ import sfedu.ictis.walkOfInterest.presentation.details.TripDetailsViewModel
 import sfedu.ictis.walkOfInterest.presentation.generate.GenerateViewModel
 import sfedu.ictis.walkOfInterest.presentation.main.MainFeedViewModel
 import sfedu.ictis.walkOfInterest.presentation.routes.RoutesViewModel
+import sfedu.ictis.walkOfInterest.presentation.splash.SplashViewModel
 import sfedu.ictis.walkOfInterest.utils.SessionManager
 
 val networkModule = module {
@@ -115,6 +116,7 @@ val appModule = module {
     factory { DeleteTripByIdUseCase(get()) }
 
     // Presentation Layer: ViewModels
+    viewModel { SplashViewModel(get()) }
     viewModel { AuthViewModel(get(), get()) }
     viewModel { TripDetailsViewModel(get(), get()) }
     viewModel { MainFeedViewModel(get()) }
