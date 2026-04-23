@@ -3,7 +3,6 @@ package sfedu.ictis.walkOfInterest.presentation.generate
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -19,22 +18,21 @@ import org.osmdroid.views.overlay.Polyline
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityGenerateBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
+import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
-class GenerateActivity : AppCompatActivity() {
-    private companion object {
-        const val MSG_WARN = "Выберите обе точки на карте"
-        const val MSG_WHAT = "Что-то пошло не так"
-    }
-
-    private lateinit var binding: ActivityGenerateBinding
+class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
     private val viewModel: GenerateViewModel by viewModel()
     private var markerFrom: Marker? = null
     private var markerTo: Marker? = null
     private var routePolyline: Polyline? = null
     private var isMapReady = false
+
+    override fun inflateBinding(): ActivityGenerateBinding {
+        return ActivityGenerateBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
@@ -13,15 +12,18 @@ import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityCategoriesBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
+import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.presentation.category.CategoryFragment
 import sfedu.ictis.walkOfInterest.presentation.routes.RoutesActivity
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
-class CategoriesActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityCategoriesBinding
+class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
     private lateinit var adapter: CategoriesAdapter
     private val viewModel: CategoriesViewModel by viewModel()
 
+    override fun inflateBinding(): ActivityCategoriesBinding {
+        return ActivityCategoriesBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +92,6 @@ class CategoriesActivity : AppCompatActivity() {
             },
             onPictureClicked = { category ->
                 openCategoryFragment(category)
-                    //Toast.makeText(this, "Переход к ${category.name}", Toast.LENGTH_SHORT).show()
             }
         )
 
@@ -143,7 +144,6 @@ class CategoriesActivity : AppCompatActivity() {
 
         binding.fieldBtn.setOnClickListener {
             viewModel.onGenerateRouteClicked()
-            // TODO логика перехода дальше, когда категории выбраны
         }
 
         binding.btnSwap.setOnClickListener {

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
@@ -31,9 +30,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.osmdroid.util.BoundingBox
 import sfedu.ictis.walkOfInterest.R
+import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 
-class RoutesActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityRoutesBinding
+class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
     private val viewModel: RoutesViewModel by viewModel()
     private lateinit var adapter: RoutesAdapter
 
@@ -45,6 +44,10 @@ class RoutesActivity : AppCompatActivity() {
     private var routePolyline: Polyline? = null
     private var isMapReady = false
     private var wasCentered = false
+
+    override fun inflateBinding(): ActivityRoutesBinding {
+        return ActivityRoutesBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

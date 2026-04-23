@@ -20,7 +20,7 @@ class TokenAuthenticator(
         val refreshResponse = runBlocking {
             try {
                 authApi.refresh(RefreshRequest(refreshToken))
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
         }
