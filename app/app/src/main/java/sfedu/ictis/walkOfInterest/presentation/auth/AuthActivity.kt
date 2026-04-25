@@ -26,6 +26,7 @@ class AuthActivity : AppCompatActivity() {
 
         setupListeners()
         observeState()
+        observeEvent()
     }
 
     private fun setupListeners() {
@@ -67,6 +68,20 @@ class AuthActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }
+                }
+            }
+        }
+    }
+
+    private fun observeEvent() { // TODO: TESTING!!!
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigationEvent.collect {
+                    val intent = Intent(this@AuthActivity, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    startActivity(intent)
+                    finish()
                 }
             }
         }

@@ -6,6 +6,6 @@ import androidx.room.TypeConverters
 
 @Database(entities = [TripEntity::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
-abstract class AppDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() { // TODO connect local <-> remote DB
     abstract fun tripDao(): TripDao
 }

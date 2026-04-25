@@ -11,16 +11,16 @@ import sfedu.ictis.walkOfInterest.data.model.dto.PointDto
 import sfedu.ictis.walkOfInterest.data.model.dto.RouteDto
 
 interface RouteApi {
-    @POST("/poi/generate/route")
+    @POST("api/poi/generate/route")
     suspend fun getRoute(
         @Body request: RouteRequest
     ): Response<RouteResponse>
 
-    @POST("/poi/generate/search")
+    @POST("api/poi/generate/search")
     suspend fun searchRoute(
         @Body request: SearchRequest
     ): Response<SearchResponse>
 
-    @POST("/poi/route/routes")
+    @POST("api/poi/route/routes")
     suspend fun getRoutes(@Body points: List<PointDto>): Response<List<RouteDto>>
 }

@@ -2,8 +2,11 @@ package sfedu.ictis.walkOfInterest.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,6 +20,9 @@ class AuthViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
+
+    private val _navigationEvent = MutableSharedFlow<Unit>()
+    val navigationEvent: SharedFlow<Unit> = _navigationEvent.asSharedFlow()
 
     fun toggleAuthMode() {
         _uiState.update { state ->
@@ -37,6 +43,7 @@ class AuthViewModel(
 
             result.onSuccess { authResponse ->
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+                _navigationEvent.emit(Unit)
             }.onFailure { exception ->
                 val errorMessage = when (exception) {
                     is retrofit2.HttpException -> {
