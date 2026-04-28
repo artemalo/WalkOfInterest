@@ -20,4 +20,8 @@
     <string name="register_combined">Нет аккаунта? &lt;font color="#4B8F8C"&gt;Зарегистрировать&lt;/font&gt;</string>
     <string name="error">Ошибка</string>
     <string name="success">Успешно</string>
+
+    <string name="none">none</string>
+    <string name="profile_description">Описание профиля</string>
+    <string name="profile_edit">Редактировать</string>
 </resources>

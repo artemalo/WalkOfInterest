@@ -21,11 +21,13 @@
 
     <dimen name="btn_field">48dp</dimen>
     <dimen name="btn_general">36dp</dimen>
+    <dimen name="btn_small">32dp</dimen>
 
     <dimen name="icon_general">24dp</dimen>
     <dimen name="icon_small">16dp</dimen>
 
     <dimen name="photo_poi">240dp</dimen>
+    <dimen name="photo_profile">200dp</dimen>
     <dimen name="image_category">120dp</dimen>
     <dimen name="image_poi">120dp</dimen>
 

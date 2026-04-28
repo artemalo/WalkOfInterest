@@ -367,6 +367,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
+            android:gravity="center"
             android:text="Добавить отзыв"
             android:textAppearance="@style/TextAppearance.App.H2"
             android:textColor="@color/white" />
