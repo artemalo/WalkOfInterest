@@ -4,9 +4,8 @@ graphhopper:
 
   # TODO: remove some ways
   import.osm.ignored_highways: |
-    motorway, trunk, primary, secondary, busway,
-    motorway_link, trunk_link, primary_link, secondary_link,
-    cycleway
+    motorway, trunk, busway,
+    motorway_link, trunk_link
 
   profiles:
     - name: foot
@@ -18,7 +17,7 @@ graphhopper:
   graph.encoded_values: |
     foot_access, foot_average_speed, foot_priority, foot_road_access,
     hike_rating, average_slope,
-    country, road_class, mtb_rating
+    country, road_class, mtb_rating, road_environment, ferry_speed
 
   graph.elevation.provider: srtm
 

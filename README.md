@@ -6,8 +6,7 @@ Route Generator with interesting spots
  - 
  - [Docker](https://docs.docker.com/get-docker/) (версия 20.10 или выше)
  - [Docker Compose](https://docs.docker.com/compose/install/) (обычно входит в состав Docker Desktop)
- - [Postgres]
- - [PostGIS]
+ - [Postgres](https://www.postgresql.org/) + PostGIS (в момент установки Postgres включить расширение)
 
 ## Установка
 1. 
@@ -24,6 +23,14 @@ cd ..
  ```bash
  unzip /путь/к/скачанному/архиву.zip
  ```
+ 2. ИЛИ ->
+  - В папке WalkOfInterest/.. создать папку data
+  - Перейти ../data/
+  - Поместить walk.sql
+  - Создать папку graphhopper
+  - Перейти ../data/graphhopper/
+  - Поместить файл .osm.pbf (https://download.geofabrik.de/russia/south-fed-district.html)
+  - - Преиминовав в map.osm.pbf
  3. Запустите контейнеры:
  ```bash
  docker compose up -d
