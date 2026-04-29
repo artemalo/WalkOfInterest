@@ -12,11 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.usecase.LoginUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.RegisterUseCase
+import sfedu.ictis.walkOfInterest.utils.SessionManager
 
 
 class AuthViewModel(
     private val loginUseCase: LoginUseCase,
-    private val registerUseCase: RegisterUseCase
+    private val registerUseCase: RegisterUseCase,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
@@ -42,6 +44,7 @@ class AuthViewModel(
             }
 
             result.onSuccess { authResponse ->
+                sessionManager.resetLogout()
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 _navigationEvent.emit(Unit)
             }.onFailure { exception ->

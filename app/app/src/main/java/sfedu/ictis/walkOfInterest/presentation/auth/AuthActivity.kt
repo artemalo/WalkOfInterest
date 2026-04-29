@@ -2,6 +2,7 @@ package sfedu.ictis.walkOfInterest.presentation.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
@@ -61,22 +62,18 @@ class AuthActivity : AppCompatActivity() {
 
                     if (state.isSuccess) {
                         binding.btnAuthText.text = getString(R.string.success)
-
-                        val intent = Intent(this@AuthActivity, MainActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                        startActivity(intent)
-                        finish()
                     }
                 }
             }
         }
     }
 
-    private fun observeEvent() { // TODO: TESTING!!!
+    private fun observeEvent() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.navigationEvent.collect {
+                    Log.d("AuthActivity", "navigationEvent -> startActivity(MainActivity)")
+
                     val intent = Intent(this@AuthActivity, MainActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }

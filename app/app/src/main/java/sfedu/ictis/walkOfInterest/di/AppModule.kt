@@ -117,7 +117,7 @@ val appModule = module {
 
     // Presentation Layer: ViewModels
     viewModel { SplashViewModel(get()) }
-    viewModel { AuthViewModel(get(), get()) }
+    viewModel { AuthViewModel(get(), get(), get()) }
     viewModel { TripDetailsViewModel(get(), get()) }
     viewModel { MainFeedViewModel(get()) }
     viewModel { GenerateViewModel(get(), get(), get()) }

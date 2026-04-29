@@ -35,6 +35,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 sessionManager.logoutEvent.collect {
+                    Log.d(TAG, "logoutEvent received -> navigateToAuth")
                     navigateToAuth()
                 }
             }
