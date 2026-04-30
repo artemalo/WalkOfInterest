@@ -24,4 +24,6 @@
     <string name="none">none</string>
     <string name="profile_description">Описание профиля</string>
     <string name="profile_edit">Редактировать</string>
+    <string name="logout">Выйти</string>
+    <string name="logout_all">Выйти со всех устройств</string>
 </resources>

@@ -24,6 +24,7 @@
     <color name="object_orange">#C67C4E</color>
     <color name="object_place">#A1C969</color>
     <color name="object_red">#CF2D24</color>
+    <color name="object_red_orange">#EE6C4D</color>
     <color name="object_star">#EDD84C</color>
     <color name="object">#4B8F8C</color>
     <color name="object_selected">#264B8F8C</color>

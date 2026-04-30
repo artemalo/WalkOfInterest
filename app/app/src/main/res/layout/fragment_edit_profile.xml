@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/general"
     android:paddingStart="@dimen/padding_general"
     android:paddingEnd="@dimen/padding_general"
-    >
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/general">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
@@ -128,6 +128,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_normal"
@@ -135,6 +136,7 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_middle"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
         <TextView
             android:id="@+id/bio"
             android:layout_width="match_parent"
@@ -147,6 +149,117 @@
             android:textColorHint="@color/object_not_active" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:background="@drawable/field_general_shape_plus"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_middle"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+        <TextView
+            android:id="@+id/textUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/btn_small"
+            android:layout_gravity="center"
+            android:gravity="start|center_vertical"
+            android:text="@string/username"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/username"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/btn_small"
+            android:layout_marginStart="@dimen/padding_middle"
+            android:layout_gravity="center"
+            android:gravity="start|center_vertical"
+            android:text=""
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/white"
+            android:drawableEnd="@drawable/ic_arrow_r"
+            app:drawableTint="@color/white"/>
+    </LinearLayout>
 
+
+
+    <FrameLayout
+        android:id="@+id/btnLogoutAll"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/btn_field"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="edit profile"
+        app:layout_constraintBottom_toBottomOf="@+id/fieldBtnLogoutAll"
+        app:layout_constraintEnd_toEndOf="@+id/fieldBtnLogoutAll"
+        app:layout_constraintStart_toStartOf="@+id/fieldBtnLogoutAll"
+        app:layout_constraintTop_toTopOf="@+id/fieldBtnLogoutAll" />
+    <FrameLayout
+        android:id="@+id/fieldBtnLogoutAll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/btn_general"
+        android:background="@drawable/btn_next"
+        android:backgroundTint="@color/object_red_orange"
+        android:gravity="center"
+        android:padding="@dimen/padding_small"
+        android:layout_marginBottom="@dimen/padding_middle_s"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogout"
+        app:layout_constraintEnd_toEndOf="@+id/btnLogout"
+        app:layout_constraintStart_toStartOf="@+id/fieldBtnLogout">
+        <TextView
+            android:id="@+id/textBtnLogoutAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/logout_all"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/btnLogout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/btn_field"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="edit profile"
+        app:layout_constraintBottom_toBottomOf="@+id/fieldBtnLogout"
+        app:layout_constraintEnd_toEndOf="@+id/fieldBtnLogout"
+        app:layout_constraintStart_toStartOf="@+id/fieldBtnLogout"
+        app:layout_constraintTop_toTopOf="@+id/fieldBtnLogout" />
+    <FrameLayout
+        android:id="@+id/fieldBtnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/btn_general"
+        android:background="@drawable/btn_next"
+        android:backgroundTint="@color/object_red_orange"
+        android:gravity="center"
+        android:padding="@dimen/padding_small"
+        android:layout_marginStart="@dimen/padding_general"
+        android:layout_marginEnd="@dimen/padding_general"
+        android:layout_marginBottom="@dimen/padding_general"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <TextView
+            android:id="@+id/textBtnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/logout"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

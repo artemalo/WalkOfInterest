@@ -198,7 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/btn_next"
-                android:minHeight="36dp"
+                android:minHeight="@dimen/btn_general"
                 android:state_enabled="false"
                 tools:ignore="UselessParent">
                 <TextView
