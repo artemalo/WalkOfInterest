@@ -1,6 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/padding_normal"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/gray_button"
+    app:cardCornerRadius="@dimen/corner_radius_general"
+    app:cardElevation="@dimen/padding_small"
+    app:strokeWidth="0dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_middle_s">
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivUserAvatar"
+            android:layout_width="@dimen/icon_profile"
+            android:layout_height="@dimen/icon_profile"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
+
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/padding_small"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tvReviewDate"
+            app:layout_constraintStart_toEndOf="@+id/ivUserAvatar"
+            app:layout_constraintTop_toTopOf="@+id/ivUserAvatar"
+            tools:text="User Name" />
+
+        <TextView
+            android:id="@+id/tvReviewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.App.Body2"
+            android:textColor="@color/white_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvUserName"
+            tools:text="27.03.2026" />
+
+        <LinearLayout
+            android:id="@+id/ratingContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/tvReviewText"
+            app:layout_constraintTop_toBottomOf="@+id/tvReviewText">
+
+            <ImageView
+                android:id="@+id/ivStar"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:src="@drawable/ic_star"
+                app:tint="@color/object_star" />
+
+            <TextView
+                android:id="@+id/tvReviewRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_s_small"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white"
+                tools:text="5" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tvReviewText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/white_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvUserName"
+            app:layout_constraintTop_toBottomOf="@+id/tvUserName"
+            tools:text="Это милое местечко! Немного людно, но вид потрясающий." />
+
+
+        <LinearLayout
+            android:id="@+id/likeContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/general"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/padding_small"
+            app:layout_constraintEnd_toEndOf="@+id/tvReviewText"
+            app:layout_constraintStart_toStartOf="@+id/ratingContainer"
+            app:layout_constraintTop_toBottomOf="@+id/ratingContainer">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLike"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:iconSize="@dimen/icon_general"
+                app:icon="@drawable/ic_like"
+                app:iconGravity="textStart"
+                app:iconTint="@drawable/like_state_tint" />
+
+            <TextView
+                android:id="@+id/tvLikesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minWidth="20dp"
+                android:textAppearance="@style/TextAppearance.App.Body2"
+                android:textColor="@color/white"
+                tools:text="none" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDislike"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:checkable="true"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:iconSize="@dimen/icon_general"
+                app:icon="@drawable/ic_dislike"
+                app:iconGravity="textStart"
+                app:iconTint="@drawable/like_state_tint" />
+
+            <TextView
+                android:id="@+id/tvLikesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minWidth="20dp"
+                android:textAppearance="@style/TextAppearance.App.Body2"
+                android:textColor="@color/white"
+                tools:text="none" />
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
