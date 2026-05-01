@@ -320,7 +320,7 @@
                     android:paddingTop="@dimen/padding_normal"
                     android:paddingBottom="@dimen/padding_normal"
                     app:layout_constraintTop_toBottomOf="@+id/view3"
-                    tools:listitem="" />
+                    tools:listitem="@layout/item_review" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

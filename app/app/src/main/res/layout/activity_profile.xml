@@ -11,184 +11,203 @@
     android:paddingEnd="@dimen/padding_general"
     >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/header"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContent"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_field"
-        android:layout_marginTop="@dimen/padding_general"
-        android:gravity="center"
-        android:orientation="horizontal"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/fieldBtnClose"
-            android:layout_width="@dimen/btn_field"
-            android:layout_height="@dimen/btn_field"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <ImageView
-                android:id="@+id/btnClose"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_field"
+                android:layout_marginTop="@dimen/padding_general"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <FrameLayout
+                    android:id="@+id/fieldBtnClose"
+                    android:layout_width="@dimen/btn_field"
+                    android:layout_height="@dimen/btn_field"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+                    <ImageView
+                        android:id="@+id/btnClose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:contentDescription="button back"
+                        android:src="@drawable/ic_arrow_l" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/profileUsername"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/username"
+                    android:textAppearance="@style/TextAppearance.App.H1"
+                    android:textColor="@color/white_gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/space"
+                    app:layout_constraintStart_toEndOf="@+id/fieldBtnClose"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Space
+                    android:id="@+id/space"
+                    android:layout_width="@dimen/btn_field"
+                    android:layout_height="@dimen/btn_field"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profilePhoto"
+                android:layout_width="@dimen/photo_profile"
+                android:layout_height="@dimen/photo_profile"
+                android:layout_marginTop="@dimen/padding_general"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_profile"
+                android:background="@color/white_empty"
+                app:layout_constraintEnd_toEndOf="@+id/header"
+                app:layout_constraintStart_toStartOf="@+id/header"
+                app:layout_constraintTop_toBottomOf="@+id/header"
+                app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_s_small"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/profilePhoto"
+                app:layout_constraintStart_toStartOf="@+id/profilePhoto"
+                app:layout_constraintTop_toBottomOf="@+id/profilePhoto">
+
+                <TextView
+                    android:id="@+id/countTrips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/none"
+                    android:textAppearance="@style/TextAppearance.App.Body"
+                    android:textColor="@color/white_gray"
+                    app:drawableStartCompat="@drawable/ic_point"
+                    app:drawableTint="@color/white" />
+
+                <TextView
+                    android:id="@+id/countSpots"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_middle"
+                    android:gravity="center_vertical"
+                    android:text="@string/none"
+                    android:textAppearance="@style/TextAppearance.App.Body"
+                    android:textColor="@color/white_gray"
+                    app:drawableStartCompat="@drawable/ic_walk"
+                    app:drawableTint="@color/white" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/profileFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:contentDescription="button back"
-                android:src="@drawable/ic_arrow_l" />
-        </FrameLayout>
+                android:layout_marginTop="@dimen/padding_normal"
+                android:text="@string/firstName"
+                android:textAppearance="@style/TextAppearance.App.H2"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/profilePhoto"
+                app:layout_constraintStart_toStartOf="@+id/profilePhoto"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
 
-        <TextView
-            android:id="@+id/profileUsername"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/username"
-            android:textAppearance="@style/TextAppearance.App.H1"
-            android:textColor="@color/white_gray"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/space"
-            app:layout_constraintStart_toEndOf="@+id/fieldBtnClose"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Space
-            android:id="@+id/space"
-            android:layout_width="@dimen/btn_field"
-            android:layout_height="@dimen/btn_field"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/profilePhoto"
-        android:layout_width="@dimen/photo_profile"
-        android:layout_height="@dimen/photo_profile"
-        android:layout_marginTop="@dimen/padding_general"
-        android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_profile"
-        android:background="@color/white_empty"
-        app:layout_constraintEnd_toEndOf="@+id/header"
-        app:layout_constraintStart_toStartOf="@+id/header"
-        app:layout_constraintTop_toBottomOf="@+id/header"
-        app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_s_small"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/profilePhoto"
-        app:layout_constraintStart_toStartOf="@+id/profilePhoto"
-        app:layout_constraintTop_toBottomOf="@+id/profilePhoto">
-
-        <TextView
-            android:id="@+id/countTrips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/none"
-            android:textAppearance="@style/TextAppearance.App.Body"
-            android:textColor="@color/white_gray"
-            app:drawableStartCompat="@drawable/ic_point"
-            app:drawableTint="@color/white" />
-
-        <TextView
-            android:id="@+id/countSpots"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_middle"
-            android:gravity="center_vertical"
-            android:text="@string/none"
-            android:textAppearance="@style/TextAppearance.App.Body"
-            android:textColor="@color/white_gray"
-            app:drawableStartCompat="@drawable/ic_walk"
-            app:drawableTint="@color/white" />
-    </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/profileFullName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_normal"
-        android:text="@string/firstName"
-        android:textAppearance="@style/TextAppearance.App.H2"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@+id/profilePhoto"
-        app:layout_constraintStart_toStartOf="@+id/profilePhoto"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
-
-    <TextView
-        android:id="@+id/profileBio"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/profile_description"
-        android:textColorHint="@color/description"
-        android:textAppearance="@style/TextAppearance.App.Body"
-        android:textColor="@color/description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileFullName" />
+            <TextView
+                android:id="@+id/profileBio"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/profile_description"
+                android:textColorHint="@color/description"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileFullName" />
 
 
 
 
 
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/padding_normal"
-        android:background="@drawable/handle_shape"
-        android:backgroundTint="@color/object_not_active"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileBio" />
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/padding_normal"
+                android:background="@drawable/handle_shape"
+                android:backgroundTint="@color/object_not_active"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileBio" />
 
-    <TextView
-        android:id="@+id/profileCountComments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_middle"
-        android:gravity="center_vertical"
-        android:text="@string/none"
-        android:textAppearance="@style/TextAppearance.App.Body"
-        android:textColor="@color/white_gray"
-        app:drawableStartCompat="@drawable/ic_comment"
-        app:drawableTint="@color/white_gray"
-        app:layout_constraintStart_toStartOf="@+id/view2"
-        app:layout_constraintTop_toBottomOf="@+id/view2" />
+            <TextView
+                android:id="@+id/profileCountComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_middle"
+                android:gravity="center_vertical"
+                android:text="@string/none"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white_gray"
+                app:drawableStartCompat="@drawable/ic_comment"
+                app:drawableTint="@color/white_gray"
+                app:layout_constraintStart_toStartOf="@+id/view2"
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
 
-    <ImageView
-        android:id="@+id/iconSwap"
-        android:layout_marginTop="@dimen/padding_middle"
-        android:layout_width="@dimen/icon_general"
-        android:layout_height="@dimen/icon_general"
-        android:contentDescription="swap"
-        android:src="@drawable/ic_swap"
-        app:layout_constraintEnd_toEndOf="@+id/view2"
-        app:layout_constraintTop_toBottomOf="@+id/view2" />
-    <FrameLayout
-        android:id="@+id/btnSort"
-        android:layout_width="@dimen/btn_field"
-        android:layout_height="@dimen/btn_field"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="btn sort"
-        app:layout_constraintBottom_toBottomOf="@+id/iconSwap"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/iconSwap" />
-
-
-
-<!--    TODO: recycler view - comments current user (find by username)-->
+            <ImageView
+                android:id="@+id/iconSwap"
+                android:layout_marginTop="@dimen/padding_middle"
+                android:layout_width="@dimen/icon_general"
+                android:layout_height="@dimen/icon_general"
+                android:contentDescription="swap"
+                android:src="@drawable/ic_swap"
+                app:layout_constraintEnd_toEndOf="@+id/view2"
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
+            <FrameLayout
+                android:id="@+id/btnSort"
+                android:layout_width="@dimen/btn_field"
+                android:layout_height="@dimen/btn_field"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="btn sort"
+                app:layout_constraintBottom_toBottomOf="@+id/iconSwap"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iconSwap" />
 
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerReviews"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingTop="@dimen/padding_normal"
+                android:paddingBottom="@dimen/padding_normal"
+                app:layout_constraintTop_toBottomOf="@+id/iconSwap"
+                tools:listitem="@layout/item_review" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/btnEdit"
