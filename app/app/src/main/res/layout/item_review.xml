@@ -123,7 +123,7 @@
                 app:iconTint="@drawable/like_state_tint" />
 
             <TextView
-                android:id="@+id/tvLikesCount"
+                android:id="@+id/likes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -149,7 +149,7 @@
                 app:iconTint="@drawable/like_state_tint" />
 
             <TextView
-                android:id="@+id/tvLikesCount"
+                android:id="@+id/dislikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"

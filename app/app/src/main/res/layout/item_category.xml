@@ -36,13 +36,13 @@
 
     <TextView
         android:id="@+id/nameCategory"
-        android:layout_marginStart="@dimen/padding_s_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_s_small"
         android:text="Название категории"
         android:textAppearance="@style/TextAppearance.App.H1"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintBottom_toTopOf="@+id/countSelected"
         app:layout_constraintStart_toEndOf="@+id/framePicture"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,18 +67,6 @@
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_marginStart="@dimen/padding_s_small"
-        android:layout_marginBottom="@dimen/padding_small"
-        android:layout_width="@dimen/icon_general"
-        android:layout_height="@dimen/icon_general"
-        android:layout_gravity="center"
-        android:contentDescription="Point Start"
-        android:src="@drawable/ic_point"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/framePicture"
-        app:tint="@color/object" />
 
     <TextView
         android:id="@+id/countSelected"
@@ -87,34 +75,27 @@
         android:text="none"
         android:textAppearance="@style/TextAppearance.App.Body"
         android:textColor="@color/white_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
-
-
-    <ImageView
-        android:id="@+id/imageView2"
+        app:drawableStartCompat="@drawable/ic_point"
+        app:drawableTint="@color/object"
         android:layout_marginStart="@dimen/padding_s_small"
-        android:layout_width="@dimen/icon_general"
-        android:layout_height="@dimen/icon_general"
-        android:layout_gravity="center"
-        android:contentDescription="Point Start"
-        android:src="@drawable/ic_clock"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toEndOf="@+id/countSelected"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:tint="@color/object_orange" />
+        android:layout_marginBottom="@dimen/padding_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView" />
+
 
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_s_small"
         android:text="none"
         android:textAppearance="@style/TextAppearance.App.Body"
         android:textColor="@color/white_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        app:drawableStartCompat="@drawable/ic_clock"
+        app:drawableTint="@color/object_orange"
+        app:layout_constraintBottom_toBottomOf="@+id/countSelected"
+        app:layout_constraintStart_toEndOf="@+id/countSelected"
+        app:layout_constraintTop_toTopOf="@+id/countSelected" />
 
 
 

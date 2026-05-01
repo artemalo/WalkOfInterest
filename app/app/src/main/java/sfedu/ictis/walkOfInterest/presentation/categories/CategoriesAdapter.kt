@@ -1,7 +1,10 @@
 package sfedu.ictis.walkOfInterest.presentation.categories
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -60,10 +63,28 @@ class CategoriesAdapter(
             } else 0
             binding.framePicture.setPadding(paddingPx, paddingPx, paddingPx, paddingPx)
 
-            binding.root.setOnClickListener { onItemClicked(category) }
+            val context = binding.root.context
+            val colorResTime = if (category.selected > 0) R.color.object_orange else R.color.object_not_active
+            val colorResSelected = if (category.selected > 0) R.color.`object` else R.color.object_not_active
+
+            TextViewCompat.setCompoundDrawableTintList(
+                binding.time,
+                ColorStateList.valueOf(ContextCompat.getColor(context, colorResTime))
+
+            )
+            TextViewCompat.setCompoundDrawableTintList(
+                binding.countSelected,
+                ColorStateList.valueOf(ContextCompat.getColor(context, colorResSelected))
+
+            )
+
+            binding.root.setOnClickListener {
+                if (category.selected > 0) {
+                    onItemClicked(category)
+                }
+            }
 
             binding.framePicture.setOnClickListener {
-                // TODO: подкатегории
                 onPictureClicked(category)
             }
             // TODO: Glide или Coil.

@@ -75,7 +75,14 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
 
         binding.btnOk.setOnClickListener {
             viewModel.saveChanges { category, time, allPoisCount, selectedCount ->
-                categoriesViewModel.updateCategoryPois(category, time, allPoisCount, selectedCount)
+                if (isAdded) {
+                    categoriesViewModel.updateCategoryPois(
+                        category,
+                        time,
+                        allPoisCount,
+                        selectedCount
+                    )
+                }
             }
         }
     }
