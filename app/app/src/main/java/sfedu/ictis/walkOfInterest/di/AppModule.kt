@@ -11,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import sfedu.ictis.walkOfInterest.BuildConfig
 import sfedu.ictis.walkOfInterest.data.api.AuthApi
 import sfedu.ictis.walkOfInterest.data.api.RouteApi
+import sfedu.ictis.walkOfInterest.data.api.UserApi
 import sfedu.ictis.walkOfInterest.data.local.AppDatabase
 import sfedu.ictis.walkOfInterest.data.local.AuthInterceptor
 import sfedu.ictis.walkOfInterest.data.local.TokenAuthenticator
@@ -88,6 +89,15 @@ val networkModule = module {
             .build()
             .create(RouteApi::class.java)
     }
+
+    single<UserApi> {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(get(named("protected_client")))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(UserApi::class.java)
+    }
 }
 
 val appModule = module {
@@ -107,7 +117,7 @@ val appModule = module {
     single<MapSettingRepository> { MapSettingRepositoryImpl() }
     single<TripRepository> { TripRepositoryImpl(get()) }
     single<RouteRepository> { RouteRepositoryImpl(get()) }
-    single<UserRepository> { UserRepositoryImpl() }
+    single<UserRepository> { UserRepositoryImpl(get()) }
 
     // Domain Layer: Use Cases
     factory { RegisterUseCase(get()) }

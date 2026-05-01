@@ -1,96 +1,77 @@
 package sfedu.ictis.walkOfInterest.data.repository
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.json.JSONObject
+import retrofit2.Response
+import sfedu.ictis.walkOfInterest.data.api.UserApi
+import sfedu.ictis.walkOfInterest.data.mapper.toDomain
+import sfedu.ictis.walkOfInterest.data.model.UpdateUsernameRequest
+import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainReview
 import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
 import sfedu.ictis.walkOfInterest.domain.repository.UserRepository
 
-class UserRepositoryImpl : UserRepository {
-    private val _profile = MutableStateFlow<DomainUserProfile?>(MOCK_PROFILE)
+class UserRepositoryImpl(
+    private val api: UserApi
+) : UserRepository {
+    private val _profile = MutableStateFlow<DomainUserProfile?>(null)
 
     override fun observeProfile(): Flow<DomainUserProfile?> = _profile.asStateFlow()
 
     override suspend fun getMyProfile(): Result<DomainUserProfile> = runCatching {
-        delay(150)
-        _profile.value ?: MOCK_PROFILE.also { _profile.value = it }
+        val response = api.getMyProfile()
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            val domain = body.toDomain()
+            _profile.value = domain
+            domain
+        } else {
+            throw response.toException("Не удалось загрузить профиль")
+        }
     }
 
     override suspend fun getReviewsByUsername(username: String): Result<List<DomainReview>> = runCatching {
-        delay(200)
-        MOCK_REVIEWS.filter { it.authorUsername == username }
+        val response = api.getReviewsByUsername(username)
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            body.map { it.toDomain() }
+        } else {
+            throw response.toException("Не удалось загрузить отзывы")
+        }
     }
 
     override suspend fun updateNickname(newUsername: String): Result<DomainUserProfile> = runCatching {
-        delay(200)
-        val current = _profile.value ?: MOCK_PROFILE
+        val response = api.updateUsername(UpdateUsernameRequest(newUsername))
+        val body = response.body()
 
-        if (newUsername.equals("admin", ignoreCase = true)) {
-            throw Exception("Никнейм уже занят")
+        if (response.isSuccessful && body != null) {
+            val domain = body.toDomain()
+            _profile.value = domain
+            domain
+        } else {
+            throw response.toException("Не удалось обновить никнейм")
         }
-
-        val updated = current.copy(username = newUsername)
-        _profile.value = updated
-
-        MOCK_REVIEWS = MOCK_REVIEWS.map { r ->
-            if (r.authorUsername == current.username) r.copy(authorUsername = newUsername) else r
-        }
-
-        updated
     }
 
-    private companion object {
-        val MOCK_PROFILE = DomainUserProfile(
-            id = "u-1",
-            username = "walker_42",
-            firstName = "Иван",
-            lastName = "Иванов",
-            bio = "Люблю гулять по городу и открывать новые места",
-            photoUrl = null,
-            countTrips = 12,
-            countSpots = 5,
-            countComments = 3
-        )
 
-        var MOCK_REVIEWS = listOf(
-            DomainReview(
-                id = "r-1",
-                authorUsername = "walker_42",
-                authorAvatarUrl = null,
-                poiId = "poi-1",
-                poiName = "Парк Горького",
-                content = "Это милое местечко! Немного людно, но вид потрясающий.",
-                rating = 5,
-                likes = 12,
-                dislikes = 1,
-                createdAtMillis = System.currentTimeMillis() - 86_400_000L * 2
-            ),
-            DomainReview(
-                id = "r-2",
-                authorUsername = "walker_42",
-                authorAvatarUrl = null,
-                poiId = "poi-2",
-                poiName = "Третьяковская галерея",
-                content = "Внутри много интересного, но очереди длинные.",
-                rating = 4,
-                likes = 8,
-                dislikes = 2,
-                createdAtMillis = System.currentTimeMillis() - 86_400_000L * 14
-            ),
-            DomainReview(
-                id = "r-3",
-                authorUsername = "walker_42",
-                authorAvatarUrl = null,
-                poiId = "poi-3",
-                poiName = "ВДНХ",
-                content = "Большая территория, удобно гулять с детьми.",
-                rating = 5,
-                likes = 24,
-                dislikes = 0,
-                createdAtMillis = System.currentTimeMillis() - 86_400_000L * 30
-            )
-        )
+
+    private fun Response<*>.toException(fallback: String): Exception {
+        val rawError = errorBody()?.string()
+        val parsedMessage = rawError?.let { tryParseFirstJsonValue(it) }
+
+        return when (code()) {
+            in 400..499 -> ServerException(parsedMessage ?: fallback)
+            else -> Exception("$fallback (код ${code()})")
+        }
     }
+
+    private fun tryParseFirstJsonValue(raw: String): String? = runCatching {
+        val json = JSONObject(raw)
+        val keys = json.keys()
+        if (keys.hasNext()) json.getString(keys.next()) else null
+    }.getOrNull()
 }
