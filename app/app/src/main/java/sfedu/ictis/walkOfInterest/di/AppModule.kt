@@ -20,27 +20,33 @@ import sfedu.ictis.walkOfInterest.data.repository.AuthRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.MapSettingRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.TripRepositoryImpl
+import sfedu.ictis.walkOfInterest.data.repository.UserRepositoryImpl
 import sfedu.ictis.walkOfInterest.domain.repository.AuthRepository
 import sfedu.ictis.walkOfInterest.domain.repository.MapSettingRepository
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
+import sfedu.ictis.walkOfInterest.domain.repository.UserRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.DeleteTripByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripsUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetUserReviewsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.LoginUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.RegisterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.UpdateNicknameUseCase
 import sfedu.ictis.walkOfInterest.presentation.auth.AuthViewModel
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
 import sfedu.ictis.walkOfInterest.presentation.category.CategoryViewModel
 import sfedu.ictis.walkOfInterest.presentation.details.TripDetailsViewModel
 import sfedu.ictis.walkOfInterest.presentation.generate.GenerateViewModel
 import sfedu.ictis.walkOfInterest.presentation.main.MainFeedViewModel
+import sfedu.ictis.walkOfInterest.presentation.profile.ProfileViewModel
 import sfedu.ictis.walkOfInterest.presentation.routes.RoutesViewModel
 import sfedu.ictis.walkOfInterest.presentation.splash.SplashViewModel
 import sfedu.ictis.walkOfInterest.utils.SessionManager
@@ -101,6 +107,7 @@ val appModule = module {
     single<MapSettingRepository> { MapSettingRepositoryImpl() }
     single<TripRepository> { TripRepositoryImpl(get()) }
     single<RouteRepository> { RouteRepositoryImpl(get()) }
+    single<UserRepository> { UserRepositoryImpl() }
 
     // Domain Layer: Use Cases
     factory { RegisterUseCase(get()) }
@@ -114,6 +121,9 @@ val appModule = module {
     factory { SaveTripUseCase(get()) }
     factory { GetTripByIdUseCase(get()) }
     factory { DeleteTripByIdUseCase(get()) }
+    factory { GetMyProfileUseCase(get()) }
+    factory { GetUserReviewsUseCase(get()) }
+    factory { UpdateNicknameUseCase(get()) }
 
     // Presentation Layer: ViewModels
     viewModel { SplashViewModel(get()) }
@@ -124,4 +134,5 @@ val appModule = module {
     viewModel { CategoriesViewModel(get())}
     viewModel { CategoryViewModel() }
     viewModel { RoutesViewModel(get(), get(), get()) }
+    viewModel { ProfileViewModel(get(), get(), get(), get()) }
 }

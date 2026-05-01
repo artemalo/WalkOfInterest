@@ -41,6 +41,7 @@
         app:layout_constraintEnd_toEndOf="@+id/fieldBtnOkUsername"
         app:layout_constraintStart_toStartOf="@+id/fieldBtnOkUsername"
         app:layout_constraintTop_toTopOf="@+id/fieldBtnOkUsername" />
+
     <FrameLayout
         android:id="@+id/fieldBtnOkUsername"
         android:layout_width="match_parent"
@@ -59,7 +60,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:text="Изменить"
+            android:text="@string/edit_nickname_apply"
             android:textAppearance="@style/TextAppearance.App.H2"
             android:textColor="@color/white" />
     </FrameLayout>

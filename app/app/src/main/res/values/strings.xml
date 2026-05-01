@@ -25,5 +25,17 @@
     <string name="profile_description">Описание профиля</string>
     <string name="profile_edit">Редактировать</string>
     <string name="logout">Выйти</string>
-    <string name="logout_all">Выйти со всех устройств</string>
+    <string name="logout_all">Выйти на всех устройствах</string>
+
+
+    <string name="profile_no_reviews">У вас пока нет отзывов</string>
+    <string name="profile_count_comments">Комментариев: %1$d</string>
+    <string name="profile_review_today">сегодня</string>
+    <string name="profile_review_yesterday">вчера</string>
+    <string name="profile_review_days_ago">%1$d дн. назад</string>
+
+    <string name="edit_nickname_apply">Изменить</string>
+    <string name="edit_nickname_title">Никнейм</string>
+
+    <string name="profile_error_load">Не удалось загрузить профиль</string>
 </resources>

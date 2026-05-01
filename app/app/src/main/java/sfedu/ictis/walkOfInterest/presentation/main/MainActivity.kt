@@ -11,7 +11,7 @@ import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityMainBinding
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.presentation.details.TripDetailsFragment
-import sfedu.ictis.walkOfInterest.utils.ToastManager
+import sfedu.ictis.walkOfInterest.presentation.profile.ProfileActivity
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val viewModel: MainFeedViewModel by viewModel()
@@ -80,7 +80,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
 
         binding.fieldBtnProfile.setOnClickListener {
-            ToastManager.show(this, "Профиль в разработке")
+            val intent = android.content.Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
         }
     }
 
