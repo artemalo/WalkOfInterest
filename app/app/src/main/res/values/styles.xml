@@ -30,4 +30,5 @@
         <item name="boxBackgroundColor">@android:color/transparent</item>
         <item name="boxBackgroundMode">outline</item>
     </style>
+
 </resources>

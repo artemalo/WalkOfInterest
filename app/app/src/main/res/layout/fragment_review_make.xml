@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingStart="@dimen/padding_general"
+    android:paddingEnd="@dimen/padding_general"
+    android:background="@color/general">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_field"
+        android:layout_marginTop="@dimen/padding_general"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Space
+            android:id="@+id/space"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Отзыв"
+            android:textAppearance="@style/TextAppearance.App.H1"
+            android:textColor="@color/white_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/fieldBtnClose"
+            app:layout_constraintStart_toEndOf="@+id/space"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/fieldBtnClose"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageView
+                android:id="@+id/btnClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:contentDescription="button back"
+                android:src="@drawable/ic_x"/>
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/padding_middle"
+        android:layout_height="@dimen/photo_poi"
+        android:paddingStart="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_small"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/photoPoi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@color/white_empty"
+            app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/poiName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_middle"
+        android:ellipsize="end"
+        android:maxLines="3"
+        tools:text="Название места"
+        android:textAppearance="@style/TextAppearance.App.H2"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
+    <TextView
+        android:id="@+id/addressPoi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_s_small"
+        android:ellipsize="end"
+        android:maxLines="10"
+        tools:text="Адрес 1, 2"
+        android:textAppearance="@style/TextAppearance.App.Body2"
+        android:textColor="@color/description"
+        app:layout_constraintTop_toBottomOf="@+id/poiName" />
+
+    <LinearLayout
+        android:id="@+id/stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/padding_middle"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addressPoi">
+
+        <FrameLayout
+            android:id="@+id/star1"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field">
+            <ImageView
+                android:layout_width="@dimen/btn_general"
+                android:layout_height="@dimen/btn_general"
+                android:layout_gravity="center"
+                android:contentDescription="star 1"
+                android:src="@drawable/ic_star"
+                app:tint="@color/object_not_active" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/star2"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field">
+            <ImageView
+                android:layout_width="@dimen/btn_general"
+                android:layout_height="@dimen/btn_general"
+                android:layout_gravity="center"
+                android:contentDescription="star 2"
+                android:src="@drawable/ic_star"
+                app:tint="@color/object_not_active" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/star3"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field">
+            <ImageView
+                android:layout_width="@dimen/btn_general"
+                android:layout_height="@dimen/btn_general"
+                android:layout_gravity="center"
+                android:contentDescription="star 3"
+                android:src="@drawable/ic_star"
+                app:tint="@color/object_not_active" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/star4"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field">
+            <ImageView
+                android:layout_width="@dimen/btn_general"
+                android:layout_height="@dimen/btn_general"
+                android:layout_gravity="center"
+                android:contentDescription="star 4"
+                android:src="@drawable/ic_star"
+                app:tint="@color/object_not_active" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/star5"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="star 5"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field">
+            <ImageView
+                android:layout_width="@dimen/btn_general"
+                android:layout_height="@dimen/btn_general"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_star"
+                app:tint="@color/object_not_active" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/reviewInputLayout"
+        style="@style/CompactTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:layout_marginBottom="@dimen/padding_general"
+        app:counterEnabled="true"
+        app:counterMaxLength="1024"
+        app:counterTextColor="@color/description"
+        app:hintEnabled="false"
+        app:layout_constraintBottom_toTopOf="@+id/btnSave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stars">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/reviewEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top|start"
+            android:hint="@string/review_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white_hint" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+    <FrameLayout
+        android:id="@+id/btnSave"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/btn_field"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="edit or added review"
+        app:layout_constraintBottom_toBottomOf="@+id/fieldBtnSave"
+        app:layout_constraintEnd_toEndOf="@+id/fieldBtnSave"
+        app:layout_constraintStart_toStartOf="@+id/fieldBtnSave"
+        app:layout_constraintTop_toTopOf="@+id/fieldBtnSave"
+        tools:ignore="MissingConstraints,UselessLeaf" />
+    <LinearLayout
+        android:id="@+id/fieldBtnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_normal"
+        android:layout_marginStart="@dimen/padding_general"
+        android:layout_marginEnd="@dimen/padding_general"
+        android:padding="@dimen/padding_small"
+        android:background="@drawable/btn_poi_edit"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <ImageView
+            android:layout_width="@dimen/icon_general"
+            android:layout_height="@dimen/icon_general"
+            android:layout_marginEnd="@dimen/padding_s_small"
+            android:contentDescription="save review"
+            android:src="@drawable/ic_edit"
+            app:tint="@color/white" />
+        <TextView
+            android:id="@+id/textBtnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:gravity="center"
+            android:text="@string/Save"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

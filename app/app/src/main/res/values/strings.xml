@@ -39,6 +39,9 @@
 
     <string name="profile_error_load">Не удалось загрузить профиль</string>
 
-
     <string name="count_rate">(%1$d)</string>
+
+    <string name="Save">Сохранить</string>
+    <string name="review_hint">Напишите ваш отзыв…</string>
+    <string name="review_char_count">%1$d / %2$d</string>
 </resources>
