@@ -7,15 +7,19 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import sfedu.ictis.walkOfInterest.databinding.ItemPoiTagBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoiTag
+import sfedu.ictis.walkOfInterest.utils.calculateColorByCategory
 
 class PoiTagsAdapter : ListAdapter<DomainPoiTag, PoiTagsAdapter.TagViewHolder>(DIFF) {
-
-    inner class TagViewHolder(private val binding: ItemPoiTagBinding) :
+    class TagViewHolder(private val binding: ItemPoiTagBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(tag: DomainPoiTag) {
             binding.tagText.text = tag.subcategoryName
-            // TODO: иконка
+
+            val color = calculateColorByCategory(tag.categoryId ?: 0)
+            binding.root.setCardBackgroundColor(color)
+
+            // TODO: иконку подбираем по subcategoryId/categoryId, пока — дефолт из layout
         }
     }
 

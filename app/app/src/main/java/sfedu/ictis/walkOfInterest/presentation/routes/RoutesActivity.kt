@@ -1,6 +1,5 @@
 package sfedu.ictis.walkOfInterest.presentation.routes
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -31,6 +30,7 @@ import kotlinx.coroutines.flow.map
 import org.osmdroid.util.BoundingBox
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
+import sfedu.ictis.walkOfInterest.utils.calculateColorByCategory
 
 class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
     private val viewModel: RoutesViewModel by viewModel()
@@ -273,21 +273,6 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
         }
 
         map.invalidate()
-    }
-
-    /**
-     * Формула генерации цвета на основе ID.
-     * Если 0 -> Серый. Иначе раскидываем по цветовому кругу (Hue от 0 до 360).
-     */
-    private fun calculateColorByCategory(categoryId: Int): Int {
-        Log.i("color category", "$categoryId")
-        if (categoryId == 0) return Color.GRAY
-
-        // Сдвигаем цвет на 45 градусов по кругу для каждой новой категории
-        val hue = (categoryId * 45f) % 360f
-        val hsv = floatArrayOf(hue, 0.8f, 0.9f)
-
-        return Color.HSVToColor(hsv)
     }
 
     private fun centerMapOnce(from: DomainPoint, to: DomainPoint) {
