@@ -4,6 +4,7 @@ import org.json.JSONObject
 import retrofit2.Response
 import sfedu.ictis.walkOfInterest.data.api.PoiApi
 import sfedu.ictis.walkOfInterest.data.mapper.toDomain
+import sfedu.ictis.walkOfInterest.data.model.dto.ReviewRequestDto
 import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoiInfo
 import sfedu.ictis.walkOfInterest.domain.model.DomainReview
@@ -32,6 +33,26 @@ class PoiRepositoryImpl(
             body.map { it.toDomain() }
         } else {
             throw response.toException("Не удалось загрузить отзывы")
+        }
+    }
+
+    override suspend fun upsertMyReview(
+        poiId: Long,
+        rating: Int,
+        content: String?,
+        lang: String
+    ): Result<DomainReview> = runCatching {
+        val response = api.upsertMyReview(
+            id = poiId,
+            request = ReviewRequestDto(rating = rating, content = content),
+            lang = lang
+        )
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            body.toDomain()
+        } else {
+            throw response.toException("Не удалось сохранить отзыв")
         }
     }
 

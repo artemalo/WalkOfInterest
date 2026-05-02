@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -16,6 +17,7 @@ import sfedu.ictis.walkOfInterest.databinding.FragmentPoiBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoiInfo
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
+import sfedu.ictis.walkOfInterest.presentation.poi.review.ReviewMakeFragment
 import sfedu.ictis.walkOfInterest.presentation.profile.ReviewsAdapter
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import kotlin.math.roundToInt
@@ -38,6 +40,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
         setupListeners()
         observeState()
         observeEvents()
+        observeReviewMakeResult()
 
         val poiId = resolvePoiId()
         if (poiId == null) {
@@ -46,7 +49,6 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
             return
         }
 
-        // Если открыли с уже известной DomainPoi — покажем preview сразу
         readPoiArg()?.let { poi ->
             viewModel.preload(name = poi.name, rating = poi.rate, count = poi.count)
         }
@@ -73,12 +75,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
         }
 
         binding.btnSort.setOnClickListener { viewModel.toggleSortOrder() }
-        binding.iconSwap.setOnClickListener { viewModel.toggleSortOrder() }
-
-        binding.btnEdit.setOnClickListener {
-            // TODO: экран добавления/редактирования отзыва
-            ToastManager.show(requireContext(), "Скоро будет!")
-        }
+        binding.fieldBtnEdit.setOnClickListener { viewModel.onAddOrEditReviewClicked() }
     }
 
     private fun observeState() {
@@ -87,6 +84,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
                 viewModel.uiState.collect { state ->
                     state.poi?.let { renderPoi(it) }
                     renderReviews(state)
+                    renderEditButton(state)
                 }
             }
         }
@@ -99,10 +97,35 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
                     when (event) {
                         is PoiEvent.ShowError ->
                             ToastManager.show(requireContext(), event.message)
+                        is PoiEvent.OpenReviewMake -> openReviewMake(event)
                     }
                 }
             }
         }
+    }
+
+    private fun observeReviewMakeResult() {
+        setFragmentResultListener(ReviewMakeFragment.RESULT_KEY) { _, _ ->
+            viewModel.refreshAfterReviewSaved()
+        }
+    }
+
+    private fun openReviewMake(event: PoiEvent.OpenReviewMake) {
+        val fragment = ReviewMakeFragment.newInstance(
+            poiId = event.poiId,
+            poiName = event.poiName,
+            poiAddress = event.poiAddress,
+            existingRating = event.existingReview?.rating,
+            existingContent = event.existingReview?.content
+        )
+
+        val parent = (view?.parent as? View)
+        val containerId = parent?.id ?: R.id.fragment_container
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(containerId, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun renderPoi(poi: DomainPoiInfo) {
@@ -148,6 +171,10 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
 
         binding.textView3.text = list.size.toString()
         binding.titleAllReviews.text = pluralizeReviews(list.size)
+    }
+
+    private fun renderEditButton(state: PoiUiState) {
+        binding.textBtnEdit.text = if (state.myReview != null) "Изменить отзыв" else "Добавить отзыв"
     }
 
     private fun pluralizeReviews(count: Int): String {

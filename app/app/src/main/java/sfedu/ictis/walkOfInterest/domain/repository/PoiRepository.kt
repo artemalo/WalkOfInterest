@@ -7,4 +7,11 @@ interface PoiRepository {
     suspend fun getPoiById(id: Long, lang: String = "ru"): Result<DomainPoiInfo>
 
     suspend fun getReviewsByPoiId(id: Long, lang: String = "ru"): Result<List<DomainReview>>
+
+    suspend fun upsertMyReview(
+        poiId: Long,
+        rating: Int,
+        content: String?,
+        lang: String = "ru"
+    ): Result<DomainReview>
 }

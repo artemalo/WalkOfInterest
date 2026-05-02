@@ -45,11 +45,12 @@
 
         <activity
             android:name=".presentation.categories.CategoriesActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".presentation.routes.RoutesActivity"
             android:label="Routes"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
     </application>

@@ -12,12 +12,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoiInfo
+import sfedu.ictis.walkOfInterest.domain.model.PoiStatus
+import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiReviewsUseCase
 
 class PoiViewModel(
     private val getPoiByIdUseCase: GetPoiByIdUseCase,
-    private val getPoiReviewsUseCase: GetPoiReviewsUseCase
+    private val getPoiReviewsUseCase: GetPoiReviewsUseCase,
+    private val getMyProfileUseCase: GetMyProfileUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PoiUiState())
     val uiState: StateFlow<PoiUiState> = _uiState.asStateFlow()
@@ -26,6 +29,10 @@ class PoiViewModel(
     val events: SharedFlow<PoiEvent> = _events.asSharedFlow()
 
     private var loadedId: Long? = null
+
+    init {
+        loadCurrentUsername()
+    }
 
     fun load(poiId: Long) {
         if (loadedId == poiId && _uiState.value.poi != null) return
@@ -71,7 +78,7 @@ class PoiViewModel(
                     name = name,
                     description = null,
                     tags = emptyList(),
-                    status = sfedu.ictis.walkOfInterest.domain.model.PoiStatus.APPROVED,
+                    status = PoiStatus.APPROVED,
                     rating = rating ?: 0.0,
                     countRate = count ?: 0
                 )
@@ -81,5 +88,52 @@ class PoiViewModel(
 
     fun toggleSortOrder() {
         _uiState.update { it.copy(sortOrder = it.sortOrder.toggle()) }
+    }
+
+    fun onAddOrEditReviewClicked() {
+        val poiId = loadedId ?: return
+        val state = _uiState.value
+        viewModelScope.launch {
+            _events.emit(
+                PoiEvent.OpenReviewMake(
+                    poiId = poiId,
+                    poiName = state.poi?.name,
+                    poiAddress = state.poi?.point?.let { "%.6f, %.6f".format(it.lat, it.lon) },
+                    existingReview = state.myReview
+                )
+            )
+        }
+    }
+
+    fun refreshAfterReviewSaved() {
+        val poiId = loadedId ?: return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isReviewsLoading = true) }
+
+            val poiDeferred = async { getPoiByIdUseCase(poiId) }
+            val reviewsDeferred = async { getPoiReviewsUseCase(poiId) }
+
+            poiDeferred.await().onSuccess { poi ->
+                _uiState.update { it.copy(poi = poi) }
+            }
+
+            reviewsDeferred.await()
+                .onSuccess { reviews ->
+                    _uiState.update { it.copy(reviews = reviews, isReviewsLoading = false) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(isReviewsLoading = false) }
+                    _events.emit(PoiEvent.ShowError(e.message ?: "Не удалось обновить отзывы"))
+                }
+        }
+    }
+
+    private fun loadCurrentUsername() {
+        viewModelScope.launch {
+            getMyProfileUseCase()
+                .onSuccess { profile ->
+                    _uiState.update { it.copy(currentUsername = profile.username) }
+                }
+        }
     }
 }
