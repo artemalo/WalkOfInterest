@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import sfedu.ictis.walkOfInterest.BuildConfig
 import sfedu.ictis.walkOfInterest.data.api.AuthApi
+import sfedu.ictis.walkOfInterest.data.api.PoiApi
 import sfedu.ictis.walkOfInterest.data.api.RouteApi
 import sfedu.ictis.walkOfInterest.data.api.UserApi
 import sfedu.ictis.walkOfInterest.data.local.AppDatabase
@@ -19,11 +20,13 @@ import sfedu.ictis.walkOfInterest.data.local.TokenStorage
 import sfedu.ictis.walkOfInterest.data.local.TokenStorageImpl
 import sfedu.ictis.walkOfInterest.data.repository.AuthRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.MapSettingRepositoryImpl
+import sfedu.ictis.walkOfInterest.data.repository.PoiRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.TripRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.UserRepositoryImpl
 import sfedu.ictis.walkOfInterest.domain.repository.AuthRepository
 import sfedu.ictis.walkOfInterest.domain.repository.MapSettingRepository
+import sfedu.ictis.walkOfInterest.domain.repository.PoiRepository
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
 import sfedu.ictis.walkOfInterest.domain.repository.UserRepository
@@ -33,6 +36,8 @@ import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiByIdUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiReviewsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripsUseCase
@@ -49,6 +54,7 @@ import sfedu.ictis.walkOfInterest.presentation.category.CategoryViewModel
 import sfedu.ictis.walkOfInterest.presentation.details.TripDetailsViewModel
 import sfedu.ictis.walkOfInterest.presentation.generate.GenerateViewModel
 import sfedu.ictis.walkOfInterest.presentation.main.MainFeedViewModel
+import sfedu.ictis.walkOfInterest.presentation.poi.PoiViewModel
 import sfedu.ictis.walkOfInterest.presentation.profile.ProfileViewModel
 import sfedu.ictis.walkOfInterest.presentation.routes.RoutesViewModel
 import sfedu.ictis.walkOfInterest.presentation.splash.SplashViewModel
@@ -109,6 +115,15 @@ val networkModule = module {
             .build()
             .create(UserApi::class.java)
     }
+
+    single<PoiApi> {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(get(named("protected_client")))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(PoiApi::class.java)
+    }
 }
 
 val appModule = module {
@@ -136,6 +151,7 @@ val appModule = module {
     single<TripRepository> { TripRepositoryImpl(get()) }
     single<RouteRepository> { RouteRepositoryImpl(get()) }
     single<UserRepository> { UserRepositoryImpl(get()) }
+    single<PoiRepository> { PoiRepositoryImpl(get()) }
 
     // Domain Layer: Use Cases
     factory { RegisterUseCase(get()) }
@@ -154,6 +170,8 @@ val appModule = module {
     factory { UpdateNicknameUseCase(get()) }
     factory { LogoutUseCase(get()) }
     factory { LogoutAllUseCase(get()) }
+    factory { GetPoiByIdUseCase(get()) }
+    factory { GetPoiReviewsUseCase(get()) }
 
     // Presentation Layer: ViewModels
     viewModel { SplashViewModel(get()) }
@@ -165,4 +183,5 @@ val appModule = module {
     viewModel { CategoryViewModel() }
     viewModel { RoutesViewModel(get(), get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { PoiViewModel(get(), get()) }
 }

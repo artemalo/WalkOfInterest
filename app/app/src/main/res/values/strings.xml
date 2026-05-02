@@ -38,4 +38,7 @@
     <string name="edit_nickname_title">Никнейм</string>
 
     <string name="profile_error_load">Не удалось загрузить профиль</string>
+
+
+    <string name="count_rate">(%1$d)</string>
 </resources>
