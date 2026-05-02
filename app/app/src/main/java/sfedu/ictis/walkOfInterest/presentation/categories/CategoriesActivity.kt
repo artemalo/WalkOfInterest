@@ -3,7 +3,6 @@ package sfedu.ictis.walkOfInterest.presentation.categories
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
@@ -15,6 +14,7 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.presentation.category.CategoryFragment
 import sfedu.ictis.walkOfInterest.presentation.routes.RoutesActivity
+import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
@@ -51,7 +51,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
         }
 
         if (from == null || to == null) {
-            Toast.makeText(this, "Критично: Точки не найдены", Toast.LENGTH_SHORT).show()
+            ToastManager.show(this, "Критично: Точки не найдены")
             finish()
             return
         }
@@ -79,7 +79,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
         )
 
         if (categories == null) {
-            Toast.makeText(this, "Категории не найдены", Toast.LENGTH_SHORT).show()
+            ToastManager.show(this, "Категории не найдены")
         }
     }
 
@@ -128,7 +128,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
                         startActivity(intent)
                     }
                     is CategoriesEvent.ShowError -> {
-                        Toast.makeText(this@CategoriesActivity, event.message, Toast.LENGTH_SHORT).show()
+                        ToastManager.show(this@CategoriesActivity, event.message)
                     }
                 }
             }

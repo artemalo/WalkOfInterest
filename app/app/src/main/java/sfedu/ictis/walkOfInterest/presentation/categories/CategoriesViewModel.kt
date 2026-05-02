@@ -60,7 +60,7 @@ class CategoriesViewModel(
         val selectedCategories = state.categories.filter { it.isSelect }
 
         if (selectedCategories.isEmpty()) {
-            CategoriesEvent.ShowError("Выберите хотя бы одну категорию") // TODO TEST
+            CategoriesEvent.ShowError("Выберите хотя бы одну категорию")
             return
         }
 
@@ -110,7 +110,8 @@ class CategoriesViewModel(
                         subcategories = category.subcategories,
                         totalPois = allPoisCount,
                         selected = selectedCount,
-                        time = time
+                        time = time,
+                        isSelect = if (selectedCount <= 0) false else cat.isSelect
                     )
                 else cat
             }
