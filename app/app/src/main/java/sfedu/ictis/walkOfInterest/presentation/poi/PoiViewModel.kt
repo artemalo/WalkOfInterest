@@ -12,15 +12,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoiInfo
+import sfedu.ictis.walkOfInterest.domain.model.DomainReview
 import sfedu.ictis.walkOfInterest.domain.model.PoiStatus
+import sfedu.ictis.walkOfInterest.domain.model.ReactionType
+import sfedu.ictis.walkOfInterest.domain.repository.ReviewReactionState
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiReviewsUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.SetReviewReactionUseCase
 
 class PoiViewModel(
     private val getPoiByIdUseCase: GetPoiByIdUseCase,
     private val getPoiReviewsUseCase: GetPoiReviewsUseCase,
-    private val getMyProfileUseCase: GetMyProfileUseCase
+    private val getMyProfileUseCase: GetMyProfileUseCase,
+    private val setReviewReactionUseCase: SetReviewReactionUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PoiUiState())
     val uiState: StateFlow<PoiUiState> = _uiState.asStateFlow()
@@ -29,6 +34,8 @@ class PoiViewModel(
     val events: SharedFlow<PoiEvent> = _events.asSharedFlow()
 
     private var loadedId: Long? = null
+
+    private val pendingReactions = mutableSetOf<String>()
 
     init {
         loadCurrentUsername()
@@ -105,6 +112,55 @@ class PoiViewModel(
         }
     }
 
+    fun onLikeClicked(review: DomainReview) {
+        applyReaction(review, ReactionType.LIKE)
+    }
+
+    fun onDislikeClicked(review: DomainReview) {
+        applyReaction(review, ReactionType.DISLIKE)
+    }
+
+    private fun applyReaction(review: DomainReview, requested: ReactionType) {
+        val reviewId = review.id.toLongOrNull() ?: return
+        if (reviewId <= 0) return
+
+        if (pendingReactions.contains(review.id)) return
+        pendingReactions.add(review.id)
+
+        val original = _uiState.value.reviews.firstOrNull { it.id == review.id } ?: return
+        val optimistic = original.applyReactionLocally(requested)
+        _uiState.update { state ->
+            state.copy(reviews = state.reviews.map { if (it.id == review.id) optimistic else it })
+        }
+
+        viewModelScope.launch {
+            val result = setReviewReactionUseCase(reviewId = reviewId, type = requested)
+
+            result
+                .onSuccess { server ->
+                    _uiState.update { state ->
+                        state.copy(
+                            reviews = state.reviews.map { r ->
+                                if (r.id == review.id) r.applyServerState(server) else r
+                            }
+                        )
+                    }
+                }
+                .onFailure { e ->
+                    _uiState.update { state ->
+                        state.copy(
+                            reviews = state.reviews.map { r ->
+                                if (r.id == review.id) original else r
+                            }
+                        )
+                    }
+                    _events.emit(PoiEvent.ShowError(e.message ?: "Не удалось обновить реакцию"))
+                }
+
+            pendingReactions.remove(review.id)
+        }
+    }
+
     fun refreshAfterReviewSaved() {
         val poiId = loadedId ?: return
         viewModelScope.launch {
@@ -137,3 +193,38 @@ class PoiViewModel(
         }
     }
 }
+
+private fun DomainReview.applyReactionLocally(requested: ReactionType): DomainReview {
+    val current = this.myReaction
+    return when {
+        current == requested -> when (requested) {
+            ReactionType.LIKE -> copy(
+                likes = (likes - 1).coerceAtLeast(0),
+                myReaction = null
+            )
+            ReactionType.DISLIKE -> copy(
+                dislikes = (dislikes - 1).coerceAtLeast(0),
+                myReaction = null
+            )
+        }
+        current != null -> when (requested) {
+            ReactionType.LIKE -> copy(
+                likes = likes + 1,
+                dislikes = (dislikes - 1).coerceAtLeast(0),
+                myReaction = ReactionType.LIKE
+            )
+            ReactionType.DISLIKE -> copy(
+                likes = (likes - 1).coerceAtLeast(0),
+                dislikes = dislikes + 1,
+                myReaction = ReactionType.DISLIKE
+            )
+        }
+        else -> when (requested) {
+            ReactionType.LIKE -> copy(likes = likes + 1, myReaction = ReactionType.LIKE)
+            ReactionType.DISLIKE -> copy(dislikes = dislikes + 1, myReaction = ReactionType.DISLIKE)
+        }
+    }
+}
+
+private fun DomainReview.applyServerState(state: ReviewReactionState): DomainReview =
+    copy(likes = state.likes, dislikes = state.dislikes, myReaction = state.myReaction)

@@ -26,7 +26,13 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
     private val viewModel: PoiViewModel by viewModel()
 
     private val tagsAdapter = PoiTagsAdapter()
-    private val reviewsAdapter = ReviewsAdapter(mode = ReviewsAdapter.Mode.POI)
+    private val reviewsAdapter by lazy {
+        ReviewsAdapter(
+            mode = ReviewsAdapter.Mode.POI,
+            onLikeClicked = { review -> viewModel.onLikeClicked(review) },
+            onDislikeClicked = { review -> viewModel.onDislikeClicked(review) }
+        )
+    }
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -75,7 +81,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
         }
 
         binding.btnSort.setOnClickListener { viewModel.toggleSortOrder() }
-        binding.fieldBtnEdit.setOnClickListener { viewModel.onAddOrEditReviewClicked() }
+        binding.btnEdit.setOnClickListener { viewModel.onAddOrEditReviewClicked() }
     }
 
     private fun observeState() {
@@ -174,7 +180,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
     }
 
     private fun renderEditButton(state: PoiUiState) {
-        binding.textBtnEdit.text = if (state.myReview != null) "Изменить отзыв" else "Добавить отзыв"
+        binding.textBtnEdit.text = if (state.myReview != null) "Изменить" else "Добавить"
     }
 
     private fun pluralizeReviews(count: Int): String {

@@ -8,6 +8,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import sfedu.ictis.walkOfInterest.data.model.dto.PoiInfoDto
 import sfedu.ictis.walkOfInterest.data.model.dto.ReviewDto
+import sfedu.ictis.walkOfInterest.data.model.dto.ReviewReactionRequestDto
+import sfedu.ictis.walkOfInterest.data.model.dto.ReviewReactionResponseDto
 import sfedu.ictis.walkOfInterest.data.model.dto.ReviewRequestDto
 
 interface PoiApi {
@@ -29,4 +31,10 @@ interface PoiApi {
         @Body request: ReviewRequestDto,
         @Query("lang") lang: String = "ru"
     ): Response<ReviewDto>
+
+    @PUT("api/reviews/{reviewId}/reaction")
+    suspend fun setReviewReaction(
+        @Path("reviewId") reviewId: Long,
+        @Body request: ReviewReactionRequestDto
+    ): Response<ReviewReactionResponseDto>
 }

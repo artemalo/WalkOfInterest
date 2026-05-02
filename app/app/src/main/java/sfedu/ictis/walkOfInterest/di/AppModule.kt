@@ -47,6 +47,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.LogoutAllUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.LogoutUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.RegisterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.SetReviewReactionUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateNicknameUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpsertMyReviewUseCase
 import sfedu.ictis.walkOfInterest.presentation.auth.AuthViewModel
@@ -175,6 +176,7 @@ val appModule = module {
     factory { GetPoiByIdUseCase(get()) }
     factory { GetPoiReviewsUseCase(get()) }
     factory { UpsertMyReviewUseCase(get()) }
+    factory { SetReviewReactionUseCase(get()) }
 
     // Presentation Layer: ViewModels
     viewModel { SplashViewModel(get()) }
@@ -186,6 +188,6 @@ val appModule = module {
     viewModel { CategoryViewModel() }
     viewModel { RoutesViewModel(get(), get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { PoiViewModel(get(), get(), get()) }
+    viewModel { PoiViewModel(get(), get(), get(), get()) }
     viewModel { ReviewMakeViewModel(get()) }
 }

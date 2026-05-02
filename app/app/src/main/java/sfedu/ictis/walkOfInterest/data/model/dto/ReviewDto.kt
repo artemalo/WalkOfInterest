@@ -10,5 +10,7 @@ data class ReviewDto(
     val rating: Int?,
     val likes: Int?,
     val dislikes: Int?,
+
+    val myReaction: String?,
     val createdAt: String?
 )

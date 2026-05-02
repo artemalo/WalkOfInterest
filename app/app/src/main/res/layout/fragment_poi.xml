@@ -23,8 +23,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_field"
                 android:layout_marginTop="@dimen/padding_general"
-                android:layout_marginStart="@dimen/padding_general"
-                android:layout_marginEnd="@dimen/padding_general"
                 android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent">
@@ -74,8 +72,6 @@
                 android:layout_marginTop="@dimen/padding_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/padding_general"
-                android:layout_marginEnd="@dimen/padding_general"
                 app:layout_constraintTop_toBottomOf="@+id/header">
 
                 <TextView
@@ -171,9 +167,6 @@
                 android:clipToPadding="false"
                 android:orientation="horizontal"
 
-                android:paddingStart="@dimen/padding_general"
-                android:paddingEnd="@dimen/padding_general"
-
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
                 tools:listitem="@layout/item_poi_tag" />
@@ -183,8 +176,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_normal"
-                android:layout_marginStart="@dimen/padding_general"
-                android:layout_marginEnd="@dimen/padding_general"
 
                 android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@+id/itemList">
@@ -231,29 +222,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/address" />
 
                 <TextView
-                    android:id="@+id/titleReviews"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padding_normal"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Отзывы"
-                    android:textAppearance="@style/TextAppearance.App.H2"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toBottomOf="@+id/description" />
-
-                <View
-                    android:id="@+id/view2"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="@dimen/padding_normal"
-                    android:layout_gravity="center"
-                    android:background="@drawable/handle_shape"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/titleReviews" />
-
-                <TextView
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -264,7 +232,7 @@
                     android:textAppearance="@style/TextAppearance.App.H2"
                     android:textColor="@color/white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view2" />
+                    app:layout_constraintTop_toBottomOf="@+id/description" />
 
                 <TextView
                     android:id="@+id/titleAllReviews"
@@ -344,6 +312,7 @@
     <LinearLayout
         android:id="@+id/fieldBtnEdit"
         android:layout_width="wrap_content"
+        android:minWidth="@dimen/btn_field"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/padding_normal"
         android:layout_marginStart="@dimen/padding_general"
@@ -354,21 +323,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-        <ImageView
-            android:layout_width="@dimen/icon_general"
-            android:layout_height="@dimen/icon_general"
-            android:layout_marginEnd="@dimen/padding_s_small"
-            android:contentDescription="edit review"
-            android:src="@drawable/ic_edit"
-            app:tint="@color/white" />
         <TextView
             android:id="@+id/textBtnEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:drawableStartCompat="@drawable/ic_edit"
+            app:drawableTint="@color/white"
             android:ellipsize="end"
             android:maxLines="1"
             android:gravity="center"
-            android:text="Добавить отзыв"
+            android:text=""
             android:textAppearance="@style/TextAppearance.App.H2"
             android:textColor="@color/white" />
     </LinearLayout>

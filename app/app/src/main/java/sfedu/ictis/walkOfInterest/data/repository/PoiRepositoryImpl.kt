@@ -4,11 +4,14 @@ import org.json.JSONObject
 import retrofit2.Response
 import sfedu.ictis.walkOfInterest.data.api.PoiApi
 import sfedu.ictis.walkOfInterest.data.mapper.toDomain
+import sfedu.ictis.walkOfInterest.data.model.dto.ReviewReactionRequestDto
 import sfedu.ictis.walkOfInterest.data.model.dto.ReviewRequestDto
 import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoiInfo
 import sfedu.ictis.walkOfInterest.domain.model.DomainReview
+import sfedu.ictis.walkOfInterest.domain.model.ReactionType
 import sfedu.ictis.walkOfInterest.domain.repository.PoiRepository
+import sfedu.ictis.walkOfInterest.domain.repository.ReviewReactionState
 
 class PoiRepositoryImpl(
     private val api: PoiApi
@@ -53,6 +56,32 @@ class PoiRepositoryImpl(
             body.toDomain()
         } else {
             throw response.toException("Не удалось сохранить отзыв")
+        }
+    }
+
+    override suspend fun setReviewReaction(
+        reviewId: Long,
+        type: ReactionType
+    ): Result<ReviewReactionState> = runCatching {
+        val response = api.setReviewReaction(
+            reviewId = reviewId,
+            request = ReviewReactionRequestDto(type = type.name)
+        )
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            ReviewReactionState(
+                reviewId = body.reviewId,
+                likes = body.likes,
+                dislikes = body.dislikes,
+                myReaction = when (body.myReaction?.uppercase()) {
+                    "LIKE" -> ReactionType.LIKE
+                    "DISLIKE" -> ReactionType.DISLIKE
+                    else -> null
+                }
+            )
+        } else {
+            throw response.toException("Не удалось поставить реакцию")
         }
     }
 

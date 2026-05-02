@@ -4,6 +4,7 @@ import sfedu.ictis.walkOfInterest.data.model.dto.ReviewDto
 import sfedu.ictis.walkOfInterest.data.model.dto.UserProfileDto
 import sfedu.ictis.walkOfInterest.domain.model.DomainReview
 import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
+import sfedu.ictis.walkOfInterest.domain.model.ReactionType
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -29,10 +30,17 @@ fun ReviewDto.toDomain(): DomainReview = DomainReview(
     rating = rating ?: 0,
     likes = likes ?: 0,
     dislikes = dislikes ?: 0,
+    myReaction = myReaction.toReactionTypeOrNull(),
     createdAtMillis = parseIsoToMillis(createdAt)
 )
 
 
+
+private fun String?.toReactionTypeOrNull(): ReactionType? = when (this?.uppercase()) {
+    "LIKE" -> ReactionType.LIKE
+    "DISLIKE" -> ReactionType.DISLIKE
+    else -> null
+}
 
 private fun parseIsoToMillis(iso: String?): Long {
     if (iso.isNullOrBlank()) return System.currentTimeMillis()

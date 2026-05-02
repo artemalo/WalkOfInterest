@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ItemReviewBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainReview
+import sfedu.ictis.walkOfInterest.domain.model.ReactionType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -56,6 +57,9 @@ class ReviewsAdapter(
 
             binding.likes.text = review.likes.toString()
             binding.dislikes.text = review.dislikes.toString()
+
+            binding.btnLike.isChecked = review.myReaction == ReactionType.LIKE
+            binding.btnDislike.isChecked = review.myReaction == ReactionType.DISLIKE
 
             if (mode == Mode.POI && onLikeClicked != null) {
                 binding.btnLike.isEnabled = true

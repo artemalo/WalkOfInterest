@@ -14,5 +14,7 @@ data class DomainReview(
     val rating: Int,
     val likes: Int,
     val dislikes: Int,
+
+    val myReaction: ReactionType? = null,
     val createdAtMillis: Long
 ) : Parcelable
