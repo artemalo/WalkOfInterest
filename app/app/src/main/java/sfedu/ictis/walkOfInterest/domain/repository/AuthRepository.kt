@@ -7,4 +7,7 @@ import sfedu.ictis.walkOfInterest.data.model.RegisterRequest
 interface AuthRepository {
     suspend fun login(request: LoginRequest): Result<AuthResponse>
     suspend fun register(request: RegisterRequest): Result<AuthResponse>
+
+    suspend fun logout(): Result<Unit>
+    suspend fun logoutAll(): Result<Unit>
 }

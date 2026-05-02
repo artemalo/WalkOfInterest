@@ -172,7 +172,7 @@
             android:layout_height="@dimen/btn_small"
             android:layout_marginStart="@dimen/padding_middle"
             android:layout_gravity="center"
-            android:gravity="start|center_vertical"
+            android:gravity="end|center_vertical"
             android:text=""
             android:ellipsize="end"
             android:maxLines="1"

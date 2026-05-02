@@ -37,12 +37,8 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
         binding.username.setOnClickListener { showEditNicknameDialog() }
         binding.textUsername.setOnClickListener { showEditNicknameDialog() }
 
-        binding.fieldBtnLogout.setOnClickListener {
-            // TODO: viewModel.logout()
-        }
-        binding.fieldBtnLogoutAll.setOnClickListener {
-            // TODO: viewModel.logoutAll()
-        }
+        binding.fieldBtnLogout.setOnClickListener { viewModel.logout() }
+        binding.fieldBtnLogoutAll.setOnClickListener { viewModel.logoutAll() }
     }
 
     private fun showEditNicknameDialog() {
@@ -55,6 +51,7 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     state.profile?.let { renderProfile(it) }
+                    renderLogoutButtons(state.isLoggingOut)
                 }
             }
         }
@@ -67,6 +64,12 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
         binding.name.text = profile.firstName
         binding.lastname.text = profile.lastName
         binding.bio.text = profile.bio ?: ""
+    }
+
+    private fun renderLogoutButtons(isLoggingOut: Boolean) {
+        val enabled = !isLoggingOut
+        binding.fieldBtnLogout.isEnabled = enabled
+        binding.fieldBtnLogoutAll.isEnabled = enabled
     }
 
     companion object {

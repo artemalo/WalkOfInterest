@@ -14,12 +14,16 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
 import sfedu.ictis.walkOfInterest.domain.repository.UserRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetUserReviewsUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.LogoutAllUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.LogoutUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateNicknameUseCase
 
 class ProfileViewModel(
     private val getMyProfileUseCase: GetMyProfileUseCase,
     private val getUserReviewsUseCase: GetUserReviewsUseCase,
     private val updateNicknameUseCase: UpdateNicknameUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val logoutAllUseCase: LogoutAllUseCase,
     private val userRepository: UserRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -114,5 +118,35 @@ class ProfileViewModel(
 
     fun clearNicknameError() {
         _uiState.update { it.copy(nicknameError = null) }
+    }
+
+    fun logout() {
+        if (_uiState.value.isLoggingOut) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoggingOut = true) }
+
+            logoutUseCase().onSuccess {
+                _events.emit(ProfileEvent.LoggedOut)
+            }.onFailure { e ->
+                _uiState.update { it.copy(isLoggingOut = false) }
+                _events.emit(ProfileEvent.ShowError(e.message ?: "Не удалось выйти"))
+            }
+        }
+    }
+
+    fun logoutAll() {
+        if (_uiState.value.isLoggingOut) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoggingOut = true) }
+
+            logoutAllUseCase().onSuccess {
+                _events.emit(ProfileEvent.LoggedOut)
+            }.onFailure { e ->
+                _uiState.update { it.copy(isLoggingOut = false) }
+                _events.emit(ProfileEvent.ShowError(e.message ?: "Не удалось выйти со всех устройств"))
+            }
+        }
     }
 }

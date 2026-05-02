@@ -13,7 +13,9 @@ data class ProfileUiState(
     val isEditMode: Boolean = false,
 
     val isUpdatingNickname: Boolean = false,
-    val nicknameError: String? = null
+    val nicknameError: String? = null,
+
+    val isLoggingOut: Boolean = false
 ) {
     val sortedReviews: List<DomainReview>
         get() = when (sortOrder) {
@@ -26,4 +28,5 @@ sealed class ProfileEvent {
     data class ShowError(val message: String) : ProfileEvent()
     data object NicknameUpdated : ProfileEvent()
     data object CloseEditScreen : ProfileEvent()
+    data object LoggedOut : ProfileEvent()
 }

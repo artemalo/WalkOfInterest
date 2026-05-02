@@ -122,7 +122,8 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
                             ToastManager.show(this@ProfileActivity, event.message)
 
                         ProfileEvent.NicknameUpdated,
-                        ProfileEvent.CloseEditScreen -> Unit
+                        ProfileEvent.CloseEditScreen,
+                        ProfileEvent.LoggedOut -> Unit
                     }
                 }
             }

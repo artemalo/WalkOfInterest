@@ -29,15 +29,17 @@ import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
 import sfedu.ictis.walkOfInterest.domain.repository.UserRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.DeleteTripByIdUseCase
-import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetUserReviewsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.LoginUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.LogoutAllUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.LogoutUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.RegisterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateNicknameUseCase
@@ -60,9 +62,9 @@ val networkModule = module {
             .authenticator(
                 TokenAuthenticator(
                     get(),
-                    get(named("auth_api")
-                ),
-                get())
+                    get(named("auth_api")),
+                    get()
+                )
             ) // Обновляем токен, если 401
             .addInterceptor(AuthInterceptor(get()))
             .build()
@@ -76,6 +78,15 @@ val networkModule = module {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(get(named("auth_client")))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AuthApi::class.java)
+    }
+
+    single<AuthApi>(named("protected_auth_api")) {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(get(named("protected_client")))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AuthApi::class.java)
@@ -113,7 +124,14 @@ val appModule = module {
     single { get<AppDatabase>().tripDao() }
 
     // single
-    single<AuthRepository> { AuthRepositoryImpl(get(named("auth_api")), get()) }
+    single<AuthRepository> {
+        AuthRepositoryImpl(
+            authApi = get(named("auth_api")),
+            protectedAuthApi = get(named("protected_auth_api")),
+            tokenStorage = get(),
+            sessionManager = get()
+        )
+    }
     single<MapSettingRepository> { MapSettingRepositoryImpl() }
     single<TripRepository> { TripRepositoryImpl(get()) }
     single<RouteRepository> { RouteRepositoryImpl(get()) }
@@ -134,6 +152,8 @@ val appModule = module {
     factory { GetMyProfileUseCase(get()) }
     factory { GetUserReviewsUseCase(get()) }
     factory { UpdateNicknameUseCase(get()) }
+    factory { LogoutUseCase(get()) }
+    factory { LogoutAllUseCase(get()) }
 
     // Presentation Layer: ViewModels
     viewModel { SplashViewModel(get()) }
@@ -141,8 +161,8 @@ val appModule = module {
     viewModel { TripDetailsViewModel(get(), get()) }
     viewModel { MainFeedViewModel(get()) }
     viewModel { GenerateViewModel(get(), get(), get()) }
-    viewModel { CategoriesViewModel(get())}
+    viewModel { CategoriesViewModel(get()) }
     viewModel { CategoryViewModel() }
     viewModel { RoutesViewModel(get(), get(), get()) }
-    viewModel { ProfileViewModel(get(), get(), get(), get()) }
+    viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get()) }
 }
