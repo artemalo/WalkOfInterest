@@ -14,10 +14,20 @@ import sfedu.ictis.walkOfInterest.databinding.ActivityProfileBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
+import sfedu.ictis.walkOfInterest.utils.openPoiFragment
 
 class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
     private val viewModel: ProfileViewModel by viewModel()
-    private val reviewsAdapter = ReviewsAdapter(mode = ReviewsAdapter.Mode.PROFILE)
+
+    private val reviewsAdapter = ReviewsAdapter(
+        mode = ReviewsAdapter.Mode.PROFILE,
+        onReviewClicked = { review ->
+            val poiId = review.poiId.toLongOrNull()
+            if (poiId != null && poiId > 0) {
+                openPoiFragment(poiId, binding.fragmentContainer)
+            }
+        }
+    )
 
     private val backPressedCallback = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {

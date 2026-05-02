@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.map
 import org.osmdroid.util.BoundingBox
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
+import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
 import sfedu.ictis.walkOfInterest.utils.calculateColorByCategory
 
 class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
@@ -97,7 +98,6 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
 
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // Сообщаем ViewModel, что состояние изменилось (например, юзер потянул рукой)
                 viewModel.onBottomSheetStateChanged(newState)
             }
 
@@ -205,14 +205,15 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
 
         val newPoiMarkers = mutableListOf<Marker>()
         points.forEach { point ->
-            val marker = Marker(map).apply {
+            val marker = LongPressMarker(map) { _ ->
+                openPoiFragment(point)
+            }.apply {
                 position = GeoPoint(point.lat, point.lon)
                 title = """
-                    |${point.name}
-                    |Категория: ${point.nameCat}
-                    |Подкатегория: ${point.nameSubcat}
-                    """.trimMargin()
-
+                |${point.name}
+                |Категория: ${point.nameCat}
+                |Подкатегория: ${point.nameSubcat}
+                """.trimMargin()
 
                 val newIcon = this.icon?.constantState?.newDrawable()?.mutate()
                 newIcon?.setTint(calculateColorByCategory(point.categoryId))
@@ -293,6 +294,22 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
         val currentHeight = peekHeight + (fullHeight - peekHeight) * slideOffset
 
         binding.map.setPadding(0, 0, 0, currentHeight.toInt())
+    }
+
+    private fun openPoiFragment(point: RoutePoint) {
+        binding.fragmentContainer.visibility = View.VISIBLE
+
+        val fragment = PoiFragment.newInstance(point.id)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                binding.fragmentContainer.visibility = View.GONE
+            }
+        }
     }
 
 

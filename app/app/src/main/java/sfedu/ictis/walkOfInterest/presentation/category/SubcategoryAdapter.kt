@@ -11,14 +11,14 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
 
 class SubcategoryAdapter(
     private val onSeeAllClick: (DomainSubCategory) -> Unit,
-    private val onPoiClick: (subcategoryId: Int, poiId: Long) -> Unit
+    private val onPoiClick: (subcategoryId: Int, poi: DomainPoi) -> Unit
 ) : ListAdapter<DomainSubCategory, SubcategoryAdapter.SubcatViewHolder>(SubcatDiffCallback()) {
     inner class SubcatViewHolder(private val binding: ItemSubcategoryBinding) : RecyclerView.ViewHolder(binding.root) {
         private var currentSubcategoryId: Int = -1
 
         private val poiAdapter = PoiAdapter { poi ->
             if (currentSubcategoryId != -1) {
-                onPoiClick(currentSubcategoryId, poi.id)
+                onPoiClick(currentSubcategoryId, poi)
             }
         }
 

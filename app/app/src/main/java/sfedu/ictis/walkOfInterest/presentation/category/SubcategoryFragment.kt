@@ -9,9 +9,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentSubcategoryBinding
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
+import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
 
 class SubcategoryFragment : BaseFragment<FragmentSubcategoryBinding>() {
     private val viewModel: CategoryViewModel by activityViewModel()
@@ -54,11 +57,23 @@ class SubcategoryFragment : BaseFragment<FragmentSubcategoryBinding>() {
 
     private fun setupRecyclerView() {
         adapter = PoiAdapter(isVerticalList = true) { poi ->
-            viewModel.onPoiClicked(subcategoryId, poi.id)
+            if (viewModel.uiState.value.isEditMode) {
+                viewModel.onPoiClicked(subcategoryId, poi.id)
+            } else {
+                openPoi(poi)
+            }
         }
 
         binding.itemList.layoutManager = LinearLayoutManager(requireContext())
         binding.itemList.adapter = adapter
+    }
+
+    private fun openPoi(poi: DomainPoi) {
+        val fragment = PoiFragment.newInstance(poi)
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun observeViewModel() {

@@ -14,9 +14,11 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentCategoryBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
+import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
@@ -56,8 +58,12 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
             onSeeAllClick = { subcategory ->
                 openSubcategoryFragment(subcategory)
             },
-            onPoiClick = { subcategoryId, poiId ->
-                viewModel.onPoiClicked(subcategoryId, poiId)
+            onPoiClick = { subcategoryId, poi ->
+                if (viewModel.uiState.value.isEditMode) {
+                    viewModel.onPoiClicked(subcategoryId, poi.id)
+                } else {
+                    openPoi(poi)
+                }
             }
         )
         binding.itemList.layoutManager = LinearLayoutManager(requireContext())
@@ -136,6 +142,14 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
         val fragment = SubcategoryFragment.newInstance(subcategory)
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_subcategory, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun openPoi(poi: DomainPoi) {
+        val fragment = PoiFragment.newInstance(poi)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }

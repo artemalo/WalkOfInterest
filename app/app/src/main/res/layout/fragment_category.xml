@@ -29,32 +29,36 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
-            android:id="@+id/btnClose"
+            android:id="@+id/frame_ok_close"
             android:layout_width="@dimen/btn_field"
             android:layout_height="@dimen/btn_field"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-            <ImageView
+            <ImageButton
+                android:id="@+id/btnOk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_gravity="start|center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="button back"
-                android:src="@drawable/ic_arrow_l" />
+                android:src="@drawable/ic_done"/>
+
+            <FrameLayout
+                android:id="@+id/btnClose"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:contentDescription="button back"
+                    android:src="@drawable/ic_arrow_l" />
+            </FrameLayout>
         </FrameLayout>
 
-        <ImageButton
-            android:id="@+id/btnOk"
-            android:layout_width="@dimen/btn_field"
-            android:layout_height="@dimen/btn_field"
 
-            android:visibility="gone"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="button back"
-            android:src="@drawable/ic_done"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/categoryName"
@@ -67,7 +71,7 @@
             android:textColor="@color/white_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/frame"
-            app:layout_constraintStart_toEndOf="@+id/btnClose"
+            app:layout_constraintStart_toEndOf="@+id/frame_ok_close"
             app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
