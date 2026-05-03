@@ -1,12 +1,16 @@
 package sfedu.ictis.walkOfInterest.presentation.routes
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ItemRouteBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
+import sfedu.ictis.walkOfInterest.utils.calculateRouteColor
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class RoutesAdapter(
@@ -36,6 +40,25 @@ class RoutesAdapter(
         fun bind(route: DomainRoute) {
             binding.routeTime.text = formatMinutes(route.minTime)
             binding.routeSteps.text = route.steps.toString()
+
+            val context = binding.root.context
+
+            val bestTime = currentList.firstOrNull()?.minTime ?: route.minTime
+            val timeDiff = route.minTime - bestTime
+            val routeColor = calculateRouteColor(context, timeDiff)
+
+            val colorStateList = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_pressed),
+                    intArrayOf()
+                ),
+                intArrayOf(
+                    ContextCompat.getColor(context, R.color.object_selected),
+                    routeColor
+                )
+            )
+
+            binding.constraintLayout4.backgroundTintList = colorStateList
         }
     }
 
