@@ -42,7 +42,10 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
             arguments?.getParcelable(ARG_CATEGORY)
         }
 
-        category?.let { viewModel.initCategory(it) }
+        category?.let {
+            val parentState = categoriesViewModel.uiState.value
+            viewModel.initCategory(it, parentState.from, parentState.to)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -23,4 +23,7 @@ interface RouteApi {
 
     @POST("api/poi/route/routes")
     suspend fun getRoutes(@Body points: List<PointDto>): Response<List<RouteDto>>
+
+    @POST("api/poi/generate/time")
+    suspend fun getTime(@Body points: List<PointDto>): Response<Long>
 }

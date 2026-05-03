@@ -10,4 +10,5 @@ interface RouteRepository {
     suspend fun searchWalk(from: DomainPoint, to: DomainPoint, time: Int, lang: String = "ru"): Result<List<DomainCategory>>
 
     suspend fun getRoutes(points: List<DomainPoint>): Result<List<DomainRoute>>
+    suspend fun getTime(points: List<DomainPoint>): Result<Int>
 }

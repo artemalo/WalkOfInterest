@@ -87,6 +87,30 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
         }
     }
 
+    override suspend fun getTime(points: List<DomainPoint>): Result<Int> {
+        return runCatching {
+            val request = points.map { PointDto(it.lat, it.lon) }
+
+            val response = api.getTime(request)
+            val body = response.body()
+
+            if (response.isSuccessful && body != null) {
+                body.toInt()
+            } else {
+                if (response.code() == 400) {
+                    val errorMsg = response.errorBody()?.string()?.let {
+                        JSONObject(it).getString(JSONObject(it).keys().next())
+                    } ?: "Ошибка данных"
+                    throw ServerException(errorMsg)
+                } else {
+                    throw Exception("Ошибка ${response.code()}")
+                }
+            }
+        }
+    }
+
+
+
     private fun DomainPoint.toDto() = PointDto(lat, lon)
     private fun PointDto.toDomain() = DomainPoint(lat, lon)
 

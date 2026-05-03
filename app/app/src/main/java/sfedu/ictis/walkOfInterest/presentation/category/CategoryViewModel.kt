@@ -10,19 +10,23 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
+import sfedu.ictis.walkOfInterest.domain.usecase.GetCategoryTimeUseCase
 
 
-class CategoryViewModel : ViewModel() {
+class CategoryViewModel(
+    private val getCategoryTimeUseCase: GetCategoryTimeUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(CategoryUiState())
     val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()
 
     private var backupCategory: DomainCategory? = null
 
-    fun initCategory(category: DomainCategory) {
+    fun initCategory(category: DomainCategory, from: DomainPoint, to: DomainPoint) {
         val sortedCategory = sortCategoryPois(category)
         updateCategoryState(sortedCategory)
 
-        _uiState.update { it.copy(time = category.time) }
+        _uiState.update { it.copy(time = category.time, from = from, to = to) }
     }
 
     fun toggleEditMode() {
@@ -80,8 +84,18 @@ class CategoryViewModel : ViewModel() {
     }
 
     private suspend fun fetchTimeFromServer(category: DomainCategory): Int {
-        kotlinx.coroutines.delay(1500) // TODO: GET /time
-        return 1
+        val state = _uiState.value
+        val from = state.from
+        val to = state.to
+
+        if (from == null || to == null) {
+            Log.w("CategoryViewModel", "fetchTimeFromServer: from/to == null (fallback to category.time)")
+            return category.time
+        }
+
+        return getCategoryTimeUseCase(from, to, category)
+            .onFailure { Log.e("CategoryViewModel", "fetchTimeFromServer failed", it) }
+            .getOrDefault(category.time)
     }
 
     fun onPoiClicked(subcategoryId: Int, poiId: Long) {
