@@ -17,6 +17,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
+import kotlin.math.roundToInt
 
 class GenerateViewModel(
     private val getMapCenterUseCase: GetMapCenterUseCase,
@@ -113,6 +114,14 @@ class GenerateViewModel(
             return
         }
 
+        val minAcceptable = (state.minTimeMinutes * 1.5).roundToInt()
+        if (state.selectedTimeMinutes < minAcceptable) {
+            viewModelScope.launch {
+                _events.emit(GenerateEvent.ShowError("Минимум для маршрута: ${formatMinutes(minAcceptable)}"))
+            }
+            return
+        }
+
         val from = state.pointFrom ?: return
         val to = state.pointTo ?: return
         val time = state.selectedTimeMinutes
@@ -154,13 +163,13 @@ class GenerateViewModel(
     }
 
     fun onTimeSelected(minutes: Int) {
-        val min = _uiState.value.minTimeMinutes ?: 0
+        val minAcceptable = (_uiState.value.minTimeMinutes * 1.5).roundToInt()
 
-        val finalMinutes = if (minutes < min) min else minutes
+        val finalMinutes = if (minutes < minAcceptable) minAcceptable else minutes
 
-        if (minutes < min) {
+        if (minutes < minAcceptable) {
             viewModelScope.launch {
-                _events.emit(GenerateEvent.ShowError("Время не может быть меньше минимального маршрута (${formatMinutes(min)})"))
+                _events.emit(GenerateEvent.ShowError("Минимум: ${formatMinutes(minAcceptable)}"))
             }
         }
 
@@ -189,7 +198,7 @@ class GenerateViewModel(
     private fun validateCalculateButton() {
         val state = _uiState.value
         val isEnabled = state.pointFrom != null && state.pointTo != null &&
-                state.selectedTimeMinutes >= (state.minTimeMinutes ?: 0)
+                state.selectedTimeMinutes >= state.minTimeMinutes
 
         _uiState.update { it.copy(isCalculateEnabled = isEnabled) }
     }
