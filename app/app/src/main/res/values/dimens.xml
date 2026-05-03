@@ -11,7 +11,9 @@
     <dimen name="corner_radius_general">24dp</dimen>
     <dimen name="corner_field">14dp</dimen>
 
+    <dimen name="padding_scroll">128dp</dimen>
     <dimen name="padding_title">64dp</dimen>
+    <dimen name="padding_btn">48dp</dimen>
     <dimen name="padding_general">24dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
     <dimen name="padding_middle">12dp</dimen>

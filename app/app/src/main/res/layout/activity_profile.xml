@@ -7,15 +7,14 @@
     android:id="@+id/profileRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/general"
-    android:paddingStart="@dimen/padding_general"
-    android:paddingEnd="@dimen/padding_general"
-    >
+    android:background="@color/general" >
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -241,8 +240,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/padding_general"
-        android:layout_marginStart="@dimen/padding_general"
-        android:layout_marginEnd="@dimen/padding_general"
+        android:layout_marginStart="@dimen/padding_btn"
+        android:layout_marginEnd="@dimen/padding_btn"
         android:padding="@dimen/padding_small"
         android:background="@drawable/btn_next"
         android:backgroundTint="@color/object_orange"

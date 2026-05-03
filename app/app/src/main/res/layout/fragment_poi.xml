@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    android:paddingStart="@dimen/padding_general"
+    android:paddingEnd="@dimen/padding_general"
     android:background="@color/general">
 
     <androidx.core.widget.NestedScrollView
@@ -11,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:paddingBottom="@dimen/padding_title"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -312,7 +316,6 @@
     <LinearLayout
         android:id="@+id/fieldBtnEdit"
         android:layout_width="wrap_content"
-        android:minWidth="@dimen/btn_field"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/padding_normal"
         android:layout_marginStart="@dimen/padding_general"
@@ -327,6 +330,7 @@
             android:id="@+id/textBtnEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minWidth="@dimen/padding_scroll"
             app:drawableStartCompat="@drawable/ic_edit"
             app:drawableTint="@color/white"
             android:ellipsize="end"
