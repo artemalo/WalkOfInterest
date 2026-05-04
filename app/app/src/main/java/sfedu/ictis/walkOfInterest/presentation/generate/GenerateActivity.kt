@@ -3,6 +3,7 @@ package sfedu.ictis.walkOfInterest.presentation.generate
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
+import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -111,6 +112,17 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
                     if (isMapReady) {
                         drawCurrentState(state)
                     }
+
+                    binding.sliderBlock.alpha = if (state.isTimePickerEnabled) 1f else 0.4f
+                    binding.seekBarPoi.isEnabled = state.isTimePickerEnabled
+
+                    binding.seekBarPoi.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                        override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
+                            // TODO: if (fromUser) viewModel.onPoiCountChanged(progress)
+                        }
+                        override fun onStartTrackingTouch(sb: SeekBar?) = Unit
+                        override fun onStopTrackingTouch(sb: SeekBar?) = Unit
+                    })
                 }
             }
         }
