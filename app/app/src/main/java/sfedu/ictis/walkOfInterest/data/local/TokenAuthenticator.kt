@@ -25,8 +25,11 @@ class TokenAuthenticator(
         val refreshResponse = runBlocking {
             try {
                 authApi.refresh(RefreshRequest(refreshToken))
-            } catch (_: Exception) {
-                null
+            } catch (e: retrofit2.HttpException) {
+                if (e.code() == 401 || e.code() == 403) null
+                else throw e
+            } catch (_: java.io.IOException) {
+                return@runBlocking null
             }
         }
 
