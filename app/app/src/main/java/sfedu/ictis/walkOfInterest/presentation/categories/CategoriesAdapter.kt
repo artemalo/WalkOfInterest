@@ -64,7 +64,7 @@ class CategoriesAdapter(
             binding.framePicture.setPadding(paddingPx, paddingPx, paddingPx, paddingPx)
 
             val context = binding.root.context
-            val colorResTime = if (category.selected > 0) R.color.object_orange else R.color.object_not_active
+            val colorResTime = if (category.selected > 0) R.color.white_empty else R.color.object_not_active
             val colorResSelected = if (category.selected > 0) R.color.`object` else R.color.object_not_active
 
             TextViewCompat.setCompoundDrawableTintList(

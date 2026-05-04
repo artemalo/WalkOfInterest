@@ -63,7 +63,7 @@
             app:layout_constraintStart_toEndOf="@+id/imageButton"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <FrameLayout
+        <Space
             android:id="@+id/frame"
             android:layout_width="@dimen/btn_field"
             android:layout_height="@dimen/btn_field"
@@ -75,9 +75,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/searchBar"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_field"
         android:paddingStart="@dimen/padding_general"
@@ -85,19 +84,39 @@
         app:layout_constraintTop_toBottomOf="@+id/header">
 
         <Space
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+            android:id="@+id/space2"
+            android:layout_width="@dimen/btn_field"
+            android:layout_height="@dimen/btn_field"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/timeTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:text=""
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/white_gray"
+            app:drawableStartCompat="@drawable/ic_clock"
+            app:drawableTint="@color/object_orange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnSwap"
+            app:layout_constraintStart_toEndOf="@+id/space2"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/btnSwap"
-            android:src="@drawable/ic_swap"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="@dimen/btn_field"
             android:layout_height="@dimen/btn_field"
-            android:contentDescription="button swap"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="button swap"
+            android:src="@drawable/ic_swap"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/bottomSheet"
@@ -163,43 +182,29 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/icon_general">
-            <LinearLayout
+            <TextView
+                android:id="@+id/countSpotsCurrent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/padding_middle"
-                android:orientation="horizontal"
+                android:text="none"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white_gray"
+                android:gravity="start|center_vertical"
+                app:drawableStartCompat="@drawable/ic_point"
+                app:drawableTint="@color/object"/>
+
+            <TextView
+                android:id="@+id/timeCurrent"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    app:tint="@color/green"
-                    android:src="@drawable/ic_walk" />
-                <TextView
-                    android:id="@+id/timeTotal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="none"
-                    android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/white_gray"/>
-            </LinearLayout>
-            <LinearLayout
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/icon_general">
-                <ImageView
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    app:tint="@color/object_orange"
-                    android:src="@drawable/ic_clock" />
-                <TextView
-                    android:id="@+id/timeCurrent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="none"
-                    android:textAlignment="textStart"
-                    android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/white_gray"/>
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:text="none"
+                android:textAlignment="textStart"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white_gray"
+                android:gravity="start|center_vertical"
+                app:drawableStartCompat="@drawable/ic_walk"
+                app:drawableTint="@color/white_empty"/>
         </LinearLayout>
 
         <FrameLayout

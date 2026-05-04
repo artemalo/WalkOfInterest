@@ -69,6 +69,10 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
             intent.getParcelableArrayListExtra(EXTRA_CATEGORIES)
         }
 
+        if (categories == null) {
+            ToastManager.show(this, "Категории не найдены")
+        }
+
         viewModel.initData(
             categories = categories ?: emptyList(),
             addressFrom = addressFrom,
@@ -77,10 +81,6 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
             to = to,
             totalTime = totalTime
         )
-
-        if (categories == null) {
-            ToastManager.show(this, "Категории не найдены")
-        }
     }
 
     private fun setupRecyclerView() {
@@ -107,7 +107,9 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
                 binding.textFrom.text = state.addressFrom
                 binding.textTo.text = state.addressTo
                 binding.timeTotal.text = formatMinutes(state.totalAvailableTime)
+
                 binding.timeCurrent.text = formatMinutes(state.currentSelectedTime)
+                binding.countSpotsCurrent.text = state.countSpotsCurrent.toString()
 
                 val timeColor = if (state.currentSelectedTime > state.totalAvailableTime) {
                     getColor(R.color.object_red)

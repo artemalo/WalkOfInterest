@@ -15,4 +15,7 @@ data class CategoriesUiState(
 ) {
     val currentSelectedTime: Int
         get() = categories.filter { it.isSelect && it.selected > 0 }.sumOf { it.time }
+
+    val countSpotsCurrent: Int
+        get() = categories.filter { it.isSelect && it.selected > 0 }.sumOf { it.selected }
 }
