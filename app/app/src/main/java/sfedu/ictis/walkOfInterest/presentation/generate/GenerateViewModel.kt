@@ -17,6 +17,8 @@ import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 class GenerateViewModel(
@@ -24,6 +26,12 @@ class GenerateViewModel(
     private val getBaseRouteUseCase: GetBaseRouteUseCase,
     private val calculateWalkUseCase: CalculateWalkUseCase
 ) : ViewModel() {
+    companion object {
+        private const val MINUTES_PER_POI = 5
+        private const val HARD_POI_CAP = 50
+        private const val MIN_POI_LIMIT = 1
+    }
+
     private val _uiState = MutableStateFlow(GenerateUiState())
     val uiState: StateFlow<GenerateUiState> = _uiState.asStateFlow()
 
@@ -66,26 +74,32 @@ class GenerateViewModel(
         selectingFrom = null
 
         checkAndFetchRoute()
-        Log.i("MainViewModel","onPointSelected(): ${lat},${lon}")
+        Log.i("MainViewModel", "onPointSelected(): ${lat},${lon}")
     }
 
     private fun checkAndFetchRoute() {
         val from = _uiState.value.pointFrom ?: return
         val to = _uiState.value.pointTo ?: return
 
-        Log.i("MainViewModel","checkAndFetchMinTime(): ${from},${to}")
+        Log.i("MainViewModel", "checkAndFetchMinTime(): ${from},${to}")
         routeJob?.cancel()
         routeJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             getBaseRouteUseCase(from, to).onSuccess { result ->
-                _uiState.update { it.copy(
-                    minTimeMinutes = result.minTime,
-                    selectedTimeMinutes = result.minTime,
-                    route = result.points,
-                    isTimePickerEnabled = true,
-                    isLoading = false
-                )}
+                _uiState.update { state ->
+                    val newSelectedTime = result.minTime
+                    val newMaxPoi = computeMaxPoiForTime(newSelectedTime)
+                    state.copy(
+                        minTimeMinutes = result.minTime,
+                        selectedTimeMinutes = newSelectedTime,
+                        maxPoiLimit = newMaxPoi,
+                        selectedPoiCount = defaultPoiCount(newMaxPoi),
+                        route = result.points,
+                        isTimePickerEnabled = true,
+                        isLoading = false
+                    )
+                }
 
                 validateCalculateButton()
             }.onFailure {
@@ -125,13 +139,14 @@ class GenerateViewModel(
         val from = state.pointFrom ?: return
         val to = state.pointTo ?: return
         val time = state.selectedTimeMinutes
+        val maxPoi = state.selectedPoiCount.coerceAtLeast(MIN_POI_LIMIT)
 
         calculationJob?.cancel()
 
         calculationJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            calculateWalkUseCase(from, to, time).onSuccess { categories ->
+            calculateWalkUseCase(from, to, time, maxPoi).onSuccess { categories ->
                 _uiState.update { it.copy(isLoading = false) }
                 _events.emit(GenerateEvent.NavigateToCategories(categories))
             }.onFailure {
@@ -173,8 +188,31 @@ class GenerateViewModel(
             }
         }
 
-        _uiState.update { it.copy(selectedTimeMinutes = finalMinutes) }
+        _uiState.update { state ->
+            val newMaxPoi = computeMaxPoiForTime(finalMinutes)
+
+            val newSelectedPoi = when {
+                state.selectedPoiCount <= 0 -> defaultPoiCount(newMaxPoi)
+                state.selectedPoiCount > newMaxPoi -> newMaxPoi
+                else -> state.selectedPoiCount
+            }
+            state.copy(
+                selectedTimeMinutes = finalMinutes,
+                maxPoiLimit = newMaxPoi,
+                selectedPoiCount = newSelectedPoi
+            )
+        }
         validateCalculateButton()
+    }
+
+    fun onPoiCountSelected(count: Int) {
+        val state = _uiState.value
+        if (state.maxPoiLimit <= 0) return
+
+        val clamped = count.coerceIn(MIN_POI_LIMIT, state.maxPoiLimit)
+        if (clamped == state.selectedPoiCount) return // ничего не поменялось
+
+        _uiState.update { it.copy(selectedPoiCount = clamped) }
     }
 
     fun onBackClicked() {
@@ -203,12 +241,22 @@ class GenerateViewModel(
         _uiState.update { it.copy(isCalculateEnabled = isEnabled) }
     }
 
+    private fun computeMaxPoiForTime(timeMinutes: Int): Int {
+        if (timeMinutes <= 0) return 0
+        val raw = timeMinutes / MINUTES_PER_POI
+        return min(HARD_POI_CAP, max(MIN_POI_LIMIT, raw))
+    }
+
+    private fun defaultPoiCount(maxPoi: Int): Int {
+        if (maxPoi <= 0) return 0
+        return max(MIN_POI_LIMIT, maxPoi / 2)
+    }
+
     private fun handleFailure(tag: String, error: Throwable) {
         _uiState.update { it.copy(isLoading = false) }
 
         Log.e("GenerateViewModel", "$tag: ${error.message}")
 
-        // временно
         val userMessage = when (error) {
             is ServerException -> error.message ?: "Ошибка данных"
             is java.net.SocketTimeoutException -> "Превышено время ожидания. Проверьте подключение к сети"

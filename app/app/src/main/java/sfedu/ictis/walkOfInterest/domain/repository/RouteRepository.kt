@@ -7,7 +7,7 @@ import sfedu.ictis.walkOfInterest.domain.model.RouteFromToResult
 
 interface RouteRepository {
     suspend fun getRoute(from: DomainPoint, to: DomainPoint): Result<RouteFromToResult>
-    suspend fun searchWalk(from: DomainPoint, to: DomainPoint, time: Int, lang: String = "ru"): Result<List<DomainCategory>>
+    suspend fun searchWalk(from: DomainPoint, to: DomainPoint, time: Int, maxPoi: Int, lang: String = "ru"): Result<List<DomainCategory>>
 
     suspend fun getRoutes(points: List<DomainPoint>): Result<List<DomainRoute>>
     suspend fun getTime(points: List<DomainPoint>): Result<Int>

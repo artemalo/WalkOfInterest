@@ -36,12 +36,13 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
         } catch (e: Exception) { Result.failure(e) }
     }
 
-    override suspend fun searchWalk(from: DomainPoint, to: DomainPoint, time: Int, lang: String): Result<List<DomainCategory>> {
+    override suspend fun searchWalk(from: DomainPoint,to: DomainPoint, time: Int, maxPoi: Int, lang: String): Result<List<DomainCategory>> {
         return runCatching {
             val dto = SearchRequest(
                 p1 = PointDto(from.lat, from.lon),
                 p2 = PointDto(to.lat, to.lon),
                 time = time,
+                maxPoi = maxPoi,
                 lang = lang,
                 requestId = UUID.randomUUID().toString()
             )

@@ -36,6 +36,9 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
     private var routePolyline: Polyline? = null
     private var isMapReady = false
 
+    // Защита от петли state -> UI -> state
+    private var isUpdatingSeekBarFromState = false
+
     override fun inflateBinding(): ActivityGenerateBinding {
         return ActivityGenerateBinding.inflate(layoutInflater)
     }
@@ -130,6 +133,20 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
         binding.fieldBtnCalculate.setOnClickListener {
             viewModel.onCalculateClicked()
         }
+
+        binding.seekBarPoi.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (!fromUser || isUpdatingSeekBarFromState) return
+
+                val count = progress + 1
+
+                binding.textPoiCount.text = count.toString()
+                viewModel.onPoiCountSelected(count)
+            }
+
+            override fun onStartTrackingTouch(sb: SeekBar?) = Unit
+            override fun onStopTrackingTouch(sb: SeekBar?) = Unit
+        })
     }
 
     private fun observeState() {
@@ -142,17 +159,38 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
                         drawCurrentState(state)
                     }
 
-                    binding.sliderBlock.alpha = if (state.isTimePickerEnabled) 1f else 0.4f
-                    binding.seekBarPoi.isEnabled = state.isTimePickerEnabled
-
-                    binding.seekBarPoi.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                        override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) = Unit
-                        override fun onStartTrackingTouch(sb: SeekBar?) = Unit
-                        override fun onStopTrackingTouch(sb: SeekBar?) = Unit
-                    })
+                    updateSliderUi(state)
                 }
             }
         }
+    }
+
+    private fun updateSliderUi(state: GenerateUiState) {
+        val sliderEnabled = state.isTimePickerEnabled && state.maxPoiLimit > 0
+
+        binding.sliderBlock.alpha = if (sliderEnabled) 1f else 0.4f
+        binding.seekBarPoi.isEnabled = sliderEnabled
+
+        if (!sliderEnabled) {
+            binding.textPoiCount.text = "-"
+            binding.textPoiMax.text = "-"
+            return
+        }
+
+        val newMax = (state.maxPoiLimit - 1).coerceAtLeast(0)
+        val newProgress = (state.selectedPoiCount - 1).coerceIn(0, newMax)
+
+        isUpdatingSeekBarFromState = true
+        if (binding.seekBarPoi.max != newMax) {
+            binding.seekBarPoi.max = newMax
+        }
+        if (binding.seekBarPoi.progress != newProgress) {
+            binding.seekBarPoi.progress = newProgress
+        }
+        isUpdatingSeekBarFromState = false
+
+        binding.textPoiCount.text = state.selectedPoiCount.toString()
+        binding.textPoiMax.text = state.maxPoiLimit.toString()
     }
 
     private fun observeEvents() {
@@ -191,8 +229,6 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
             }
         }
     }
-
-
 
     private fun updateUiText(state: GenerateUiState) {
         binding.textFrom.text = state.addressFrom

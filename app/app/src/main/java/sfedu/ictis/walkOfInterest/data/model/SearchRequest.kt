@@ -7,6 +7,7 @@ data class SearchRequest(
     @SerializedName("p1") val p1: PointDto,
     @SerializedName("p2") val p2: PointDto,
     @SerializedName("maxTime") val time: Int,
+    @SerializedName("maxPoi") val maxPoi: Int,
     @SerializedName("lang") val lang: String,
     @SerializedName("requestId") val requestId: String
 )
