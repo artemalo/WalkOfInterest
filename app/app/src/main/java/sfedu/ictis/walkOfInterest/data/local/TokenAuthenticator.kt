@@ -25,11 +25,12 @@ class TokenAuthenticator(
         val refreshResponse = runBlocking {
             try {
                 authApi.refresh(RefreshRequest(refreshToken))
-            } catch (e: retrofit2.HttpException) {
-                if (e.code() == 401 || e.code() == 403) null
-                else throw e
+            } catch (_: retrofit2.HttpException) {
+                null
             } catch (_: java.io.IOException) {
-                return@runBlocking null
+                null
+            } catch (_: Exception) {
+                null
             }
         }
 
@@ -40,7 +41,7 @@ class TokenAuthenticator(
                 .header("Authorization", "Bearer ${refreshResponse.accessToken}")
                 .build()
         } else {
-            tokenStorage.clear()
+            tokenStorage.clear() // TODO: EXCEPTIONS
             sessionManager.triggerLogout()
             null
         }
