@@ -3,10 +3,12 @@ package sfedu.ictis.walkOfInterest.presentation.generate
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.config.Configuration
@@ -26,6 +28,9 @@ import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
     private val viewModel: GenerateViewModel by viewModel()
+
+    private lateinit var behavior: BottomSheetBehavior<View>
+
     private var markerFrom: Marker? = null
     private var markerTo: Marker? = null
     private var routePolyline: Polyline? = null
@@ -43,27 +48,50 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(applicationContext)
         )
 
+        setupBottomSheet()
         setupMap()
         setupListeners()
         observeState()
         observeEvents()
     }
 
+
+
+    private fun setupBottomSheet() {
+        behavior = BottomSheetBehavior.from(binding.bottomSheet)
+
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                updateMapPadding(slideOffset)
+            }
+        })
+    }
+
+    private fun updateMapPadding(slideOffset: Float) {
+        val peekHeight = behavior.peekHeight
+        val fullHeight = binding.bottomSheet.height
+        if (fullHeight == 0) return
+        val currentHeight = (peekHeight + (fullHeight - peekHeight) * slideOffset.coerceIn(0f, 1f)).toInt()
+        binding.map.setPadding(0, 0, 0, currentHeight)
+    }
+
+
+
     private fun setupMap() {
         val map = binding.map
         map.setMultiTouchControls(true)
 
         val start = viewModel.defaultCenter
-        val startGeoPoint = GeoPoint(start.lat, start.lon)
         map.controller.setZoom(15.0)
-        map.controller.setCenter(startGeoPoint)
+        map.controller.setCenter(GeoPoint(start.lat, start.lon))
 
         map.addOnFirstLayoutListener { _, _, _, _, _ ->
             isMapReady = true
 
-            lifecycleScope.launch {
-                drawCurrentState(viewModel.uiState.value)
-            }
+            binding.map.setPadding(0, 0, 0, behavior.peekHeight)
+            drawCurrentState(viewModel.uiState.value)
         }
 
         val mapEventsReceiver = object : MapEventsReceiver {
@@ -74,7 +102,6 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
                 }
                 return false
             }
-
             override fun longPressHelper(p: GeoPoint?): Boolean = false
         }
         map.overlays.add(MapEventsOverlay(mapEventsReceiver))
@@ -88,10 +115,12 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
 
         binding.fieldFrom.setOnClickListener {
             viewModel.onSelectFromClicked()
+            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
         binding.fieldTo.setOnClickListener {
             viewModel.onSelectToClicked()
+            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
         binding.fieldClock.setOnClickListener {
@@ -117,9 +146,7 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
                     binding.seekBarPoi.isEnabled = state.isTimePickerEnabled
 
                     binding.seekBarPoi.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                        override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
-                            // TODO: if (fromUser) viewModel.onPoiCountChanged(progress)
-                        }
+                        override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) = Unit
                         override fun onStartTrackingTouch(sb: SeekBar?) = Unit
                         override fun onStopTrackingTouch(sb: SeekBar?) = Unit
                     })
@@ -140,22 +167,23 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
 
                         is GenerateEvent.NavigateToCategories -> {
                             val state = viewModel.uiState.value
-
                             val from = state.pointFrom ?: return@collect
                             val to = state.pointTo ?: return@collect
 
-                            val intent = android.content.Intent(this@GenerateActivity, CategoriesActivity::class.java).apply {
+                            val intent = android.content.Intent(
+                                this@GenerateActivity,
+                                CategoriesActivity::class.java
+                            ).apply {
                                 putExtra(CategoriesActivity.EXTRA_ADDRESS_FROM, state.addressFrom)
                                 putExtra(CategoriesActivity.EXTRA_ADDRESS_TO, state.addressTo)
                                 putExtra(CategoriesActivity.EXTRA_TIME_SELECTED, state.selectedTimeMinutes)
-
                                 putExtra(CategoriesActivity.EXTRA_FROM, from)
                                 putExtra(CategoriesActivity.EXTRA_TO, to)
-
-                                // TODO: исправить >1мб данные (FileCache, проще Clean Architecture Way - Кэширование в Репозитории)
-                                putParcelableArrayListExtra(CategoriesActivity.EXTRA_CATEGORIES, ArrayList(event.categories))
+                                putParcelableArrayListExtra(
+                                    CategoriesActivity.EXTRA_CATEGORIES,
+                                    ArrayList(event.categories)
+                                )
                             }
-
                             startActivity(intent)
                         }
                     }
@@ -164,14 +192,27 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
         }
     }
 
+
+
+    private fun updateUiText(state: GenerateUiState) {
+        binding.textFrom.text = state.addressFrom
+        binding.textTo.text = state.addressTo
+
+        binding.textClock.text = if (state.selectedTimeMinutes > 0) {
+            formatMinutes(state.selectedTimeMinutes)
+        } else {
+            "Выберите точки"
+        }
+
+        binding.fieldClock.alpha = if (state.isTimePickerEnabled) 1.0f else 0.5f
+        binding.btnCalculate.isEnabled = state.isCalculateEnabled && !state.isLoading
+        binding.btnCalculate.alpha = if (state.isCalculateEnabled && !state.isLoading) 1.0f else 0.5f
+        binding.btnCalculateText.text = if (state.isLoading) "Загрузка..." else "Рассчитать"
+    }
+
     private fun drawCurrentState(state: GenerateUiState) {
         updateMapMarkers(state.pointFrom, state.pointTo)
-
-        if (state.route != null) {
-            drawRoute(state.route)
-        } else {
-            clearRoute()
-        }
+        if (state.route != null) drawRoute(state.route) else clearRoute()
     }
 
     private fun updateMapMarkers(from: DomainPoint?, to: DomainPoint?) {
@@ -201,25 +242,6 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
         map.invalidate()
     }
 
-    private fun updateUiText(state: GenerateUiState) {
-        binding.textFrom.text = state.addressFrom
-        binding.textTo.text = state.addressTo
-
-        binding.textClock.text = if (state.selectedTimeMinutes > 0) {
-            formatMinutes(state.selectedTimeMinutes)
-        } else {
-            "Выберите точки"
-        }
-
-        binding.fieldClock.alpha = if (state.isTimePickerEnabled) 1.0f else 0.5f
-        binding.btnCalculate.isEnabled = state.isCalculateEnabled
-        binding.btnCalculate.isEnabled = !state.isLoading
-        binding.btnCalculate.alpha = if (state.isCalculateEnabled) 1.0f else 0.5f
-
-        binding.btnCalculateText.text =
-            if (state.isLoading) "Загрузка..." else "Рассчитать"
-    }
-
     private fun drawRoute(routePoints: List<DomainPoint>) {
         val map = binding.map
         clearRoute()
@@ -229,23 +251,17 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
 
         routePolyline = Polyline(map).apply {
             setPoints(geoPoints)
-
             outlinePaint.color = ContextCompat.getColor(this@GenerateActivity, R.color.route_color)
-
             outlinePaint.strokeWidth = 14f
-
             outlinePaint.strokeCap = android.graphics.Paint.Cap.ROUND
             outlinePaint.strokeJoin = android.graphics.Paint.Join.ROUND
-
             outlinePaint.isAntiAlias = true
         }
-
         map.overlays.add(routePolyline)
 
         map.post {
             if (!isFinishing && !isDestroyed && geoPoints.isNotEmpty()) {
-                val boundingBox = BoundingBox.fromGeoPoints(geoPoints)
-                map.zoomToBoundingBox(boundingBox, true, 100)
+                map.zoomToBoundingBox(BoundingBox.fromGeoPoints(geoPoints), true, 100)
             }
         }
         map.invalidate()
@@ -259,32 +275,30 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
         }
     }
 
-    override fun onDestroy() {
-        Log.i(this.localClassName, "onDestroy")
+    private fun showTimePicker() {
+        val currentTime = viewModel.uiState.value.selectedTimeMinutes
+        TimePickerDialog(this, { _, hour, minute ->
+            viewModel.onTimeSelected(hour * 60 + minute)
+        }, currentTime / 60, currentTime % 60, true).show()
+    }
 
+
+
+    override fun onDestroy() {
+        Log.i(localClassName, "onDestroy")
         super.onDestroy()
         binding.map.onDetach()
     }
 
     override fun onResume() {
-        Log.i(this.localClassName, "onResume")
-
+        Log.i(localClassName, "onResume")
         super.onResume()
         binding.map.onResume()
     }
 
     override fun onPause() {
-        Log.i(this.localClassName, "onPause")
-
+        Log.i(localClassName, "onPause")
         super.onPause()
         binding.map.onPause()
-    }
-
-    private fun showTimePicker() {
-        val currentTime = viewModel.uiState.value.selectedTimeMinutes
-
-        TimePickerDialog(this, { _, hour, minute ->
-            viewModel.onTimeSelected(hour * 60 + minute)
-        }, currentTime / 60, currentTime % 60, true).show()
     }
 }
