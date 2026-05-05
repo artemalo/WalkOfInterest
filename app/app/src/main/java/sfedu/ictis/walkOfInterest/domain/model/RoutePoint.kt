@@ -8,5 +8,7 @@ data class RoutePoint(
 
     val name: String,
     val nameCat: String,
-    val nameSubcat: String
+    val nameSubcat: String,
+
+    val order: Int = 0
 )

@@ -125,7 +125,8 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
     )
     private fun PoiDto.toDomain() = DomainPoi(
         id = id, name = name, description = description, lang = lang,
-        lat = lat, lon = lon, selected = selected, rate = rate, count = count
+        lat = lat, lon = lon, selected = selected, rate = rate, count = count,
+        order = order
     )
 
     private fun RouteDto.toDomain() = DomainRoute(

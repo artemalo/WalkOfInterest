@@ -1,5 +1,6 @@
 package sfedu.ictis.walkOfInterest.presentation.categories
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
-import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
@@ -60,26 +60,44 @@ class CategoriesViewModel(
         val selectedCategories = state.categories.filter { it.isSelect }
 
         if (selectedCategories.isEmpty()) {
-            CategoriesEvent.ShowError("Выберите хотя бы одну категорию")
+            viewModelScope.launch {
+                _events.emit(CategoriesEvent.ShowError("Выберите хотя бы одну категорию"))
+            }
             return
         }
 
-        val routePoints = selectedCategories.flatMap { category ->
-            category.subcategories.flatMap { subCategory ->
-                subCategory.pois
-                    .filter { poi -> poi.selected }
-                    .map { poi ->
-                        RoutePoint(
-                            id = poi.id,
-                            lat = poi.lat,
-                            lon = poi.lon,
-                            categoryId = category.id,
-                            name = poi.name ?: "-",
-                            nameCat = category.name,
-                            nameSubcat = subCategory.name
-                        )
-                    }
+        val routePoints = selectedCategories.asSequence()
+            .flatMap { category ->
+                category.subcategories.asSequence().flatMap { subCategory ->
+                    subCategory.pois.asSequence()
+                        .filter { poi -> poi.selected && poi.order != null }
+                        .map { poi ->
+                            RoutePoint(
+                                id = poi.id,
+                                lat = poi.lat,
+                                lon = poi.lon,
+                                categoryId = category.id,
+                                name = poi.name ?: "-",
+                                nameCat = category.name,
+                                nameSubcat = subCategory.name,
+                                order = poi.order!!
+                            )
+                        }
+                }
             }
+            .sortedBy { it.order }
+            .toList()
+
+        Log.i("CategoriesVM", "Trip selectedPois (sorted by order): ${routePoints.size} points")
+        routePoints.forEach {
+            Log.i("CategoriesVM", "  [${it.order}] ${it.name} cat=${it.nameCat}")
+        }
+
+        if (routePoints.isEmpty()) {
+            viewModelScope.launch {
+                _events.emit(CategoriesEvent.ShowError("Нет выбранных точек для маршрута"))
+            }
+            return
         }
 
         val trip = DomainTrip(

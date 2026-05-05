@@ -13,5 +13,7 @@ data class DomainPoi(
     val lon: Double,
     val selected: Boolean,
     val rate: Double?,
-    val count: Int?
+    val count: Int?,
+
+    val order: Int? = null
 ) : Parcelable

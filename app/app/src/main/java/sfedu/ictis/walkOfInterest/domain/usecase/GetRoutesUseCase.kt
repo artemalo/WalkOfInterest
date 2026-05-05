@@ -11,9 +11,11 @@ class GetRoutesUseCase(private val repository: RouteRepository) {
             return Result.failure(Exception("Список выбранных точек пуст"))
         }
 
+        val sortedPois = trip.selectedPois.sortedBy { it.order }
+
         val requestPoints = buildList {
             add(trip.from)
-            addAll(trip.selectedPois.map { DomainPoint(it.lat, it.lon) })
+            addAll(sortedPois.map { DomainPoint(it.lat, it.lon) })
             add(trip.to)
         }
 

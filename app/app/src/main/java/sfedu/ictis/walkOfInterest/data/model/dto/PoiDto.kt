@@ -12,5 +12,7 @@ data class PoiDto(
     @SerializedName("lon") val lon: Double,
     @SerializedName("selected") val selected: Boolean = false,
     @SerializedName("rate") val rate: Double?,
-    @SerializedName("count") val count: Int?
+    @SerializedName("count") val count: Int?,
+
+    @SerializedName("order") val order: Int? = null
 )
