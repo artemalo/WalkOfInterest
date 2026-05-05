@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/general"
     android:clickable="true"
     android:focusable="true"
-    android:importantForAccessibility="yes"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:importantForAccessibility="yes">
 
+    <!-- ===== Header ===== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
-        android:layout_marginTop="@dimen/padding_general"
-        android:paddingStart="@dimen/padding_general"
-        android:paddingEnd="@dimen/padding_general"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_field"
-        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/padding_general"
         android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:contentDescription="Back"
+                    android:contentDescription="Delete trip"
                     android:src="@drawable/ic_trash"
                     app:tint="@color/object_red" />
             </FrameLayout>
@@ -90,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:contentDescription="Back"
+                    android:contentDescription="Close"
                     android:src="@drawable/ic_x" />
             </FrameLayout>
 
@@ -98,7 +100,32 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/sectionTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+        android:text="Точки маршрута"
+        android:textAppearance="@style/TextAppearance.App.H2"
+        android:textColor="@color/white_gray"
+        app:layout_constraintTop_toBottomOf="@+id/header" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/itemList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general"
+        android:paddingBottom="@dimen/padding_normal"
+        app:layout_constraintBottom_toTopOf="@+id/bottomSheet"
+        app:layout_constraintTop_toBottomOf="@+id/sectionTitle"
+        tools:listitem="@layout/item_trip_route_point" />
+
+    <!-- ===== Нижняя панель: откуда / куда / общая статистика ===== -->
     <LinearLayout
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
@@ -106,104 +133,126 @@
         android:background="@drawable/general_sheet"
         android:orientation="vertical"
         android:padding="@dimen/padding_general"
-
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/imgA"
                 android:layout_width="@dimen/icon_general"
                 android:layout_height="@dimen/icon_general"
                 android:layout_gravity="center"
                 android:contentDescription="Point Start"
-                app:tint="@color/white_gray"
-                android:src="@drawable/ic_a" />
+                android:src="@drawable/ic_a"
+                app:tint="@color/white_gray" />
+
             <TextView
                 android:id="@+id/textFrom"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/padding_s_small"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Откуда"
                 android:textAppearance="@style/TextAppearance.App.Body2"
-                android:textColor="@color/white_gray"/>
+                android:textColor="@color/white_gray" />
+
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_small"
             android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/imgB"
                 android:layout_width="@dimen/icon_general"
                 android:layout_height="@dimen/icon_general"
                 android:layout_gravity="center"
-                android:contentDescription="Point Start"
-                app:tint="@color/white_gray"
-                android:src="@drawable/ic_b" />
+                android:contentDescription="Point End"
+                android:src="@drawable/ic_b"
+                app:tint="@color/white_gray" />
+
             <TextView
                 android:id="@+id/textTo"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/padding_s_small"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Куда"
                 android:textAppearance="@style/TextAppearance.App.Body2"
-                android:textColor="@color/white_gray"/>
+                android:textColor="@color/white_gray" />
+
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/icon_general"
             android:layout_marginTop="@dimen/padding_normal"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/icon_general">
+            android:orientation="horizontal">
+
             <LinearLayout
-                android:layout_marginEnd="@dimen/padding_middle"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/padding_middle"
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="@dimen/icon_general"
                     android:layout_height="@dimen/icon_general"
-                    app:tint="@color/object"
-                    android:src="@drawable/ic_point" />
+                    android:src="@drawable/ic_point"
+                    app:tint="@color/object" />
+
                 <TextView
                     android:id="@+id/timeTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/padding_s_small"
+                    android:gravity="center_vertical"
                     android:text="none"
                     android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/white_gray"/>
+                    android:textColor="@color/white_gray" />
+
             </LinearLayout>
+
             <LinearLayout
-                android:gravity="center"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/icon_general">
+                android:layout_height="@dimen/icon_general"
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="@dimen/icon_general"
                     android:layout_height="@dimen/icon_general"
-                    app:tint="@color/object_orange"
-                    android:src="@drawable/ic_clock" />
+                    android:src="@drawable/ic_clock"
+                    app:tint="@color/object_orange" />
+
                 <TextView
                     android:id="@+id/timeCurrent"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/padding_s_small"
+                    android:gravity="center_vertical"
                     android:text="none"
                     android:textAlignment="textStart"
                     android:textAppearance="@style/TextAppearance.App.Body"
-                    android:textColor="@color/white_gray"/>
+                    android:textColor="@color/white_gray" />
+
             </LinearLayout>
+
         </LinearLayout>
 
-
     </LinearLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

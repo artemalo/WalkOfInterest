@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/routePoint"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="@drawable/field_route_detail_item"
+    android:padding="@dimen/padding_middle"
+    android:layout_marginBottom="@dimen/padding_middle">
+
+    <FrameLayout
+        android:id="@+id/orderBadge"
+        android:layout_width="@dimen/btn_general"
+        android:layout_height="@dimen/btn_general"
+        android:background="@drawable/handle_shape"
+        android:backgroundTint="@color/object"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/orderNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="1"
+            android:textAppearance="@style/TextAppearance.App.H2"
+            android:textColor="@color/white"
+            tools:text="1" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/pointName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_middle"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="Название точки"
+        android:textAppearance="@style/TextAppearance.App.H2"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/orderBadge"
+        app:layout_constraintTop_toTopOf="@+id/orderBadge"
+        tools:text="Название достопримечательности" />
+
+    <TextView
+        android:id="@+id/pointSubcategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Подкатегория"
+        android:textAppearance="@style/TextAppearance.App.Body2"
+        android:textColor="@color/description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/pointName"
+        app:layout_constraintTop_toBottomOf="@+id/pointName"
+        tools:text="Подкатегория" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/tagCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_small"
+        app:cardBackgroundColor="@color/green"
+        app:cardCornerRadius="@dimen/corner_category_selected"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintStart_toStartOf="@+id/pointSubcategory"
+        app:layout_constraintTop_toBottomOf="@+id/pointSubcategory">
+
+        <TextView
+            android:id="@+id/tagText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:maxLength="50"
+            android:paddingStart="@dimen/padding_middle"
+            android:paddingEnd="@dimen/padding_middle"
+            android:paddingTop="@dimen/padding_s_small"
+            android:paddingBottom="@dimen/padding_s_small"
+            android:text="Категория"
+            android:textAppearance="@style/TextAppearance.App.Body3"
+            android:textColor="@color/white"
+            tools:text="Категория" />
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
