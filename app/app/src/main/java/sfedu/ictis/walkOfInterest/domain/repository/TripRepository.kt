@@ -8,4 +8,5 @@ interface TripRepository {
     suspend fun getAllTrips(): List<DomainTrip>
     suspend fun getTripById(id: String): DomainTrip?
     suspend fun delTripById(id: String): Boolean
+    suspend fun updateBestRouteTime(tripId: String, time: Int)
 }

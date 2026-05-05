@@ -18,4 +18,7 @@ interface TripDao {
 
     @Query("DELETE FROM trips WHERE id = :tripId")
     suspend fun deleteTripById(tripId: String): Int
+
+    @Query("UPDATE trips SET bestRouteTime = :time WHERE id = :tripId")
+    suspend fun updateBestRouteTime(tripId: String, time: Int): Int
 }

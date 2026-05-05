@@ -29,4 +29,10 @@ class TripRepositoryImpl(
     override suspend fun delTripById(id: String): Boolean   {
         return tripDao.deleteTripById(id) > 0
     }
+
+    override suspend fun updateBestRouteTime(tripId: String, time: Int) {
+        tripDao.updateBestRouteTime(tripId, time)
+        currentTrip = currentTrip?.takeIf { it.id == tripId }?.copy(bestRouteTime = time)
+            ?: currentTrip
+    }
 }

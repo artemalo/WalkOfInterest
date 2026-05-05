@@ -129,7 +129,7 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
                         .distinctUntilChanged()
                         .collect { trip ->
                             trip?.let {
-                                binding.userTime.text = formatMinutes(it.totalTime)
+                                binding.userTime.text = formatMinutes(it.userSelectedTime)
                                 updateMapMarkers(it.selectedPois, it.from, it.to)
                             }
                         }

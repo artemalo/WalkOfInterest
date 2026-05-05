@@ -51,6 +51,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.SetReviewReactionUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateNicknameUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpsertMyReviewUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCategoryTimeUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.UpdateTripBestRouteTimeUseCase
 import sfedu.ictis.walkOfInterest.presentation.auth.AuthViewModel
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
 import sfedu.ictis.walkOfInterest.presentation.category.CategoryViewModel
@@ -138,7 +139,9 @@ val appModule = module {
             androidContext(),
             AppDatabase::class.java,
             "walk_of_interest_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
     single { get<AppDatabase>().tripDao() }
 
@@ -179,6 +182,7 @@ val appModule = module {
     factory { UpsertMyReviewUseCase(get()) }
     factory { SetReviewReactionUseCase(get()) }
     factory { GetCategoryTimeUseCase(get()) }
+    factory { UpdateTripBestRouteTimeUseCase(get()) }
 
     // Presentation Layer: ViewModels
     viewModel { SplashViewModel(get()) }
@@ -188,7 +192,7 @@ val appModule = module {
     viewModel { GenerateViewModel(get(), get(), get()) }
     viewModel { CategoriesViewModel(get()) }
     viewModel { CategoryViewModel(get()) }
-    viewModel { RoutesViewModel(get(), get(), get()) }
+    viewModel { RoutesViewModel(get(), get(), get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { PoiViewModel(get(), get(), get(), get()) }
     viewModel { ReviewMakeViewModel(get()) }

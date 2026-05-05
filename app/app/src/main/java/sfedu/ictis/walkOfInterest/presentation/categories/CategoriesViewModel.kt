@@ -28,17 +28,24 @@ class CategoriesViewModel(
     )
     val events = _events.asSharedFlow()
 
-    fun initData(categories: List<DomainCategory>, addressFrom: String, addressTo: String, from: DomainPoint, to: DomainPoint, totalTime: Int) {
-        _uiState.update { it.copy(
-            categories = categories,
-            addressFrom = addressFrom,
-            addressTo = addressTo,
-
-            from = from,
-            to = to,
-
-            totalAvailableTime = totalTime
-        ) }
+    fun initData(
+        categories: List<DomainCategory>,
+        addressFrom: String,
+        addressTo: String,
+        from: DomainPoint,
+        to: DomainPoint,
+        userSelectedTime: Int
+    ) {
+        _uiState.update {
+            it.copy(
+                categories = categories,
+                addressFrom = addressFrom,
+                addressTo = addressTo,
+                from = from,
+                to = to,
+                userSelectedTime = userSelectedTime
+            )
+        }
     }
 
     fun toggleCategorySelection(categoryId: Int) {
@@ -107,7 +114,9 @@ class CategoriesViewModel(
             from = state.from,
             to = state.to,
 
-            totalTime = state.currentSelectedTime,
+            bestRouteTime = null,
+            userSelectedTime = state.userSelectedTime,
+
             totalPois = routePoints.size,
             selectedPois = routePoints
         )

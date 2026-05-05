@@ -79,7 +79,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
             addressTo = addressTo,
             from = from,
             to = to,
-            totalTime = totalTime
+            userSelectedTime = totalTime
         )
     }
 
@@ -106,17 +106,9 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
 
                 binding.textFrom.text = state.addressFrom
                 binding.textTo.text = state.addressTo
-                binding.timeTotal.text = formatMinutes(state.totalAvailableTime)
+                binding.timeTotal.text = formatMinutes(state.userSelectedTime)
 
-                binding.timeCurrent.text = formatMinutes(state.currentSelectedTime)
                 binding.countSpotsCurrent.text = state.countSpotsCurrent.toString()
-
-                val timeColor = if (state.currentSelectedTime > state.totalAvailableTime) {
-                    getColor(R.color.object_red)
-                } else {
-                    getColor(R.color.white_gray)
-                }
-                binding.timeCurrent.setTextColor(timeColor)
             }
         }
     }

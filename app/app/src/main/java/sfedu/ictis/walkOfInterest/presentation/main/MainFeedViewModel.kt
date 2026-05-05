@@ -59,7 +59,7 @@ class MainFeedViewModel(
                     title = "${trip.addressFrom} → ${trip.addressTo}",
                     addressFrom = trip.addressFrom,
                     addressTo = trip.addressTo,
-                    totalTime = trip.totalTime,
+                    totalTime = trip.bestRouteTime ?: trip.userSelectedTime,
                     totalPois = trip.totalPois
                 )
             }

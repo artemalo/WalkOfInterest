@@ -17,11 +17,13 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.UpdateTripBestRouteTimeUseCase
 
 class RoutesViewModel(
     private val getMapCenterUseCase: GetMapCenterUseCase,
     private val getCurrentTripUseCase: GetCurrentTripUseCase,
-    private val getRoutesUseCase: GetRoutesUseCase
+    private val getRoutesUseCase: GetRoutesUseCase,
+    private val updateTripBestRouteTimeUseCase: UpdateTripBestRouteTimeUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RoutesUiState())
     val uiState: StateFlow<RoutesUiState> = _uiState.asStateFlow()
@@ -46,10 +48,7 @@ class RoutesViewModel(
             return
         }
 
-        _uiState.update { it.copy(
-            trip = trip,
-            isLoading = true
-        )}
+        _uiState.update { it.copy(trip = trip, isLoading = true) }
 
         val str = trip.selectedPois.joinToString(separator = "\n") { poi ->
             "${poi.id}, ${poi.lat}, ${poi.lon}, ${poi.categoryId}"
@@ -59,8 +58,15 @@ class RoutesViewModel(
         val result = getRoutesUseCase(trip)
 
         result.onSuccess { loadedRoutes ->
+            val bestTime = loadedRoutes.minByOrNull { it.minTime }?.minTime
+
+            if (bestTime != null) {
+                updateTripBestRouteTimeUseCase(trip.id, bestTime)
+            }
+
             _uiState.update { state ->
                 state.copy(
+                    trip = state.trip?.copy(bestRouteTime = bestTime ?: state.trip.bestRouteTime),
                     routes = loadedRoutes,
                     isLoading = false
                 )
@@ -73,7 +79,6 @@ class RoutesViewModel(
             _uiState.update { it.copy(isLoading = false) }
             _events.emit(RoutesEvent.ShowError(error.message ?: "Не удалось сгенерировать маршрут"))
         }
-
     }
 
     fun selectRoute(route: DomainRoute) {

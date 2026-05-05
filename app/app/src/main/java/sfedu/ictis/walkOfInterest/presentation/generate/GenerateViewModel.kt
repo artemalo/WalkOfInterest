@@ -27,7 +27,7 @@ class GenerateViewModel(
     private val calculateWalkUseCase: CalculateWalkUseCase
 ) : ViewModel() {
     companion object {
-        private const val MINUTES_PER_POI = 5
+        private const val MINUTES_PER_POI = 2
         private const val HARD_POI_CAP = 50
         private const val MIN_POI_LIMIT = 1
     }

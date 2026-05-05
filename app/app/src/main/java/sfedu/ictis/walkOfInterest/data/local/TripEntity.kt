@@ -14,8 +14,9 @@ data class TripEntity(
     val from: DomainPoint,
     val to: DomainPoint,
 
-    val totalTime: Int,
-    val totalPois: Int,
+    val bestRouteTime: Int?,
+    val userSelectedTime: Int,
 
+    val totalPois: Int,
     val selectedPois: List<RoutePoint>
 )

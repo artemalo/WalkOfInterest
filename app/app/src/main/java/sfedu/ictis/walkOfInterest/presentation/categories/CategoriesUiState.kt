@@ -8,14 +8,11 @@ data class CategoriesUiState(
     val addressFrom: String = "",
     val addressTo: String = "",
 
-    val from: DomainPoint = DomainPoint(0.0,0.0),
-    val to: DomainPoint = DomainPoint(0.0,0.0),
+    val from: DomainPoint = DomainPoint(0.0, 0.0),
+    val to: DomainPoint = DomainPoint(0.0, 0.0),
 
-    val totalAvailableTime: Int = 0
+    val userSelectedTime: Int = 0
 ) {
-    val currentSelectedTime: Int
-        get() = categories.filter { it.isSelect && it.selected > 0 }.sumOf { it.time }
-
     val countSpotsCurrent: Int
         get() = categories.filter { it.isSelect && it.selected > 0 }.sumOf { it.selected }
 }
