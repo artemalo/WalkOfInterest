@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/padding_small"
+    android:background="@drawable/bg_my_poi_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/padding_middle"
+    android:paddingEnd="@dimen/padding_middle"
+    android:paddingTop="@dimen/padding_middle"
+    android:paddingBottom="@dimen/padding_middle">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Категория"
+        android:textAppearance="@style/TextAppearance.App.H2"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.App.Body2"
+        android:textColor="@color/object" />
+
+    <ImageView
+        android:layout_width="@dimen/icon_general"
+        android:layout_height="@dimen/icon_general"
+        android:layout_marginStart="@dimen/padding_small"
+        android:contentDescription="Open"
+        android:src="@drawable/ic_arrow_r" />
+</LinearLayout>

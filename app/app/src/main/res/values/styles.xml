@@ -12,6 +12,15 @@
         <item name="cornerSizeTopRight">@dimen/corner_radius_general</item>
     </style>
 
+    <style name="AppBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">@color/general</item>
+        <item name="shapeAppearanceOverlay">@style/RoundedCornerTopStyle</item>
+    </style>
+
+    <style name="AppBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppBottomSheet</item>
+    </style>
+
     <style name="CompactTextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="editTextColor">@color/white</item>
         <item name="hintTextColor">@color/white_hint</item>
