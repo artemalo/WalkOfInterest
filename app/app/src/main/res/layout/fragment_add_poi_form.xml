@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/general">
 
-    <!-- Заголовок -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -64,7 +62,6 @@
             android:paddingTop="@dimen/padding_normal"
             android:paddingBottom="@dimen/padding_general">
 
-            <!-- Название -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nameInputLayout"
                 style="@style/CompactTextInputLayout"
@@ -82,7 +79,6 @@
                     android:textColor="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Описание -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/descriptionInputLayout"
                 style="@style/CompactTextInputLayout"
@@ -105,7 +101,6 @@
                     android:textColor="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Язык -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -146,7 +141,6 @@
                     android:textColor="@color/white" />
             </LinearLayout>
 
-            <!-- Выбранные подкатегории -->
             <TextView
                 android:id="@+id/titleSelected"
                 android:layout_width="match_parent"
@@ -166,7 +160,6 @@
                 app:chipSpacingVertical="@dimen/padding_small"
                 app:singleLine="false" />
 
-            <!-- Категории -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
