@@ -70,6 +70,7 @@ import sfedu.ictis.walkOfInterest.presentation.main.MainFeedViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.PoiViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.add.AddPoiPickViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.add.form.AddPoiFormViewModel
+import sfedu.ictis.walkOfInterest.presentation.poi.add.my.MyPoisViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.review.ReviewMakeViewModel
 import sfedu.ictis.walkOfInterest.presentation.profile.ProfileViewModel
 import sfedu.ictis.walkOfInterest.presentation.routes.RoutesViewModel
@@ -225,4 +226,5 @@ val appModule = module {
     viewModel { ReviewMakeViewModel(get()) }
     viewModel { AddPoiPickViewModel(get(), get()) }
     viewModel { AddPoiFormViewModel(get(), get(), get(), get(), get()) }
+    viewModel { MyPoisViewModel(get()) }
 }

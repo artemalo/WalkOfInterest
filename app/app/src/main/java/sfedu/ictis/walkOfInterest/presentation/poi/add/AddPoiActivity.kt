@@ -1,5 +1,6 @@
 package sfedu.ictis.walkOfInterest.presentation.poi.add
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -21,6 +22,7 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
 import sfedu.ictis.walkOfInterest.presentation.poi.add.form.AddPoiFormFragment
+import sfedu.ictis.walkOfInterest.presentation.poi.add.my.MyPoisActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 
 class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
@@ -47,7 +49,6 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
         observeState()
         observeEvents()
 
-        // Если форма уже на экране (после ротации, например) — спрятать пин и нижнюю панель.
         updateOverlaysVisibility()
         supportFragmentManager.addOnBackStackChangedListener {
             updateOverlaysVisibility()
@@ -73,7 +74,7 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
         }
 
         binding.fieldBtnMyPois.setOnClickListener {
-            // TODO: my pois
+            startActivity(Intent(this, MyPoisActivity::class.java))
         }
 
         binding.btnConfirmPoint.setOnClickListener {
