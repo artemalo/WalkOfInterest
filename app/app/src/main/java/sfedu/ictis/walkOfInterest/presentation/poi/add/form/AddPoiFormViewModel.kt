@@ -26,11 +26,10 @@ import sfedu.ictis.walkOfInterest.domain.usecase.UpdatePoiUseCase
 class AddPoiFormViewModel(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val createPoiUseCase: CreatePoiUseCase,
-    @Suppress("unused") private val updatePoiUseCase: UpdatePoiUseCase,
+    private val updatePoiUseCase: UpdatePoiUseCase,
     private val supplementPoiUseCase: SupplementPoiUseCase,
     private val getPoiByIdUseCase: GetPoiByIdUseCase
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(AddPoiFormUiState())
     val uiState: StateFlow<AddPoiFormUiState> = _uiState.asStateFlow()
 
@@ -125,13 +124,30 @@ class AddPoiFormViewModel(
             _uiState.update { it.copy(isSubmitting = true, errorBanner = null) }
 
             val result = if (targetId != null) {
-                supplementPoiUseCase(
-                    id = targetId,
-                    name = name,
-                    description = description,
-                    lang = lang,
-                    subcategoryIds = subIds
-                )
+                val originalIds = state.originalSubcategoryIds
+                val subcategoriesUntouched = originalIds != null &&
+                        originalIds == state.selectedSubcategoryIds
+
+                if (subcategoriesUntouched) {
+                    // не трогал подкатегории
+                    supplementPoiUseCase(
+                        id = targetId,
+                        name = name,
+                        description = description,
+                        lang = lang,
+                        subcategoryIds = subIds
+                    )
+                } else {
+                    // добавил/удалил подкатегории
+                    updatePoiUseCase(
+                        id = targetId,
+                        point = point,
+                        name = name,
+                        description = description,
+                        lang = lang,
+                        subcategoryIds = subIds
+                    )
+                }
             } else {
                 createPoiUseCase(
                     point = point,
@@ -221,11 +237,15 @@ class AddPoiFormViewModel(
                 .distinctBy { it.id }
                 .sortedByCategory()
 
+            // supplement vs update
+            val originalIds = prefillSubs.map { it.id }.toSet()
+
             state.copy(
                 name = state.name.ifBlank { poi.name.orEmpty() },
                 description = state.description.ifBlank { poi.description.orEmpty() },
                 selectedSubcategoryIds = mergedIds,
-                selectedSubcategories = mergedSubs
+                selectedSubcategories = mergedSubs,
+                originalSubcategoryIds = originalIds
             )
         }
 
@@ -288,4 +308,3 @@ private fun List<DomainPickSubcategory>.sortedByCategory(): List<DomainPickSubca
             { it.id }
         )
     )
-
