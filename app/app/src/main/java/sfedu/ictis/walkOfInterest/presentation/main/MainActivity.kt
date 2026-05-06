@@ -48,8 +48,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun setupUI() {
-         binding.itemList.adapter = feedAdapter
-         binding.itemList.layoutManager = LinearLayoutManager(this)
+        binding.itemList.adapter = feedAdapter
+        binding.itemList.layoutManager = LinearLayoutManager(this)
 
         if (supportFragmentManager.findFragmentById(R.id.fragmentMainCreate) == null) {
             supportFragmentManager.beginTransaction()

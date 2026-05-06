@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import sfedu.ictis.walkOfInterest.databinding.FragmentMainCreateBinding
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
-import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.presentation.generate.GenerateActivity
+import sfedu.ictis.walkOfInterest.presentation.poi.add.AddPoiActivity
 
 class MainCreateFragment : BaseFragment<FragmentMainCreateBinding>() {
     override fun inflateBinding(
@@ -33,8 +33,8 @@ class MainCreateFragment : BaseFragment<FragmentMainCreateBinding>() {
         }
 
         binding.fieldCreateSpot.setOnClickListener {
-            // TODO: Переход на экран создания POI
-            ToastManager.show(requireContext(), "Скоро будет!")
+            val intent = Intent(requireContext(), AddPoiActivity::class.java)
+            startActivity(intent)
         }
     }
 }
