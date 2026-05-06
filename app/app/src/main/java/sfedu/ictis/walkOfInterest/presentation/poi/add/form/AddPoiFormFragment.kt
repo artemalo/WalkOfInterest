@@ -23,6 +23,7 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPickSubcategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
 import sfedu.ictis.walkOfInterest.utils.ToastManager
+import sfedu.ictis.walkOfInterest.utils.calculateColorByCategory
 
 class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
 
@@ -214,7 +215,9 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
                 isCloseIconVisible = true
                 isClickable = true
                 isCheckable = false
-                setChipBackgroundColorResource(R.color.object_selected)
+
+                val color = calculateColorByCategory(sub.categoryId ?: 0)
+                chipBackgroundColor = android.content.res.ColorStateList.valueOf(color)
                 setTextColor(
                     androidx.core.content.ContextCompat.getColor(requireContext(), R.color.white)
                 )

@@ -274,9 +274,9 @@ class AddPoiFormViewModel(
     private fun formatRetry(seconds: Long): String {
         val minutes = seconds / 60
         return when {
-            seconds < 60 -> "${seconds} сек"
-            minutes < 60 -> "${minutes} мин"
-            else -> "${minutes / 60} ч"
+            seconds < 60 -> "${seconds}с"
+            minutes < 60 -> "${minutes}м"
+            else -> "${minutes / 60}ч"
         }
     }
 }

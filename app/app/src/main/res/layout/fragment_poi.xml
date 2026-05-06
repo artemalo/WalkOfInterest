@@ -4,8 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingStart="@dimen/padding_general"
-    android:paddingEnd="@dimen/padding_general"
     android:background="@color/general">
 
     <androidx.core.widget.NestedScrollView
@@ -27,6 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_field"
                 android:layout_marginTop="@dimen/padding_general"
+                android:layout_marginStart="@dimen/padding_general"
+                android:layout_marginEnd="@dimen/padding_general"
                 android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent">
@@ -74,6 +74,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout3"
                 android:layout_marginTop="@dimen/padding_normal"
+                android:layout_marginStart="@dimen/padding_general"
+                android:layout_marginEnd="@dimen/padding_general"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/header">
@@ -168,6 +170,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_normal"
 
+                android:paddingStart="@dimen/padding_general"
+                android:paddingEnd="@dimen/padding_general"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
 
@@ -180,7 +184,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_normal"
-
+                android:layout_marginStart="@dimen/padding_general"
+                android:layout_marginEnd="@dimen/padding_general"
                 android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@+id/itemList">
 

@@ -4,132 +4,137 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/general"
-    android:paddingStart="@dimen/padding_general"
-    android:paddingEnd="@dimen/padding_general"
     tools:context=".presentation.poi.add.my.MyPoisActivity"
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_field"
-        android:layout_marginTop="@dimen/padding_general"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/padding_general"
+        android:paddingEnd="@dimen/padding_general">
 
-        <FrameLayout
-            android:id="@+id/fieldBtnBack"
-            android:layout_width="@dimen/btn_field"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/btn_field"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="Back"
-                android:src="@drawable/ic_arrow_l" />
-        </FrameLayout>
+            android:layout_marginTop="@dimen/padding_general"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_marginStart="@dimen/padding_small"
-            android:text="Мои POI"
-            android:textAppearance="@style/TextAppearance.App.H1"
-            android:textColor="@color/white"
+            <FrameLayout
+                android:id="@+id/fieldBtnBack"
+                android:layout_width="@dimen/btn_field"
+                android:layout_height="@dimen/btn_field"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:contentDescription="Back"
+                    android:src="@drawable/ic_arrow_l" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/padding_small"
+                android:text="Мои POI"
+                android:textAppearance="@style/TextAppearance.App.H1"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/fieldBtnBack"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_middle"
+            android:background="@android:color/transparent"
+            app:tabIndicatorColor="@color/object"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/description"
+            app:tabMode="fixed"
+            app:layout_constraintTop_toBottomOf="@+id/header" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/padding_middle"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/padding_general"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tabs" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:indeterminateTint="@color/object"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/fieldBtnBack"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tabs" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_middle"
-        android:background="@android:color/transparent"
-        app:tabIndicatorColor="@color/object"
-        app:tabSelectedTextColor="@color/white"
-        app:tabTextColor="@color/description"
-        app:tabMode="fixed"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/padding_middle"
-        android:clipToPadding="false"
-        android:paddingBottom="@dimen/padding_general"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabs" />
-
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:indeterminateTint="@color/object"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabs" />
-
-    <TextView
-        android:id="@+id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.App.Body"
-        android:textColor="@color/description"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabs" />
-
-    <LinearLayout
-        android:id="@+id/errorBlock"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabs">
         <TextView
-            android:id="@+id/errorText"
+            android:id="@+id/empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.App.Body"
-            android:textColor="@color/object_red" />
-        <FrameLayout
-            android:id="@+id/btnRetry"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/btn_general"
-            android:layout_marginTop="@dimen/padding_middle"
-            android:background="@drawable/btn_next"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingStart="@dimen/padding_general"
-            android:paddingEnd="@dimen/padding_general">
+            android:textColor="@color/description"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tabs" />
+
+        <LinearLayout
+            android:id="@+id/errorBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tabs">
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/errorText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Повторить"
-                android:textAppearance="@style/TextAppearance.App.H2"
-                android:textColor="@color/white" />
-        </FrameLayout>
-    </LinearLayout>
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/object_red" />
+            <FrameLayout
+                android:id="@+id/btnRetry"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_general"
+                android:layout_marginTop="@dimen/padding_middle"
+                android:background="@drawable/btn_next"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="@dimen/padding_general"
+                android:paddingEnd="@dimen/padding_general">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Повторить"
+                    android:textAppearance="@style/TextAppearance.App.H2"
+                    android:textColor="@color/white" />
+            </FrameLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
