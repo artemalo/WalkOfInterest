@@ -2,7 +2,7 @@ package sfedu.ictis.walkOfInterest.data.model.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class TagDto(
+data class SubcategoryShortDto(
     @SerializedName("subcategoryId") val subcategoryId: Int,
-    @SerializedName("weight") val weight: Double?
+    @SerializedName("subcategoryName") val subcategoryName: String?
 )

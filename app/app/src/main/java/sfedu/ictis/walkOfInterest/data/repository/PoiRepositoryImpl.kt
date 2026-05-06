@@ -1,13 +1,19 @@
 package sfedu.ictis.walkOfInterest.data.repository
 
-import org.json.JSONObject
-import retrofit2.Response
 import sfedu.ictis.walkOfInterest.data.api.PoiApi
 import sfedu.ictis.walkOfInterest.data.mapper.toDomain
+import sfedu.ictis.walkOfInterest.data.model.dto.PoiAddDto
+import sfedu.ictis.walkOfInterest.data.model.dto.PoiNearbyCheckRequestDto
+import sfedu.ictis.walkOfInterest.data.model.dto.PointDto
 import sfedu.ictis.walkOfInterest.data.model.dto.ReviewReactionRequestDto
 import sfedu.ictis.walkOfInterest.data.model.dto.ReviewRequestDto
-import sfedu.ictis.walkOfInterest.domain.exception.ServerException
+import sfedu.ictis.walkOfInterest.data.util.toException
+import sfedu.ictis.walkOfInterest.data.util.tryParseFirstJsonValue
+import sfedu.ictis.walkOfInterest.domain.exception.PoiAlreadyExistsException
+import sfedu.ictis.walkOfInterest.domain.model.DomainMyPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoiInfo
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoiNearbyCheck
+import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainReview
 import sfedu.ictis.walkOfInterest.domain.model.ReactionType
 import sfedu.ictis.walkOfInterest.domain.repository.PoiRepository
@@ -85,19 +91,118 @@ class PoiRepositoryImpl(
         }
     }
 
-    private fun Response<*>.toException(fallback: String): Exception {
-        val rawError = errorBody()?.string()
-        val parsedMessage = rawError?.let { tryParseFirstJsonValue(it) }
+    override suspend fun checkNearby(
+        point: DomainPoint,
+        lang: String
+    ): Result<DomainPoiNearbyCheck> = runCatching {
+        val response = api.checkNearby(
+            request = PoiNearbyCheckRequestDto(point = PointDto(point.lat, point.lon)),
+            lang = lang
+        )
+        val body = response.body()
 
-        return when (code()) {
-            in 400..499 -> ServerException(parsedMessage ?: fallback)
-            else -> Exception("$fallback (код ${code()})")
+        if (response.isSuccessful && body != null) {
+            body.toDomain()
+        } else {
+            throw response.toException("Не удалось проверить точку")
         }
     }
 
-    private fun tryParseFirstJsonValue(raw: String): String? = runCatching {
-        val json = JSONObject(raw)
-        val keys = json.keys()
-        if (keys.hasNext()) json.getString(keys.next()) else null
-    }.getOrNull()
+    override suspend fun createPoi(
+        point: DomainPoint,
+        name: String,
+        description: String?,
+        lang: String,
+        subcategoryIds: List<Int>,
+        force: Boolean
+    ): Result<DomainPoiInfo> = runCatching {
+        val response = api.createPoi(
+            poi = PoiAddDto(
+                point = PointDto(point.lat, point.lon),
+                name = name,
+                description = description,
+                lang = lang,
+                subcategoriesId = subcategoryIds,
+                force = if (force) true else null
+            )
+        )
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            body.toDomain()
+        } else if (response.code() == 409) {
+            val parsed = response.errorBody()?.string()?.let { tryParseFirstJsonValue(it) }
+            throw PoiAlreadyExistsException(parsed ?: "Похожее место уже существует рядом")
+        } else {
+            throw response.toException("Не удалось создать место")
+        }
+    }
+
+    override suspend fun updatePoi(
+        id: Long,
+        point: DomainPoint,
+        name: String,
+        description: String?,
+        lang: String,
+        subcategoryIds: List<Int>
+    ): Result<DomainPoiInfo> = runCatching {
+        val response = api.updatePoi(
+            id = id,
+            poi = PoiAddDto(
+                id = id,
+                point = PointDto(point.lat, point.lon),
+                name = name,
+                description = description,
+                lang = lang,
+                subcategoriesId = subcategoryIds,
+                force = null
+            )
+        )
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            body.toDomain()
+        } else {
+            throw response.toException("Не удалось обновить место")
+        }
+    }
+
+    override suspend fun supplementPoi(
+        id: Long,
+        name: String,
+        description: String?,
+        lang: String,
+        subcategoryIds: List<Int>
+    ): Result<DomainPoiInfo> = runCatching {
+        val response = api.supplementPoi(
+            id = id,
+            poi = PoiAddDto(
+                id = id,
+                point = PointDto(0.0, 0.0), // ignore
+                name = name,
+                description = description,
+                lang = lang,
+                subcategoriesId = subcategoryIds,
+                force = null
+            )
+        )
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            body.toDomain()
+        } else {
+            throw response.toException("Не удалось дополнить место")
+        }
+    }
+
+    override suspend fun getMyPois(lang: String): Result<List<DomainMyPoi>> = runCatching {
+        val response = api.getMyPois(lang)
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            body.map { it.toDomain() }
+        } else {
+            throw response.toException("Не удалось загрузить ваши места")
+        }
+    }
 }
