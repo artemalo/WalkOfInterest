@@ -333,8 +333,9 @@
         app:layout_constraintStart_toStartOf="parent">
         <TextView
             android:id="@+id/textBtnEdit"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding_s_small"
             android:minWidth="@dimen/padding_scroll"
             app:drawableStartCompat="@drawable/ic_edit"
             app:drawableTint="@color/white"

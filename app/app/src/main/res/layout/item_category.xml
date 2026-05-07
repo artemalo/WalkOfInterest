@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/category"
     android:contentDescription="About Category"
     android:clickable="true"
@@ -34,38 +35,54 @@
             android:contentDescription="Category img" />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/nameCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_s_small"
-        android:text="Название категории"
-        android:textAppearance="@style/TextAppearance.App.H1"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/countSelected"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/framePicture"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/nameCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_s_small"
+            android:layout_marginEnd="@dimen/padding_s_small"
+            tools:text="Название категории"
+            android:text="@string/none"
+            android:textAppearance="@style/TextAppearance.App.H1"
+            android:textColor="@color/white"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toTopOf="@+id/countSelected"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Всего мест: "
+        android:text="@string/All_spots"
         android:textAppearance="@style/TextAppearance.App.Body"
         android:textColor="@color/description"
         app:layout_constraintStart_toStartOf="@+id/nameCategory"
         app:layout_constraintTop_toBottomOf="@+id/nameCategory" />
 
-    <TextView
-        android:id="@+id/totalCountPois"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="none"
-        android:textAppearance="@style/TextAppearance.App.Body"
-        android:textColor="@color/description"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        <TextView
+            android:id="@+id/totalCountPois"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_s_small"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/none"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/description"
+            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="@+id/textView" />
 
 
     <TextView
@@ -73,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/padding_small"
-        android:text="none"
+        android:text="@string/none"
         android:textAppearance="@style/TextAppearance.App.Body"
         android:textColor="@color/white_gray"
         app:drawableStartCompat="@drawable/ic_point"
@@ -89,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_s_small"
-        android:text="none"
+        android:text="@string/none"
         android:textAppearance="@style/TextAppearance.App.Body"
         android:textColor="@color/white_gray"
         app:drawableStartCompat="@drawable/ic_walk"
@@ -98,6 +115,7 @@
         app:layout_constraintStart_toEndOf="@+id/countSelected"
         app:layout_constraintTop_toTopOf="@+id/countSelected" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
