@@ -102,7 +102,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
     private fun observeState() {
         lifecycleScope.launch {
             viewModel.uiState.collect { state ->
-                adapter.submitList(state.categories)
+                adapter.submitList(state.sortedCategories)
 
                 binding.textFrom.text = state.addressFrom
                 binding.textTo.text = state.addressTo
@@ -139,7 +139,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
         }
 
         binding.btnSwap.setOnClickListener {
-            // TODO: sort categories
+            viewModel.toggleSortMode()
         }
     }
 

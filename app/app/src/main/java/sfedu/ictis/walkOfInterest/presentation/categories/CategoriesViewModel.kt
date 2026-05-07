@@ -61,6 +61,10 @@ class CategoriesViewModel(
         }
     }
 
+    fun toggleSortMode() {
+        _uiState.update { it.copy(sortMode = it.sortMode.toggle()) }
+    }
+
     fun onGenerateRouteClicked() {
         val state = _uiState.value
 
