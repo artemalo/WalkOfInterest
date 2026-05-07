@@ -4,12 +4,10 @@ import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import sfedu.ictis.walkOfInterest.R
-import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
 
 
 object PoiNavigator {
-
     fun open(
         activity: FragmentActivity,
         container: View,
@@ -41,8 +39,4 @@ object PoiNavigator {
 
 fun FragmentActivity.openPoiFragment(poiId: Long, container: View) {
     PoiNavigator.open(this, container, PoiFragment.newInstance(poiId))
-}
-
-fun FragmentActivity.openPoiFragment(poi: DomainPoi, container: View) {
-    PoiNavigator.open(this, container, PoiFragment.newInstance(poi))
 }

@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/general"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemList"
@@ -183,10 +184,10 @@
             <FrameLayout
                 android:id="@+id/fieldBtn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/btn_general"
                 android:layout_gravity="center"
                 android:background="@drawable/btn_next"
-                android:minHeight="36dp">
+                android:minHeight="@dimen/btn_general">
                 <TextView
                     android:id="@+id/btnNext"
                     android:text="Далее"

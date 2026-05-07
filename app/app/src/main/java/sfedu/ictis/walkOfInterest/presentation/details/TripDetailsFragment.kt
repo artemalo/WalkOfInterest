@@ -13,11 +13,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentTripDetailsBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
-import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
-import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
+import sfedu.ictis.walkOfInterest.utils.openPoiFragment
 
 class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
     private val viewModel: TripDetailsViewModel by viewModel()
@@ -49,7 +48,10 @@ class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
 
     private fun setupRecyclerView() {
         adapter = TripRoutePointAdapter { point ->
-            openPoiFragment(point)
+            requireActivity().openPoiFragment(
+                poiId = point.id,
+                container = requireActivity().findViewById(R.id.fragment_container)
+            )
         }
 
         binding.itemList.layoutManager = LinearLayoutManager(requireContext())
@@ -63,7 +65,7 @@ class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
             parentFragmentManager.popBackStack()
         }
 
-        binding.btnTrash.setOnClickListener {
+        binding.fieldBtnTrash.setOnClickListener {
             viewModel.deleteTrip()
         }
     }
@@ -111,13 +113,13 @@ class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
         adapter.submitList(trip.selectedPois.sortedBy { it.order })
     }
 
-    private fun openPoiFragment(point: RoutePoint) {
-        val fragment = PoiFragment.newInstance(point.id)
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
+//    private fun openPoiFragment(point: RoutePoint) {
+//        val fragment = PoiFragment.newInstance(point.id)
+//        requireActivity().supportFragmentManager.beginTransaction()
+//            .replace(R.id.fragment_container, fragment)
+//            .addToBackStack(null)
+//            .commit()
+//    }
 
     companion object {
         private const val ARG_TRIP_ID = "arg_trip_id"

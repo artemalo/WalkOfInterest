@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/general">
+    android:background="@color/general"
+    android:fitsSystemWindows="true">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContent"
@@ -23,7 +24,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_field"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_general"
                 android:layout_marginStart="@dimen/padding_general"
                 android:layout_marginEnd="@dimen/padding_general"
@@ -35,7 +36,6 @@
                     android:id="@+id/space"
                     android:layout_width="@dimen/btn_field"
                     android:layout_height="@dimen/btn_field"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,16 +57,16 @@
                     android:id="@+id/fieldBtnClose"
                     android:layout_width="@dimen/btn_field"
                     android:layout_height="@dimen/btn_field"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
+
                     <ImageView
                         android:id="@+id/btnClose"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|center_vertical"
                         android:contentDescription="button back"
-                        android:src="@drawable/ic_x"/>
+                        android:src="@drawable/ic_x" />
                 </FrameLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

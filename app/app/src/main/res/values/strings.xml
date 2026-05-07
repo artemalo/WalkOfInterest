@@ -25,7 +25,7 @@
     <string name="profile_description">Описание профиля</string>
     <string name="profile_edit">Редактировать</string>
     <string name="logout">Выйти</string>
-    <string name="logout_all">Выйти на всех устройствах</string>
+    <string name="logout_all">Выйти со всех устройств</string>
 
 
     <string name="profile_no_reviews">У вас пока нет отзывов</string>

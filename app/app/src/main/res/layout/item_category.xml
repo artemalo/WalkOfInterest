@@ -72,15 +72,16 @@
         android:id="@+id/countSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_small"
         android:text="none"
         android:textAppearance="@style/TextAppearance.App.Body"
         android:textColor="@color/white_gray"
         app:drawableStartCompat="@drawable/ic_point"
         app:drawableTint="@color/object"
-        android:layout_marginStart="@dimen/padding_s_small"
-        android:layout_marginBottom="@dimen/padding_small"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView" />
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="1.0"/>
 
 
     <TextView

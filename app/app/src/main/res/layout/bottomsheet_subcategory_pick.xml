@@ -7,7 +7,8 @@
     android:paddingStart="@dimen/padding_general"
     android:paddingTop="@dimen/padding_normal"
     android:paddingEnd="@dimen/padding_general"
-    android:paddingBottom="@dimen/padding_normal">
+    android:paddingBottom="@dimen/padding_normal"
+    android:fitsSystemWindows="true">
 
     <View
         android:layout_width="40dp"
@@ -33,21 +34,32 @@
         android:nestedScrollingEnabled="true"
         android:overScrollMode="never" />
 
+
     <FrameLayout
         android:id="@+id/btnDone"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_field"
         android:layout_marginTop="@dimen/padding_normal"
-        android:background="@drawable/btn_next"
-        android:clickable="true"
-        android:focusable="true">
-        <TextView
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small">
+        <FrameLayout
+            android:id="@+id/fieldBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/btn_general"
             android:layout_gravity="center"
-            android:text="Готово"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.App.H2"
-            android:textColor="@color/white" />
+            android:background="@drawable/btn_next"
+            android:minHeight="@dimen/btn_general">
+            <TextView
+                android:id="@+id/btnNext"
+                android:text="Готово"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.App.H2"
+                android:includeFontPadding="false"/>
+        </FrameLayout>
     </FrameLayout>
 </LinearLayout>

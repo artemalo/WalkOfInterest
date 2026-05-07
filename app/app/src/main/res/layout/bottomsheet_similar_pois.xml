@@ -7,7 +7,8 @@
     android:paddingStart="@dimen/padding_general"
     android:paddingTop="@dimen/padding_normal"
     android:paddingEnd="@dimen/padding_general"
-    android:paddingBottom="@dimen/padding_normal">
+    android:paddingBottom="@dimen/padding_normal"
+    android:fitsSystemWindows="true">
 
     <View
         android:layout_width="40dp"

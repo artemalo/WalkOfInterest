@@ -34,12 +34,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         supportFragmentManager.addOnBackStackChangedListener {
             val isFragmentVisible = supportFragmentManager.backStackEntryCount > 0
             if (!isFragmentVisible) {
+                binding.fragmentContainer.visibility = View.GONE
                 viewModel.refreshData()
             }
         }
     }
 
     private fun openTripDetails(tripId: String) {
+        binding.fragmentContainer.visibility = View.VISIBLE
+
         val fragment = TripDetailsFragment.newInstance(tripId)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
@@ -69,14 +72,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         binding.fieldBtnPlus.setOnClickListener {
             viewModel.onPlusClicked()
-        }
-
-        binding.fieldBtnBack.setOnClickListener {
-            if (viewModel.uiState.value.isCreateMenuVisible) {
-                viewModel.hideCreateMenu()
-            } else {
-                onBackPressedDispatcher.onBackPressed()
-            }
         }
 
         binding.fieldBtnProfile.setOnClickListener {

@@ -4,54 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/general">
+    android:background="@color/general"
+    android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingStart="@dimen/padding_general"
-        android:paddingEnd="@dimen/padding_general">
-        <TextView
-            android:id="@+id/titleList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_general"
-            android:text="Список"
-            android:textAppearance="@style/TextAppearance.App.H1"
-            android:textColor="@color/white_gray"
-            app:layout_constraintTop_toBottomOf="@+id/textApp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/itemList"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingTop="@dimen/padding_normal"
-            android:paddingBottom="@dimen/padding_btn"
-            android:clipToPadding="false"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleList"/>
-
-        <FrameLayout
-            android:id="@+id/fieldBtnBack"
+        android:paddingEnd="@dimen/padding_general"
+        android:layout_marginTop="@dimen/padding_general"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+        <Space
+            android:id="@+id/space"
             android:layout_width="@dimen/btn_field"
             android:layout_height="@dimen/btn_field"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginTop="@dimen/padding_general"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
-
-            <ImageView
-                android:id="@+id/btnClose"
-                android:layout_gravity="center_vertical"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="Back"
-                android:focusable="true"
-                android:src="@drawable/ic_arrow_l" />
-        </FrameLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textApp"
@@ -65,7 +38,7 @@
             android:textColor="@color/white_gray"
             app:layout_constraintBottom_toBottomOf="@+id/fieldBtnProfile"
             app:layout_constraintEnd_toStartOf="@+id/fieldBtnProfile"
-            app:layout_constraintStart_toEndOf="@+id/fieldBtnBack"
+            app:layout_constraintStart_toEndOf="@+id/space"
             app:layout_constraintTop_toTopOf="@+id/fieldBtnProfile" />
 
         <FrameLayout
@@ -74,7 +47,6 @@
             android:layout_height="@dimen/btn_field"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginTop="@dimen/padding_general"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
             <FrameLayout
@@ -92,6 +64,49 @@
                     android:src="@drawable/ic_profile" />
             </FrameLayout>
         </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/padding_general"
+        android:paddingBottom="@dimen/padding_general"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/padding_general"
+            android:paddingEnd="@dimen/padding_general">
+
+            <TextView
+                android:id="@+id/titleList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Список"
+                android:textAppearance="@style/TextAppearance.App.H1"
+                android:textColor="@color/white_gray"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/itemList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingTop="@dimen/padding_normal"
+
+                android:paddingBottom="@dimen/padding_btn"
+
+                app:layout_constraintTop_toBottomOf="@+id/titleList" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/barMain"
@@ -169,10 +184,10 @@
             app:layout_constraintBottom_toTopOf="@+id/barMain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

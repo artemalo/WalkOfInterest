@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingStart="@dimen/padding_general"
     android:paddingEnd="@dimen/padding_general"
-    android:background="@color/general">
+    android:background="@color/general"
+    android:fitsSystemWindows="true">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

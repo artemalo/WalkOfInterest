@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:background="@color/general"
     tools:context=".presentation.poi.add.my.MyPoisActivity"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -57,11 +58,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_middle"
             android:background="@android:color/transparent"
+            android:contentDescription="Tabs"
+            app:layout_constraintTop_toBottomOf="@+id/header"
             app:tabIndicatorColor="@color/object"
-            app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="@color/description"
             app:tabMode="fixed"
-            app:layout_constraintTop_toBottomOf="@+id/header" />
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/description" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
