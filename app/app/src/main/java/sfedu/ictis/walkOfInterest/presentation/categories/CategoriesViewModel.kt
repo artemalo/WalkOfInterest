@@ -77,7 +77,7 @@ class CategoriesViewModel(
             .flatMap { category ->
                 category.subcategories.asSequence().flatMap { subCategory ->
                     subCategory.pois.asSequence()
-                        .filter { poi -> poi.selected && poi.order != null }
+                        .filter { poi -> poi.selected && poi.order != null } // TODO: bag - fix order = +reorder() in backend
                         .map { poi ->
                             RoutePoint(
                                 id = poi.id,
