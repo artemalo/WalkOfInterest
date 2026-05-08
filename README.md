@@ -26,10 +26,8 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow 22/tcp    # Обязательно: доступ по SSH
-sudo ufw allow 80/tcp    # HTTP (для получения сертификата и редиректа)
-sudo ufw allow 443/tcp   # HTTPS (защищенный доступ к API)
+sudo ufw allow 80/tcp
 sudo ufw --force enable
-
 ```
 
 ## Шаг 3. Установка «Сердца» (`Docker`)
@@ -60,6 +58,9 @@ mkdir ~/app && cd ~/app
 # Скачиваем код бэкенда
 git clone https://github.com/artemalo/WalkOfInterest-backend.git
 
+# Перед использованием wget команды
+apt-get install wget
+
 # Создаем папку для карт и скачиваем карту ЮФО
 mkdir -p ~/app/data/graphhopper
 cd ~/app/data/graphhopper
@@ -80,7 +81,7 @@ nano .env
 ```env
 DB_PASSWORD=super_strong_password
 JWT_SECRET=длинная_случайная_строка_без_пробелов
-DOMAIN=walk.of.interest
+DOMAIN=<server-name>
 ```
 
 ### 5.2 Файл архитектуры (`docker-compose.yml`)
@@ -131,6 +132,8 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - GH_URL=http://graphhopper:8989
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=900000
+      - JWT_REFRESH_EXPIRATION=2592000000
       - JAVA_OPTS="-Xms256m -Xmx512m"
     mem_limit: 700m
 
@@ -148,15 +151,6 @@ services:
       - ./certbot/www:/var/www/certbot
     depends_on:
       - backend
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    mem_limit: 64m
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 ```
 
 ### 5.3 Файл архитектуры (`.dockerignore`)
@@ -170,11 +164,8 @@ target
 *.iml
 ```
 
-## Шаг 6. Настройка Nginx и `HTTPS` (Безопасное соединение)
+## Шаг 6. Настройка Nginx
 
-### 6.1 Первичный конфиг Nginx (только HTTP)
-
-Чтобы получить сертификат, сначала нужно запустить Nginx без шифрования
 ```bash
 mkdir -p ~/app/nginx/conf && nano ~/app/nginx/conf/app.conf
 ```
@@ -182,53 +173,10 @@ mkdir -p ~/app/nginx/conf && nano ~/app/nginx/conf/app.conf
 ```nginx
 server {
     listen 80;
-    server_name walk.of.interest;
-
-    # Служебная папка для проверки Certbot
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-
-    # Перенаправление с HTTP на HTTPS
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-```
-
-### 6.2 Запуск и получение сертификата Let's Encrypt
-Запускаем сервисы в фоновом режиме:
-```bash
-sudo docker compose up -d
-```
-
-Запрашиваем SSL-сертификат (со своей почтой):
-```bash
-sudo docker compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot \
-  --email your-email@example.com --agree-tos --no-eff-email \
-  -d walk.of.interest
-```
-
-### 6.3 Включение HTTPS в Nginx
-Открываем конфиг снова:
-```bash
-nano ~/app/nginx/conf/app.conf
-```
-*В самую последнюю строку файла, добавить блок для 443 порта:*
-```nginx
-server {
-    listen 443 ssl;
-    server_name walk.of.interest;
-
-    ssl_certificate /etc/letsencrypt/live/walk.of.interest/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/walk.of.interest/privkey.pem;
-
-    # Оптимизация SSL
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
+    server_name <server-name>;
 
     location / {
-        proxy_pass http://walk-api:8080;
+        proxy_pass http://backend:8080;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -237,10 +185,10 @@ server {
 }
 ```
 
-Применяем настройки Nginx:
+## Шаг 7. Запуск
 
 ```bash
-sudo docker compose restart nginx
+sudo docker compose up -d
 ```
 
 ---
@@ -254,7 +202,7 @@ sudo docker compose restart nginx
 sudo docker compose ps
 
 # Посмотреть логи бэкенда (чтобы убедиться, что Spring Boot запустился)
-sudo docker compose logs -f walk-api
+sudo docker compose logs -f backend
 
 # Проверить потребление оперативной памяти контейнерами
 sudo docker stats
@@ -288,8 +236,17 @@ sudo docker compose down
 ```
 
 ---
+### Пересбор `docker`
 
-### Пересбор образа backend
+#### Образы
+Если был изменен `docker-compose.yml` и внутренние файлы (`.env`)
+
+```bash
+sudo docker compose down
+sudo docker compose up -d
+```
+### Конкретный образ
+Например, нужны новые изменения backend с git:
 ```bash
 cd ~/app/WalkOfInterest-backend
 git pull origin master
