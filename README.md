@@ -94,6 +94,8 @@ services:
   db:
     image: postgis/postgis:15-3.3
     container_name: walk-db
+    ports:
+      - "127.0.0.1:5432:5432"
     restart: always
     environment:
       POSTGRES_DB: walk
