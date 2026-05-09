@@ -70,7 +70,67 @@ wget https://download.geofabrik.de/russia/south-fed-district-latest.osm.pbf
 cd ~/app
 ```
 
-## Шаг 5. Конфигурация (Секреты и Архитектура)
+Конфиг для GraphHopper (*обязательно*)
+
+```bash
+graphhopper:
+  datareader.file: /data/map.osm.pbf
+  graph.location: /data/cache
+
+  import.osm.ignored_highways: |
+    motorway, trunk, busway,
+    motorway_link, trunk_link
+
+  profiles:
+    - name: foot
+      custom_model_files: [foot.json, foot_elevation.json]
+
+  profiles_ch:
+    - profile: foot
+
+  graph.encoded_values: |
+    foot_access, foot_average_speed, foot_priority, foot_road_access,
+    hike_rating, average_slope,
+    country, road_class, mtb_rating, road_environment, ferry_speed
+
+  graph.elevation.provider: srtm
+
+server:
+  application_connectors:
+  - type: http
+    port: 8989
+    max_request_header_size: 50k
+  request_log:
+      appenders: []
+logging:
+  appenders:
+    - type: file
+      time_zone: UTC
+      current_log_filename: logs/graphhopper.log
+      log_format: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+      archive: true
+      archived_log_filename_pattern: ./logs/graphhopper-%d.log.gz
+      archived_file_count: 30
+      never_block: true
+    - type: console
+      time_zone: UTC
+      log_format: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  loggers:
+    "com.graphhopper.osm_warnings":
+      level: DEBUG
+      additive: false
+      appenders:
+        - type: file
+          currentLogFilename: logs/osm_warnings.log
+          archive: false
+          logFormat: '[%level] %msg%n'
+```
+
+Переименовать файл (или везде использовать имя нужное .pbf)
+
+```
+mv ~/app/data/graphhopper/south-fed-district-latest.osm.pbf ~/app/data/graphhopper/map.osm.pbf## Шаг 5. Конфигурация (Секреты и Архитектура)
+```
 
 ### 5.1 Файл переменных окружения (`.env`)
 
@@ -85,6 +145,7 @@ DOMAIN=<server-name>
 ```
 
 ### 5.2 Файл архитектуры (`docker-compose.yml`)
+
 ```bash
 nano docker-compose.yml
 ```
@@ -115,11 +176,13 @@ services:
     image: israelhikingmap/graphhopper:latest
     container_name: graphhopper
     restart: always
-    environment:
-      - JAVA_OPTS=-Xmx512m -Xms512m
     mem_limit: 700m
     volumes:
       - ./data/graphhopper:/data
+      - ./graphhopper.yml:/config.yml
+    command: ["-c", "/config.yml"]
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms512m
 
   backend:
     build: ./WalkOfInterest-backend
@@ -156,9 +219,11 @@ services:
 ```
 
 ### 5.3 Файл архитектуры (`.dockerignore`)
+
 ```bash
 nano .dockerignore
 ```
+
 ```dockerignore
 target
 .git
@@ -171,7 +236,9 @@ target
 ```bash
 mkdir -p ~/app/nginx/conf && nano ~/app/nginx/conf/app.conf
 ```
+
 *Вставить этот код:*
+
 ```nginx
 server {
     listen 80;
@@ -216,6 +283,7 @@ sudo docker compose down
 ---
 
 ### Папка ~/app
+
 ```bash
 ../app/
 ├── WalkOfInterest-backend/
@@ -234,21 +302,27 @@ sudo docker compose down
 │   └── www/
 ├── .env
 ├── docker-compose.yml
-└──.dockerignore
+├── graphhopper.yml
+└── .dockerignore
 ```
 
 ---
+
 ### Пересбор `docker`
 
 #### Образы
+
 Если был изменен `docker-compose.yml` и внутренние файлы (`.env`)
 
 ```bash
 sudo docker compose down
 sudo docker compose up -d
 ```
+
 ### Конкретный образ
+
 Например, нужны новые изменения backend с git:
+
 ```bash
 cd ~/app/WalkOfInterest-backend
 git pull origin master
