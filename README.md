@@ -128,9 +128,11 @@ logging:
 
 Переименовать файл (или везде использовать имя нужное .pbf)
 
+```bash
+mv ~/app/data/graphhopper/south-fed-district-latest.osm.pbf ~/app/data/graphhopper/map.osm.pbf
 ```
-mv ~/app/data/graphhopper/south-fed-district-latest.osm.pbf ~/app/data/graphhopper/map.osm.pbf## Шаг 5. Конфигурация (Секреты и Архитектура)
-```
+
+## Шаг 5. Конфигурация (Секреты и Архитектура)
 
 ### 5.1 Файл переменных окружения (`.env`)
 
