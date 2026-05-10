@@ -66,7 +66,7 @@ class AddPoiPickViewModel(
 
     fun onAlwaysCreateNew() {
         val point = _uiState.value.lastCheckedPoint ?: return
-        _uiState.update { it.copy(showSimilarSheet = false, similarPois = emptyList()) }
+        _uiState.update { it.copy(showSimilarSheet = false) }
         viewModelScope.launch {
             _events.emit(AddPoiPickEvent.OpenForm(point))
         }
@@ -74,14 +74,14 @@ class AddPoiPickViewModel(
 
     fun onAddInfoToExisting(poiId: Long) {
         val point = _uiState.value.lastCheckedPoint ?: return
-        _uiState.update { it.copy(showSimilarSheet = false, similarPois = emptyList()) }
+        _uiState.update { it.copy(showSimilarSheet = false) }
         viewModelScope.launch {
             _events.emit(AddPoiPickEvent.OpenForm(point = point, targetPoiId = poiId))
         }
     }
 
     fun onOpenExistingPoi(poiId: Long) {
-        _uiState.update { it.copy(showSimilarSheet = false, similarPois = emptyList()) }
+        _uiState.update { it.copy(showSimilarSheet = false) }
         viewModelScope.launch {
             _events.emit(AddPoiPickEvent.OpenExistingPoi(poiId))
         }

@@ -57,7 +57,6 @@ class SimilarPoisBottomSheet : BottomSheetDialogFragment() {
 
         binding.btnCreateAnyway.setOnClickListener {
             listener?.onAlwaysCreateNew()
-            dismissAllowingStateLoss()
         }
         binding.btnClose.setOnClickListener { dismiss() }
     }
@@ -83,7 +82,7 @@ class SimilarPoisBottomSheet : BottomSheetDialogFragment() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             args.getParcelableArrayList(ARG_POIS, DomainPoiNearby::class.java) ?: emptyList()
         } else {
-            args.getParcelableArrayList<DomainPoiNearby>(ARG_POIS) ?: emptyList()
+            args.getParcelableArrayList(ARG_POIS) ?: emptyList()
         }
     }
 
