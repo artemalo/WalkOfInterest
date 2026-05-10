@@ -25,6 +25,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
     private val viewModel: CategoryViewModel by activityViewModel()
     private val categoriesViewModel: CategoriesViewModel by activityViewModel()
     private lateinit var adapter: SubcategoryAdapter
+    private var layoutManagerState: android.os.Parcelable? = null
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -35,6 +36,9 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState != null) return
+
         val category = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(ARG_CATEGORY, DomainCategory::class.java)
         } else {
@@ -57,20 +61,33 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
     }
 
     private fun setupRecyclerView() {
-        adapter = SubcategoryAdapter(
-            onSeeAllClick = { subcategory ->
-                openSubcategoryFragment(subcategory)
-            },
-            onPoiClick = { subcategoryId, poi ->
-                if (viewModel.uiState.value.isEditMode) {
-                    viewModel.onPoiClicked(subcategoryId, poi.id)
-                } else {
-                    openPoi(poi)
+        if (!::adapter.isInitialized) {
+            adapter = SubcategoryAdapter(
+                onSeeAllClick = { subcategory ->
+                    openSubcategoryFragment(subcategory)
+                },
+                onPoiClick = { subcategoryId, poi ->
+                    if (viewModel.uiState.value.isEditMode) {
+                        viewModel.onPoiClicked(subcategoryId, poi.id)
+                    } else {
+                        openPoi(poi)
+                    }
                 }
-            }
-        )
-        binding.itemList.layoutManager = LinearLayoutManager(requireContext())
+            )
+        }
+        val layoutManager = LinearLayoutManager(requireContext())
+        if (layoutManagerState != null) {
+            layoutManager.onRestoreInstanceState(layoutManagerState)
+        }
+        binding.itemList.layoutManager = layoutManager
         binding.itemList.adapter = adapter
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (binding.itemList.layoutManager as? LinearLayoutManager)?.let {
+            layoutManagerState = it.onSaveInstanceState()
+        }
     }
 
     private fun setupListeners() {

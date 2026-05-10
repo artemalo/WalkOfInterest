@@ -33,6 +33,15 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
         setupListeners()
         observeState()
         observeEvents()
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            binding.fragmentContainer.visibility =
+                if (supportFragmentManager.backStackEntryCount > 0) View.VISIBLE else View.GONE
+        }
+
+        if (savedInstanceState != null && supportFragmentManager.backStackEntryCount > 0) {
+            binding.fragmentContainer.visibility = View.VISIBLE
+        }
     }
 
     private fun setupUI() {
@@ -144,19 +153,11 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
     }
 
     private fun openCategoryFragment(category: DomainCategory) {
-        binding.fragmentContainer.visibility = View.VISIBLE
-
         val fragment = CategoryFragment.newInstance(category)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
-
-        supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount == 0) {
-                binding.fragmentContainer.visibility = View.GONE
-            }
-        }
     }
 
     companion object {

@@ -19,6 +19,7 @@ import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
 class SubcategoryFragment : BaseFragment<FragmentSubcategoryBinding>() {
     private val viewModel: CategoryViewModel by activityViewModel()
     private lateinit var adapter: PoiAdapter
+    private var layoutManagerState: android.os.Parcelable? = null
 
     private var subcategoryId: Int = -1
 
@@ -39,16 +40,15 @@ class SubcategoryFragment : BaseFragment<FragmentSubcategoryBinding>() {
             arguments?.getParcelable(ARG_SUBCATEGORY)
         }
 
-        binding.name.text = subcategory?.name ?: "Подкатегория"
+        if (subcategory != null) {
+            subcategoryId = subcategory.id
+            binding.name.text = subcategory.name
+        } else {
+            binding.name.text = "Подкатегория"
+        }
 
         setupRecyclerView()
-
-        subcategory?.let {
-            subcategoryId = it.id
-            binding.name.text = it.name
-            setupRecyclerView()
-            observeViewModel()
-        }
+        observeViewModel()
 
         binding.fieldBtnClose.setOnClickListener {
             parentFragmentManager.popBackStack()
@@ -56,16 +56,29 @@ class SubcategoryFragment : BaseFragment<FragmentSubcategoryBinding>() {
     }
 
     private fun setupRecyclerView() {
-        adapter = PoiAdapter(isVerticalList = true) { poi ->
-            if (viewModel.uiState.value.isEditMode) {
-                viewModel.onPoiClicked(subcategoryId, poi.id)
-            } else {
-                openPoi(poi)
+        if (!::adapter.isInitialized) {
+            adapter = PoiAdapter(isVerticalList = true) { poi ->
+                if (viewModel.uiState.value.isEditMode) {
+                    viewModel.onPoiClicked(subcategoryId, poi.id)
+                } else {
+                    openPoi(poi)
+                }
             }
         }
 
-        binding.itemList.layoutManager = LinearLayoutManager(requireContext())
+        val layoutManager = LinearLayoutManager(requireContext())
+        if (layoutManagerState != null) {
+            layoutManager.onRestoreInstanceState(layoutManagerState)
+        }
+        binding.itemList.layoutManager = layoutManager
         binding.itemList.adapter = adapter
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (binding.itemList.layoutManager as? LinearLayoutManager)?.let {
+            layoutManagerState = it.onSaveInstanceState()
+        }
     }
 
     private fun openPoi(poi: DomainPoi) {
