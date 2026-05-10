@@ -81,6 +81,10 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
             val center = binding.map.mapCenter
             viewModel.onConfirmPointClicked(center.latitude, center.longitude)
         }
+
+        binding.btnToggleSimilarSheet.setOnClickListener {
+            viewModel.onShowSimilarSheetAgain()
+        }
     }
 
     private fun observeState() {
@@ -94,7 +98,6 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
                             binding.progress.visibility = if (checking) View.VISIBLE else View.GONE
                             binding.btnConfirmPoint.isEnabled = !checking
                             binding.btnConfirmPoint.alpha = if (checking) 0.5f else 1f
-                            // "заморозить пин" при загрузке: убираем тень и подсветку
                             binding.imgPin.alpha = if (checking) 0.5f else 1f
                         }
                 }
@@ -114,6 +117,16 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
                         .distinctUntilChanged()
                         .collect { show ->
                             if (show) showSimilarSheet()
+                            updateToggleButtonVisibility()
+                        }
+                }
+
+                launch {
+                    viewModel.uiState
+                        .map { it.similarPois.isNotEmpty() }
+                        .distinctUntilChanged()
+                        .collect {
+                            updateToggleButtonVisibility()
                         }
                 }
             }
@@ -187,6 +200,18 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
             .commit()
     }
 
+    private fun updateToggleButtonVisibility() {
+        val state = viewModel.uiState.value
+        val hasSimilarPois = state.similarPois.isNotEmpty()
+        val isSheetVisible = state.showSimilarSheet
+
+        binding.btnToggleSimilarSheet.visibility = if (hasSimilarPois && !isSheetVisible) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+    }
+
     private fun updateOverlaysVisibility() {
         val hasFragment = supportFragmentManager.backStackEntryCount > 0
         binding.fragmentContainer.visibility = if (hasFragment) View.VISIBLE else View.GONE
@@ -194,8 +219,6 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
         binding.bottomBar.visibility = if (hasFragment) View.GONE else View.VISIBLE
         binding.fieldBtnMyPois.visibility = if (hasFragment) View.GONE else View.VISIBLE
     }
-
-    // === SimilarPoisBottomSheet.Listener ===
 
     override fun onOpenSimilar(poi: DomainPoiNearby) {
         viewModel.onOpenExistingPoi(poi.id)

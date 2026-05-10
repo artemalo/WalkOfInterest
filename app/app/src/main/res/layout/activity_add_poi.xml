@@ -123,6 +123,25 @@
                 android:textColor="@color/white" />
         </FrameLayout>
 
+        <FrameLayout
+            android:id="@+id/btnToggleSimilarSheet"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_field"
+            android:layout_marginTop="@dimen/padding_small"
+            android:background="@drawable/btn_general_alpha"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Показать детали"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/white" />
+        </FrameLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

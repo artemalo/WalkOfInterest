@@ -55,7 +55,13 @@ class AddPoiPickViewModel(
     }
 
     fun onSimilarSheetDismissed() {
-        _uiState.update { it.copy(showSimilarSheet = false, similarPois = emptyList()) }
+        _uiState.update { it.copy(showSimilarSheet = false) }
+    }
+
+    fun onShowSimilarSheetAgain() {
+        if (_uiState.value.similarPois.isNotEmpty()) {
+            _uiState.update { it.copy(showSimilarSheet = true) }
+        }
     }
 
     fun onAlwaysCreateNew() {
