@@ -60,6 +60,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.SetReviewReactionUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateNicknameUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpsertMyReviewUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCategoryTimeUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.ReorderPoisUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateTripBestRouteTimeUseCase
 import sfedu.ictis.walkOfInterest.presentation.auth.AuthViewModel
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
@@ -211,6 +212,7 @@ val appModule = module {
     factory { SupplementPoiUseCase(get()) }
     factory { GetMyPoisUseCase(get()) }
     factory { GetAllCategoriesUseCase(get()) }
+    factory { ReorderPoisUseCase(get()) }
 
     // Presentation Layer: ViewModels
     viewModel { SplashViewModel(get()) }
@@ -218,7 +220,7 @@ val appModule = module {
     viewModel { TripDetailsViewModel(get(), get()) }
     viewModel { MainFeedViewModel(get()) }
     viewModel { GenerateViewModel(get(), get(), get()) }
-    viewModel { CategoriesViewModel(get()) }
+    viewModel { CategoriesViewModel(get(), get()) }
     viewModel { CategoryViewModel(get()) }
     viewModel { RoutesViewModel(get(), get(), get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get()) }

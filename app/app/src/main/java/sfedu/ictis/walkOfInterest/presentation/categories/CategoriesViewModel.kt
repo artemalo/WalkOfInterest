@@ -13,12 +13,15 @@ import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
+import sfedu.ictis.walkOfInterest.domain.model.PoiOrder
 import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
+import sfedu.ictis.walkOfInterest.domain.usecase.ReorderPoisUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
 import java.util.UUID
 
 class CategoriesViewModel(
-    private val saveTripUseCase: SaveTripUseCase
+    private val saveTripUseCase: SaveTripUseCase,
+    private val reorderPoisUseCase: ReorderPoisUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CategoriesUiState())
     val uiState: StateFlow<CategoriesUiState> = _uiState.asStateFlow()
@@ -67,7 +70,6 @@ class CategoriesViewModel(
 
     fun onGenerateRouteClicked() {
         val state = _uiState.value
-
         val selectedCategories = state.categories.filter { it.isSelect }
 
         if (selectedCategories.isEmpty()) {
@@ -77,11 +79,56 @@ class CategoriesViewModel(
             return
         }
 
+        val allSelectedPois = selectedCategories.flatMap { cat ->
+            cat.subcategories.flatMap { sub -> sub.pois.filter { it.selected } }
+        }
+
+        if (allSelectedPois.isEmpty()) {
+            viewModelScope.launch {
+                _events.emit(CategoriesEvent.ShowError("Нет выбранных точек для маршрута"))
+            }
+            return
+        }
+
+        val needsReorder = allSelectedPois.any { it.order == null }
+
+        if (needsReorder) {
+            viewModelScope.launch {
+                val poisForReorder = allSelectedPois.map { PoiOrder(it.id, it.lat, it.lon) }
+                reorderPoisUseCase(poisForReorder, state.from, state.to)
+                    .onSuccess { reordered ->
+                        val orderMap = reordered.associateBy { it.id }
+                        _uiState.update { s ->
+                            s.copy(categories = s.categories.map { cat ->
+                                cat.copy(subcategories = cat.subcategories.map { sub ->
+                                    sub.copy(pois = sub.pois.map { poi ->
+                                        val newOrder = orderMap[poi.id]?.order
+                                        if (newOrder != null) poi.copy(order = newOrder) else poi
+                                    })
+                                })
+                            })
+                        }
+                        buildAndSaveTrip()
+                    }
+                    .onFailure {
+                        Log.e("CategoriesVM", "reorder failed: ${it.message}")
+                        _events.emit(CategoriesEvent.ShowError("Ошибка пересчета порядка маршрута"))
+                    }
+            }
+        } else {
+            buildAndSaveTrip()
+        }
+    }
+
+    private fun buildAndSaveTrip() {
+        val state = _uiState.value
+        val selectedCategories = state.categories.filter { it.isSelect }
+
         val routePoints = selectedCategories.asSequence()
             .flatMap { category ->
                 category.subcategories.asSequence().flatMap { subCategory ->
                     subCategory.pois.asSequence()
-                        .filter { poi -> poi.selected && poi.order != null } // TODO: bag - fix order = +reorder() in backend
+                        .filter { poi -> poi.selected && poi.order != null }
                         .map { poi ->
                             RoutePoint(
                                 id = poi.id,
@@ -117,18 +164,14 @@ class CategoriesViewModel(
             addressTo = state.addressTo,
             from = state.from,
             to = state.to,
-
             bestRouteTime = null,
             userSelectedTime = state.userSelectedTime,
-
             totalPois = routePoints.size,
             selectedPois = routePoints
         )
 
-
         viewModelScope.launch {
             saveTripUseCase(trip)
-
             _events.emit(CategoriesEvent.NavigateToRoutes)
         }
     }

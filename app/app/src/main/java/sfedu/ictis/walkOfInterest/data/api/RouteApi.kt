@@ -3,10 +3,12 @@ package sfedu.ictis.walkOfInterest.data.api
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import sfedu.ictis.walkOfInterest.data.model.ReorderRequest
 import sfedu.ictis.walkOfInterest.data.model.RouteRequest
 import sfedu.ictis.walkOfInterest.data.model.RouteResponse
 import sfedu.ictis.walkOfInterest.data.model.SearchRequest
 import sfedu.ictis.walkOfInterest.data.model.SearchResponse
+import sfedu.ictis.walkOfInterest.data.model.dto.PoiOrderDto
 import sfedu.ictis.walkOfInterest.data.model.dto.PointDto
 import sfedu.ictis.walkOfInterest.data.model.dto.RouteDto
 
@@ -21,9 +23,12 @@ interface RouteApi {
         @Body request: SearchRequest
     ): Response<SearchResponse>
 
-    @POST("api/poi/route/routes")
-    suspend fun getRoutes(@Body points: List<PointDto>): Response<List<RouteDto>>
-
     @POST("api/poi/generate/time")
     suspend fun getTime(@Body points: List<PointDto>): Response<Long>
+
+    @POST("api/poi/generate/reorder")
+    suspend fun reorder(@Body request: ReorderRequest): Response<List<PoiOrderDto>>
+
+    @POST("api/poi/route/routes")
+    suspend fun getRoutes(@Body points: List<PointDto>): Response<List<RouteDto>>
 }

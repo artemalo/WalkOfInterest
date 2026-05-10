@@ -3,6 +3,7 @@ package sfedu.ictis.walkOfInterest.domain.repository
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
+import sfedu.ictis.walkOfInterest.domain.model.PoiOrder
 import sfedu.ictis.walkOfInterest.domain.model.RouteFromToResult
 
 interface RouteRepository {
@@ -11,4 +12,6 @@ interface RouteRepository {
 
     suspend fun getRoutes(points: List<DomainPoint>): Result<List<DomainRoute>>
     suspend fun getTime(points: List<DomainPoint>): Result<Int>
+
+    suspend fun reorder(pois: List<PoiOrder>, from: DomainPoint, to: DomainPoint): Result<List<PoiOrder>>
 }

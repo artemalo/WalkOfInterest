@@ -2,6 +2,8 @@ package sfedu.ictis.walkOfInterest.data.repository
 
 import org.json.JSONObject
 import sfedu.ictis.walkOfInterest.data.api.RouteApi
+import sfedu.ictis.walkOfInterest.data.model.ReorderPoiItem
+import sfedu.ictis.walkOfInterest.data.model.ReorderRequest
 import sfedu.ictis.walkOfInterest.data.model.dto.PointDto
 import sfedu.ictis.walkOfInterest.data.model.RouteRequest
 import sfedu.ictis.walkOfInterest.data.model.SearchRequest
@@ -15,6 +17,7 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
 import sfedu.ictis.walkOfInterest.domain.model.DomainSubCategory
+import sfedu.ictis.walkOfInterest.domain.model.PoiOrder
 import sfedu.ictis.walkOfInterest.domain.model.RouteFromToResult
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
 import java.util.UUID
@@ -106,6 +109,23 @@ class RouteRepositoryImpl(private val api: RouteApi) : RouteRepository {
                 } else {
                     throw Exception("Ошибка ${response.code()}")
                 }
+            }
+        }
+    }
+
+    override suspend fun reorder(pois: List<PoiOrder>, from: DomainPoint, to: DomainPoint): Result<List<PoiOrder>> {
+        return runCatching {
+            val request = ReorderRequest(
+                p1 = PointDto(from.lat, from.lon),
+                p2 = PointDto(to.lat, to.lon),
+                pois = pois.map { ReorderPoiItem(it.id, it.lat, it.lon) }
+            )
+            val response = api.reorder(request)
+            val body = response.body()
+            if (response.isSuccessful && body != null) {
+                body.map { PoiOrder(id = it.id, lat = 0.0, lon = 0.0, order = it.order) }
+            } else {
+                throw Exception("Ошибка reorder: ${response.code()}")
             }
         }
     }
