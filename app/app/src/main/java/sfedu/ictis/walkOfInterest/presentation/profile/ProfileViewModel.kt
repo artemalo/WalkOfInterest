@@ -17,11 +17,13 @@ import sfedu.ictis.walkOfInterest.domain.usecase.GetUserReviewsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.LogoutAllUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.LogoutUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateNicknameUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.UpdateProfileInfoUseCase
 
 class ProfileViewModel(
     private val getMyProfileUseCase: GetMyProfileUseCase,
     private val getUserReviewsUseCase: GetUserReviewsUseCase,
     private val updateNicknameUseCase: UpdateNicknameUseCase,
+    private val updateProfileInfoUseCase: UpdateProfileInfoUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val logoutAllUseCase: LogoutAllUseCase,
     private val userRepository: UserRepository
@@ -90,8 +92,32 @@ class ProfileViewModel(
         viewModelScope.launch { _events.emit(ProfileEvent.CloseEditScreen) }
     }
 
-    fun applyEditScreen() {
-        closeEditScreen()
+    fun applyEditScreen(firstName: String, lastName: String, bio: String) {
+        if (_uiState.value.isUpdatingProfile) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isUpdatingProfile = true) }
+
+            val result = updateProfileInfoUseCase(
+                firstName = firstName,
+                lastName = lastName,
+                bio = bio
+            )
+
+            result.onSuccess { updatedProfile ->
+                _uiState.update {
+                    it.copy(
+                        profile = updatedProfile,
+                        isUpdatingProfile = false
+                    )
+                }
+
+                closeEditScreen()
+            }.onFailure { e ->
+                _uiState.update { it.copy(isUpdatingProfile = false) }
+                _events.emit(ProfileEvent.ShowError(e.message ?: "Не удалось обновить профиль"))
+            }
+        }
     }
 
     fun updateNickname(newUsername: String) {

@@ -7,6 +7,7 @@ import org.json.JSONObject
 import retrofit2.Response
 import sfedu.ictis.walkOfInterest.data.api.UserApi
 import sfedu.ictis.walkOfInterest.data.mapper.toDomain
+import sfedu.ictis.walkOfInterest.data.model.UpdateProfileRequest
 import sfedu.ictis.walkOfInterest.data.model.UpdateUsernameRequest
 import sfedu.ictis.walkOfInterest.domain.exception.ServerException
 import sfedu.ictis.walkOfInterest.domain.model.DomainReview
@@ -57,7 +58,22 @@ class UserRepositoryImpl(
         }
     }
 
+    override suspend fun updateProfileInfo(
+        firstName: String,
+        lastName: String,
+        bio: String
+    ): Result<DomainUserProfile> = runCatching {
+        val response = api.updateProfileInfo(UpdateProfileRequest(firstName, lastName, bio))
+        val body = response.body()
 
+        if (response.isSuccessful && body != null) {
+            val domain = body.toDomain()
+            _profile.value = domain
+            domain
+        } else {
+            throw response.toException("Не удалось обновить информацию о профиле")
+        }
+    }
 
     private fun Response<*>.toException(fallback: String): Exception {
         val rawError = errorBody()?.string()

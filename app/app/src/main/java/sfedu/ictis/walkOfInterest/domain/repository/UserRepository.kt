@@ -10,6 +10,7 @@ interface UserRepository {
     suspend fun getReviewsByUsername(username: String): Result<List<DomainReview>>
 
     suspend fun updateNickname(newUsername: String): Result<DomainUserProfile>
+    suspend fun updateProfileInfo(firstName: String, lastName: String, bio: String): Result<DomainUserProfile>
 
     fun observeProfile(): Flow<DomainUserProfile?>
 }

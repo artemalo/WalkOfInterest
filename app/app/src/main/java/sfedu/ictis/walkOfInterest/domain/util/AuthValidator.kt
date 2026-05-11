@@ -8,6 +8,8 @@ object AuthValidator {
     const val MAX_FIELD_LENGTH = 50
     const val MAX_EMAIL_LENGTH = 254
 
+    const val MAX_BIO_LENGTH = 255
+
     fun isValidEmail(email: String): Boolean {
         return email.isNotBlank() &&
                 email.length <= MAX_EMAIL_LENGTH &&
@@ -31,6 +33,10 @@ object AuthValidator {
         return name.isNotBlank() &&
                 name.length <= MAX_FIELD_LENGTH &&
                 name.all { it.isLetter() || it == '-' }
+    }
+
+    fun isValidBio(bio: String): Boolean {
+        return bio.length <= MAX_BIO_LENGTH
     }
 
     fun isNoneBlank(vararg fields: String): Boolean {

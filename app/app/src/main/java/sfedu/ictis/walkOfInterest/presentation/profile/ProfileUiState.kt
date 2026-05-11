@@ -13,8 +13,9 @@ data class ProfileUiState(
     val isLoading: Boolean = false,
     val isEditMode: Boolean = false,
 
-    val isUpdatingNickname: Boolean = false,
     val nicknameError: String? = null,
+    val isUpdatingNickname: Boolean = false,
+    val isUpdatingProfile: Boolean = false,
 
     val isLoggingOut: Boolean = false
 ) {

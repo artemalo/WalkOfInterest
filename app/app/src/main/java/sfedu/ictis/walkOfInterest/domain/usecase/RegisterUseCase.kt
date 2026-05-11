@@ -19,7 +19,7 @@ class RegisterUseCase(private val repository: AuthRepository) {
         }
 
         if (!AuthValidator.isValidName(first) || !AuthValidator.isValidName(second)) {
-            return Result.failure(Exception("Имя и фамилия должны содержать только буквы"))
+            return Result.failure(Exception("Имя и фамилия должны содержать только буквы, до 50 символов"))
         }
 
         if (!AuthValidator.isValidEmail(email)) {

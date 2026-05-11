@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
+import sfedu.ictis.walkOfInterest.data.model.UpdateProfileRequest
 import sfedu.ictis.walkOfInterest.data.model.UpdateUsernameRequest
 import sfedu.ictis.walkOfInterest.data.model.dto.ReviewDto
 import sfedu.ictis.walkOfInterest.data.model.dto.UserProfileDto
@@ -28,5 +29,10 @@ interface UserApi {
     @PATCH("api/users/me")
     suspend fun updateUsername(
         @Body request: UpdateUsernameRequest
+    ): Response<UserProfileDto>
+
+    @PATCH("api/users/me/info")
+    suspend fun updateProfileInfo(
+        @Body request: UpdateProfileRequest
     ): Response<UserProfileDto>
 }
