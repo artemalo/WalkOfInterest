@@ -201,7 +201,9 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
                 selectedCount = selectedSubs.count { it.categoryId == cat.id }
             )
         }
-        categoryAdapter.submitList(items)
+        categoryAdapter.submitList(items) {
+            binding.scrollContent.requestLayout()
+        }
     }
 
     private fun renderSelectedChips(list: List<DomainPickSubcategory>) {

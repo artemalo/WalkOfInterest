@@ -34,7 +34,7 @@
     <dimen name="image_category">120dp</dimen>
     <dimen name="image_poi">120dp</dimen>
 
-    <dimen name="input_width_min">264dp</dimen>
+    <dimen name="input_width_min">230dp</dimen>
     <dimen name="input_width_max">512dp</dimen>
 
 </resources>

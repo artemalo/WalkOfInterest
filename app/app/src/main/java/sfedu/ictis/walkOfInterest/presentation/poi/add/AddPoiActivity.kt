@@ -116,7 +116,11 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
                         .map { it.showSimilarSheet }
                         .distinctUntilChanged()
                         .collect { show ->
-                            if (show) showSimilarSheet()
+                            if (show) {
+                                showSimilarSheet()
+                            } else {
+                                hideSimilarSheet()
+                            }
                             updateToggleButtonVisibility()
                         }
                 }
@@ -150,6 +154,11 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
                 }
             }
         }
+    }
+
+    private fun hideSimilarSheet() {
+        val fragment = supportFragmentManager.findFragmentByTag(SimilarPoisBottomSheet.TAG) as? SimilarPoisBottomSheet
+        fragment?.dismissAllowingStateLoss()
     }
 
     private fun showSimilarSheet() {

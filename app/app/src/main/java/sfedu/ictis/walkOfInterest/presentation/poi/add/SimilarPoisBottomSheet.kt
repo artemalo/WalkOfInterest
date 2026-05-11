@@ -57,6 +57,7 @@ class SimilarPoisBottomSheet : BottomSheetDialogFragment() {
 
         binding.btnCreateAnyway.setOnClickListener {
             listener?.onAlwaysCreateNew()
+            dismissAllowingStateLoss()
         }
         binding.btnClose.setOnClickListener { dismiss() }
     }
