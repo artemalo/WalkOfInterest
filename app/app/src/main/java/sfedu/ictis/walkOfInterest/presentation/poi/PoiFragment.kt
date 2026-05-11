@@ -89,6 +89,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
             parentFragmentManager.popBackStack()
         }
 
+        binding.fieldLikePoi.setOnClickListener { viewModel.toggleSaved() }
         binding.btnSort.setOnClickListener { viewModel.toggleSortOrder() }
         binding.btnEdit.setOnClickListener { viewModel.onAddOrEditReviewClicked() }
     }
@@ -100,6 +101,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
                     state.poi?.let { renderPoi(it) }
                     renderReviews(state)
                     renderEditButton(state)
+                    renderSavedState(state.isSaved)
                 }
             }
         }
@@ -190,6 +192,10 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
 
     private fun renderEditButton(state: PoiUiState) {
         binding.textBtnEdit.text = if (state.myReview != null) "Изменить" else "Добавить"
+    }
+
+    private fun renderSavedState(isSaved: Boolean) {
+        binding.likePoi.isSelected = isSaved
     }
 
     private fun pluralizeReviews(count: Int): String {

@@ -11,9 +11,9 @@ import sfedu.ictis.walkOfInterest.databinding.ItemTripBinding
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 
 class FeedAdapter(
-    private val onTripClicked: (String) -> Unit
+    private val onTripClicked: (String) -> Unit,
+    private val onSpotClicked: (Long) -> Unit
 ) : ListAdapter<FeedItem, RecyclerView.ViewHolder>(FeedItemDiffCallback()) {
-
     private companion object {
         const val TYPE_TRIP = 0
         const val TYPE_SPOT = 1
@@ -61,6 +61,10 @@ class FeedAdapter(
         fun bind(item: FeedItem.Spot) {
             binding.titleSpot.text = item.title
             binding.addressSpot.text = item.address
+
+            binding.root.setOnClickListener {
+                onSpotClicked(item.id)
+            }
         }
     }
 }

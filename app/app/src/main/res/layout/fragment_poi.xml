@@ -32,12 +32,20 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <Space
-                    android:id="@+id/space"
+                <FrameLayout
+                    android:id="@+id/fieldLikePoi"
                     android:layout_width="@dimen/btn_field"
                     android:layout_height="@dimen/btn_field"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+                    <ImageView
+                        android:id="@+id/likePoi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:contentDescription="button back"
+                        android:src="@drawable/btn_main_spot" />
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/name"
@@ -50,7 +58,7 @@
                     android:textColor="@color/white_gray"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/fieldBtnClose"
-                    app:layout_constraintStart_toEndOf="@+id/space"
+                    app:layout_constraintStart_toEndOf="@+id/fieldLikePoi"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <FrameLayout
@@ -59,7 +67,6 @@
                     android:layout_height="@dimen/btn_field"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-
                     <ImageView
                         android:id="@+id/btnClose"
                         android:layout_width="wrap_content"

@@ -7,13 +7,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import sfedu.ictis.walkOfInterest.domain.usecase.GetSavedPoisUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetTripsUseCase
 
 class MainFeedViewModel(
-    private val getTripsUseCase: GetTripsUseCase
+    private val getTripsUseCase: GetTripsUseCase,
+    private val getSavedPoisUseCase: GetSavedPoisUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MainFeedUiState())
     val uiState: StateFlow<MainFeedUiState> = _uiState.asStateFlow()
+
+    init {
+        loadTrips()
+    }
 
     fun refreshData() {
         if (uiState.value.selectedTab == MainTab.TRIPS) {
@@ -21,10 +27,6 @@ class MainFeedViewModel(
         } else {
             loadSpots()
         }
-    }
-
-    init {
-        loadTrips()
     }
 
     fun onTabClicked(tab: MainTab) {
@@ -39,9 +41,7 @@ class MainFeedViewModel(
 
     fun onPlusClicked() {
         _uiState.update { state ->
-            state.copy(
-                isCreateMenuVisible = !state.isCreateMenuVisible
-            )
+            state.copy(isCreateMenuVisible = !state.isCreateMenuVisible)
         }
     }
 
@@ -68,12 +68,16 @@ class MainFeedViewModel(
     }
 
     private fun loadSpots() {
-        // TODO: UseCase из Domain
-        val mockSpots = listOf(
-            FeedItem.Spot("1", "", "Памятник Чехову", "1"),
-            FeedItem.Spot("2", "", "Памятник Чехову2", "2"),
-            FeedItem.Spot("3", "", "Памятник Чехову3", "3")
-        )
-        _uiState.update { it.copy(items = mockSpots) }
+        viewModelScope.launch {
+            val spots = getSavedPoisUseCase().map { poi ->
+                FeedItem.Spot(
+                    id = poi.poiId,
+                    photo = "",
+                    title = poi.name,
+                    address = poi.address
+                )
+            }
+            _uiState.update { it.copy(items = spots) }
+        }
     }
 }

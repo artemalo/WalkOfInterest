@@ -24,6 +24,7 @@ import sfedu.ictis.walkOfInterest.data.repository.CategoryRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.MapSettingRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.PoiRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.RouteRepositoryImpl
+import sfedu.ictis.walkOfInterest.data.repository.SavedPoiRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.TripRepositoryImpl
 import sfedu.ictis.walkOfInterest.data.repository.UserRepositoryImpl
 import sfedu.ictis.walkOfInterest.domain.repository.AuthRepository
@@ -31,6 +32,7 @@ import sfedu.ictis.walkOfInterest.domain.repository.CategoryRepository
 import sfedu.ictis.walkOfInterest.domain.repository.MapSettingRepository
 import sfedu.ictis.walkOfInterest.domain.repository.PoiRepository
 import sfedu.ictis.walkOfInterest.domain.repository.RouteRepository
+import sfedu.ictis.walkOfInterest.domain.repository.SavedPoiRepository
 import sfedu.ictis.walkOfInterest.domain.repository.TripRepository
 import sfedu.ictis.walkOfInterest.domain.repository.UserRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.CalculateWalkUseCase
@@ -47,6 +49,9 @@ import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetProfileByUsernameUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetSavedPoisUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.IsPoiSavedUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.ToggleSavedPoiUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiReviewsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
@@ -170,6 +175,7 @@ val appModule = module {
             .build()
     }
     single { get<AppDatabase>().tripDao() }
+    single { get<AppDatabase>().savedPoiDao() }
 
     // single
     single<AuthRepository> {
@@ -186,6 +192,7 @@ val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get()) }
     single<PoiRepository> { PoiRepositoryImpl(get()) }
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }
+    single<SavedPoiRepository> { SavedPoiRepositoryImpl(get()) }
 
     // Domain Layer: Use Cases
     factory { RegisterUseCase(get()) }
@@ -202,6 +209,9 @@ val appModule = module {
     factory { GetMyProfileUseCase(get()) }
     factory { GetProfileByUsernameUseCase(get()) }
     factory { GetUserReviewsUseCase(get()) }
+    factory { GetSavedPoisUseCase(get()) }
+    factory { IsPoiSavedUseCase(get()) }
+    factory { ToggleSavedPoiUseCase(get()) }
     factory { UpdateNicknameUseCase(get()) }
     factory { UpdateProfileInfoUseCase(get()) }
     factory { LogoutUseCase(get()) }
@@ -225,13 +235,13 @@ val appModule = module {
     viewModel { SplashViewModel(get()) }
     viewModel { AuthViewModel(get(), get(), get()) }
     viewModel { TripDetailsViewModel(get(), get()) }
-    viewModel { MainFeedViewModel(get()) }
+    viewModel { MainFeedViewModel(get(), get()) }
     viewModel { GenerateViewModel(get(), get(), get()) }
     viewModel { CategoriesViewModel(get(), get()) }
     viewModel { CategoryViewModel(get()) }
     viewModel { RoutesViewModel(get(), get(), get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { PoiViewModel(get(), get(), get(), get()) }
+    viewModel { PoiViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ReviewMakeViewModel(get()) }
     viewModel { AddPoiPickViewModel(get(), get()) }
     viewModel { AddPoiFormViewModel(get(), get(), get(), get(), get()) }

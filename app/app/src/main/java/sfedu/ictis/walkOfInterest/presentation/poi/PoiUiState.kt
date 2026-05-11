@@ -11,6 +11,7 @@ data class PoiUiState(
 
     val currentUsername: String? = null,
 
+    val isSaved: Boolean = false,
     val isPoiLoading: Boolean = false,
     val isReviewsLoading: Boolean = false
 ) {

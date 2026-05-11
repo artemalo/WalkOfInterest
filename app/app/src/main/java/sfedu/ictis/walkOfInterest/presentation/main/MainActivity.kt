@@ -12,10 +12,18 @@ import sfedu.ictis.walkOfInterest.databinding.ActivityMainBinding
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.presentation.details.TripDetailsFragment
 import sfedu.ictis.walkOfInterest.presentation.profile.ProfileActivity
+import sfedu.ictis.walkOfInterest.utils.openPoiFragment
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val viewModel: MainFeedViewModel by viewModel()
-    private val feedAdapter = FeedAdapter { tripId -> openTripDetails(tripId) }
+    private val feedAdapter = FeedAdapter(
+        onTripClicked = { tripId -> openTripDetails(tripId) },
+        onSpotClicked = { poiId ->
+            if (poiId > 0) {
+                openPoiFragment(poiId, binding.fragmentContainer)
+            }
+        }
+    )
 
     override fun inflateBinding(): ActivityMainBinding {
         return ActivityMainBinding.inflate(layoutInflater)
@@ -39,7 +47,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         }
     }
-
     private fun openTripDetails(tripId: String) {
         binding.fragmentContainer.visibility = View.VISIBLE
 
