@@ -101,6 +101,8 @@ class GenerateViewModel(
                     )
                 }
 
+                _events.emit(GenerateEvent.ExpandBottomSheet)
+
                 validateCalculateButton()
             }.onFailure {
                 if (it !is kotlinx.coroutines.CancellationException) {

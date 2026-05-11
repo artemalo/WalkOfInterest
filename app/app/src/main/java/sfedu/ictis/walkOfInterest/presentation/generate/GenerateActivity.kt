@@ -6,6 +6,9 @@ import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -70,14 +73,23 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
                 updateMapPadding(slideOffset)
             }
         })
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomSheet) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
     }
 
     private fun updateMapPadding(slideOffset: Float) {
         val peekHeight = behavior.peekHeight
         val fullHeight = binding.bottomSheet.height
         if (fullHeight == 0) return
+
         val currentHeight = (peekHeight + (fullHeight - peekHeight) * slideOffset.coerceIn(0f, 1f)).toInt()
-        binding.map.setPadding(0, 0, 0, currentHeight)
+        val extraMargin = resources.getDimensionPixelSize(R.dimen.padding_title)
+
+        binding.map.setPadding(0, 0, 0, currentHeight + extraMargin)
     }
 
 
@@ -198,6 +210,17 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
             repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
                 viewModel.events.collect { event ->
                     when (event) {
+                        GenerateEvent.ExpandBottomSheet -> {
+                            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+                            binding.map.postDelayed({
+                                val state = viewModel.uiState.value
+                                if (state.route != null) {
+                                    drawRoute(state.route)
+                                }
+                            }, 300)
+                        }
+
                         GenerateEvent.OpenTimePicker -> showTimePicker()
 
                         is GenerateEvent.ShowError ->
@@ -297,7 +320,30 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
 
         map.post {
             if (!isFinishing && !isDestroyed && geoPoints.isNotEmpty()) {
-                map.zoomToBoundingBox(BoundingBox.fromGeoPoints(geoPoints), true, 100)
+                val originalBox = BoundingBox.fromGeoPoints(geoPoints)
+
+                val sheetHeight = binding.bottomSheet.height.toDouble()
+                val mapHeight = map.height.toDouble()
+
+                if (mapHeight > 0 && sheetHeight > 0) {
+                    val visibleHeightRatio = (mapHeight - sheetHeight) / mapHeight
+
+                    if (visibleHeightRatio > 0) {
+                        val currentLatSpan = originalBox.latitudeSpan
+                        val newLatSpan = currentLatSpan / visibleHeightRatio
+
+                        val paddedBox = BoundingBox(
+                            originalBox.latNorth,
+                            originalBox.lonEast,
+                            originalBox.latNorth - newLatSpan,
+                            originalBox.lonWest
+                        )
+
+                        map.zoomToBoundingBox(paddedBox, true, 200)
+                    }
+                } else {
+                    map.zoomToBoundingBox(originalBox, true, 200)
+                }
             }
         }
         map.invalidate()

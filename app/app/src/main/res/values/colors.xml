@@ -19,6 +19,7 @@
     <color name="general_alpha85">#DA1B1B1B</color>
     <color name="general_alpha40">#661B1B1B</color>
     <color name="gray_button">#333333</color>
+    <color name="gray_button_selected">#494949</color>
 
     <color name="object_not_active">#A2ABAB</color>
     <color name="object_orange">#C67C4E</color>

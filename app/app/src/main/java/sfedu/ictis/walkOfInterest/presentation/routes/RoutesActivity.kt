@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.osmdroid.util.BoundingBox
+import org.osmdroid.views.CustomZoomButtonsController
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
@@ -75,6 +76,7 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
     private fun setupMap() {
         val map = binding.map
         map.setMultiTouchControls(true)
+        map.zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
 
         val start = viewModel.defaultCenter
         val startGeoPoint = GeoPoint(start.lat, start.lon)
@@ -96,14 +98,26 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
     private fun setupBottomSheet() {
         behavior = BottomSheetBehavior.from(binding.bottomSheet)
 
+        behavior.isHideable = false
+
+        binding.sheetHeader.post {
+            behavior.peekHeight = binding.sheetHeader.height
+        }
+
+        binding.sheetHeader.setOnClickListener {
+            if (behavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            } else {
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 viewModel.onBottomSheetStateChanged(newState)
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // Живая анимация: отодвигаем карту или меняем прозрачность
-                // slideOffset: 0.0 (свернуто) до 1.0 (развернуто)
                 updateMapPadding(slideOffset)
             }
         })
@@ -289,11 +303,14 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
     }
 
     private fun updateMapPadding(slideOffset: Float) {
-        val peekHeight = behavior.peekHeight
-        val fullHeight = binding.bottomSheet.height
-        val currentHeight = peekHeight + (fullHeight - peekHeight) * slideOffset
+        if (slideOffset < 0) return
 
-        binding.map.setPadding(0, 0, 0, currentHeight.toInt())
+        val fullHeight = binding.bottomSheet.height
+        val peekHeight = behavior.peekHeight
+
+        val currentSheetHeight = peekHeight + (fullHeight - peekHeight) * slideOffset
+
+        binding.map.setPadding(0, 0, 0, currentSheetHeight.toInt())
     }
 
     private fun openPoiFragment(point: RoutePoint) {

@@ -52,8 +52,9 @@
         android:background="@drawable/general_sheet"
         android:orientation="vertical"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="120dp"
+        app:behavior_peekHeight="180dp"
         app:behavior_fitToContents="true"
+        app:behavior_skipCollapsed="false"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
@@ -65,238 +66,248 @@
             android:layout_gravity="center"
             android:background="@drawable/handle_shape" />
 
-        <FrameLayout
-            android:id="@+id/fieldFrom"
-            android:clickable="true"
-            android:focusable="true"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_field"
-            android:minHeight="@dimen/btn_field">
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:orientation="horizontal"
+                android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/fieldFrom"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_field"
+                android:minHeight="@dimen/btn_field">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="horizontal"
+                    android:background="@drawable/field_general_shape_top"
+                    android:paddingTop="@dimen/padding_small"
+                    android:paddingStart="@dimen/padding_middle"
+                    android:paddingEnd="@dimen/padding_middle"
+                    android:paddingBottom="@dimen/padding_small">
+                    <ImageView
+                        android:id="@+id/imgA"
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:layout_gravity="center"
+                        android:contentDescription="Point Start"
+                        android:src="@drawable/ic_a" />
+                    <TextView
+                        android:id="@+id/textFrom"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/padding_small"
+                        android:text="Откуда"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/white_gray" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <LinearLayout
                 android:background="@drawable/field_general_shape_top"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingStart="@dimen/padding_middle"
-                android:paddingEnd="@dimen/padding_middle"
-                android:paddingBottom="@dimen/padding_small">
-                <ImageView
-                    android:id="@+id/imgA"
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    android:layout_gravity="center"
-                    android:contentDescription="Point Start"
-                    android:src="@drawable/ic_a" />
-                <TextView
-                    android:id="@+id/textFrom"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/padding_small"
-                    android:text="Откуда"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/white_gray" />
-            </LinearLayout>
-        </FrameLayout>
-
-        <LinearLayout
-            android:background="@drawable/field_general_shape_top"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-            <View
-                android:layout_marginStart="@dimen/padding_middle"
-                android:layout_marginEnd="@dimen/padding_middle"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/fieldTo"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_field"
-            android:minHeight="@dimen/btn_field">
-            <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:orientation="horizontal"
-                android:background="@drawable/field_general_shape_bottom"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingStart="@dimen/padding_middle"
-                android:paddingEnd="@dimen/padding_middle"
-                android:paddingBottom="@dimen/padding_small">
-                <ImageView
-                    android:id="@+id/imgB"
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    android:layout_gravity="center"
-                    android:contentDescription="Point End"
-                    android:src="@drawable/ic_b" />
-                <TextView
-                    android:id="@+id/textTo"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/padding_small"
-                    android:text="Куда"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/white_gray" />
+                android:layout_width="match_parent">
+                <View
+                    android:layout_marginStart="@dimen/padding_middle"
+                    android:layout_marginEnd="@dimen/padding_middle"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
             </LinearLayout>
-        </FrameLayout>
 
-        <!-- ===== Below is visible only when expanded ===== -->
+            <FrameLayout
+                android:id="@+id/fieldTo"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_field"
+                android:minHeight="@dimen/btn_field">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:orientation="horizontal"
+                    android:background="@drawable/field_general_shape_bottom"
+                    android:paddingTop="@dimen/padding_small"
+                    android:paddingStart="@dimen/padding_middle"
+                    android:paddingEnd="@dimen/padding_middle"
+                    android:paddingBottom="@dimen/padding_small">
+                    <ImageView
+                        android:id="@+id/imgB"
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:layout_gravity="center"
+                        android:contentDescription="Point End"
+                        android:src="@drawable/ic_b" />
+                    <TextView
+                        android:id="@+id/textTo"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/padding_small"
+                        android:text="Куда"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/white_gray" />
+                </LinearLayout>
+            </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/fieldClock"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginTop="@dimen/padding_middle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:minHeight="@dimen/btn_field">
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/fieldClock"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="@dimen/padding_middle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/field_general_shape"
                 android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/padding_middle"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingEnd="@dimen/padding_middle"
-                android:paddingBottom="@dimen/padding_small">
-                <ImageView
-                    android:id="@+id/imgClock"
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    android:contentDescription="Time"
-                    android:src="@drawable/ic_clock"
-                    app:tint="@color/object_orange"
-                    android:layout_gravity="center" />
-                <TextView
-                    android:id="@+id/textClock"
+                android:minHeight="@dimen/btn_field">
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/field_general_shape"
                     android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="-"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/white"
-                    android:layout_marginStart="@dimen/padding_small" />
-            </LinearLayout>
-        </FrameLayout>
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/padding_middle"
+                    android:paddingTop="@dimen/padding_small"
+                    android:paddingEnd="@dimen/padding_middle"
+                    android:paddingBottom="@dimen/padding_small">
+                    <ImageView
+                        android:id="@+id/imgClock"
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:contentDescription="Time"
+                        android:src="@drawable/ic_clock"
+                        app:tint="@color/object_orange"
+                        android:layout_gravity="center" />
+                    <TextView
+                        android:id="@+id/textClock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="-"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="@dimen/padding_small" />
+                </LinearLayout>
+            </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/sliderBlock"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_middle"
-            android:orientation="vertical"
-            android:alpha="0.4">
             <LinearLayout
+                android:id="@+id/sliderBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="@dimen/icon_general"
-                    android:layout_height="@dimen/icon_general"
-                    android:src="@drawable/ic_point"
-                    app:tint="@color/object"
-                    android:contentDescription="Количество poi" />
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                android:layout_marginTop="@dimen/padding_middle"
+                android:orientation="vertical"
+                android:alpha="0.4">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_s_small"
-                    android:text="Количество poi"
-                    android:textAppearance="@style/TextAppearance.App.Body2"
-                    android:textColor="@color/white_gray" />
-                <TextView
-                    android:id="@+id/textPoiCount"
-                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="@dimen/icon_general"
+                        android:layout_height="@dimen/icon_general"
+                        android:src="@drawable/ic_point"
+                        app:tint="@color/object"
+                        android:contentDescription="Количество poi" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/padding_s_small"
+                        android:text="Количество poi"
+                        android:textAppearance="@style/TextAppearance.App.Body2"
+                        android:textColor="@color/white_gray" />
+                    <TextView
+                        android:id="@+id/textPoiCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textAppearance="@style/TextAppearance.App.H2"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+                <SeekBar
+                    android:id="@+id/seekBarPoi"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="-"
-                    android:textAppearance="@style/TextAppearance.App.H2"
-                    android:textColor="@color/white" />
+                    android:layout_marginTop="@dimen/padding_s_small"
+                    android:max="100"
+                    android:progress="50"
+                    android:enabled="false"
+                    android:progressTint="@color/object"
+                    android:progressBackgroundTint="@color/object_not_active"
+                    android:thumbTint="@color/object"
+                    android:splitTrack="false"
+                    android:paddingStart="@dimen/padding_normal"
+                    android:paddingEnd="@dimen/padding_normal" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:textAppearance="@style/TextAppearance.App.Body3"
+                        android:textColor="@color/object_not_active"
+                        android:gravity="start" />
+                    <TextView
+                        android:id="@+id/textPoiMax"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textAppearance="@style/TextAppearance.App.Body3"
+                        android:textColor="@color/object_not_active"
+                        android:gravity="end" />
+                </LinearLayout>
             </LinearLayout>
-            <SeekBar
-                android:id="@+id/seekBarPoi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_s_small"
-                android:max="100"
-                android:progress="50"
-                android:enabled="false"
-                android:progressTint="@color/object"
-                android:progressBackgroundTint="@color/object_not_active"
-                android:thumbTint="@color/object"
-                android:splitTrack="false"
-                android:paddingStart="@dimen/padding_normal"
-                android:paddingEnd="@dimen/padding_normal" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="1"
-                    android:textAppearance="@style/TextAppearance.App.Body3"
-                    android:textColor="@color/object_not_active"
-                    android:gravity="start" />
-                <TextView
-                    android:id="@+id/textPoiMax"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="-"
-                    android:textAppearance="@style/TextAppearance.App.Body3"
-                    android:textColor="@color/object_not_active"
-                    android:gravity="end" />
-            </LinearLayout>
-        </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/fieldBtnCalculate"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginTop="@dimen/padding_small"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_field"
-            android:layout_marginBottom="@dimen/padding_normal"
-            android:paddingTop="@dimen/padding_small"
-            android:paddingBottom="@dimen/padding_small">
             <FrameLayout
-                android:id="@+id/btnCalculate"
+                android:id="@+id/fieldBtnCalculate"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="@dimen/padding_small"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:state_enabled="false"
-                android:background="@drawable/btn_next"
-                android:minHeight="36dp">
-                <TextView
-                    android:id="@+id/btnCalculateText"
-                    android:text="Рассчитать"
+                android:layout_height="@dimen/btn_field"
+                android:layout_marginBottom="@dimen/padding_normal"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small">
+                <FrameLayout
+                    android:id="@+id/btnCalculate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.App.H2"
-                    android:includeFontPadding="false" />
+                    android:state_enabled="false"
+                    android:background="@drawable/btn_next"
+                    android:minHeight="36dp">
+                    <TextView
+                        android:id="@+id/btnCalculateText"
+                        android:text="Рассчитать"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.App.H2"
+                        android:includeFontPadding="false" />
+                </FrameLayout>
             </FrameLayout>
-        </FrameLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
