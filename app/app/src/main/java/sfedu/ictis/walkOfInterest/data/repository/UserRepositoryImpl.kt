@@ -34,6 +34,17 @@ class UserRepositoryImpl(
         }
     }
 
+    override suspend fun getProfileByUsername(username: String): Result<DomainUserProfile> = runCatching {
+        val response = api.getProfileByUsername(username)
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            body.toDomain()
+        } else {
+            throw response.toException("Не удалось загрузить профиль")
+        }
+    }
+
     override suspend fun getReviewsByUsername(username: String): Result<List<DomainReview>> = runCatching {
         val response = api.getReviewsByUsername(username)
         val body = response.body()

@@ -9,6 +9,7 @@ data class ProfileUiState(
     val reviews: List<DomainReview> = emptyList(),
     val sortOrder: ReviewsSortOrder = ReviewsSortOrder.NEWEST_FIRST,
 
+    val isOwnProfile: Boolean = true,
     val isLoadingReviews: Boolean = false,
     val isLoading: Boolean = false,
     val isEditMode: Boolean = false,

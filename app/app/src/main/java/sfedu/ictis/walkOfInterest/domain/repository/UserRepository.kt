@@ -6,7 +6,7 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
 
 interface UserRepository {
     suspend fun getMyProfile(): Result<DomainUserProfile>
-
+    suspend fun getProfileByUsername(username: String): Result<DomainUserProfile>
     suspend fun getReviewsByUsername(username: String): Result<List<DomainReview>>
 
     suspend fun updateNickname(newUsername: String): Result<DomainUserProfile>

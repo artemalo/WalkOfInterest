@@ -1,5 +1,7 @@
 package sfedu.ictis.walkOfInterest.presentation.profile
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -41,6 +43,9 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val username = intent.getStringExtra(EXTRA_USERNAME)
+        viewModel.initWith(username)
+
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
 
         setupRecycler()
@@ -70,9 +75,9 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    state.profile?.let { renderProfile(it, state.isLoading) }
+                    state.profile?.let { renderProfile(it, state.isLoading, state.isOwnProfile) }
                     renderReviews(state)
-                    renderEditScreenVisibility(state.isEditMode)
+                    renderEditScreenVisibility(state.isEditMode, state.isOwnProfile)
 
                     backPressedCallback.isEnabled = state.isEditMode
                 }
@@ -80,7 +85,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         }
     }
 
-    private fun renderProfile(profile: DomainUserProfile, isLoading: Boolean) {
+    private fun renderProfile(profile: DomainUserProfile, isLoading: Boolean, isOwnProfile: Boolean) {
         binding.profileUsername.text = profile.username
         binding.profileFullName.text = profile.fullName.ifBlank { profile.username }
         binding.profileBio.text = profile.bio ?: ""
@@ -89,11 +94,13 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         binding.countSpots.text = profile.countSpots.toString()
         binding.profileCountComments.text = getString(R.string.profile_count_comments, profile.countComments)
 
-        val profileEnable = !isLoading && !profile.id.isEmpty()
-        binding.fieldBtnEdit.isEnabled = profileEnable
-        binding.btnEdit.isEnabled = profileEnable
-        binding.progressBar.visibility =
-            if (!profileEnable) View.VISIBLE else View.GONE
+        val profileReady = !isLoading && profile.id.isNotEmpty()
+        binding.progressBar.visibility = if (!profileReady) View.VISIBLE else View.GONE
+
+        if (isOwnProfile) {
+            binding.fieldBtnEdit.isEnabled = profileReady
+            binding.btnEdit.isEnabled = profileReady
+        }
     }
 
     private fun renderReviews(state: ProfileUiState) {
@@ -107,7 +114,14 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         binding.textEmptyReviews.visibility = if (!hasReviews && !state.isLoadingReviews) View.VISIBLE else View.GONE
     }
 
-    private fun renderEditScreenVisibility(isEditMode: Boolean) {
+    private fun renderEditScreenVisibility(isEditMode: Boolean, isOwnProfile: Boolean) {
+        if (!isOwnProfile) {
+            binding.fieldBtnEdit.visibility = View.GONE
+            binding.btnEdit.visibility = View.GONE
+            binding.editProfileContainer.visibility = View.GONE
+            return
+        }
+
         val profileChildrenVisibility = if (isEditMode) View.GONE else View.VISIBLE
         binding.scrollContent.visibility = profileChildrenVisibility
         binding.fieldBtnEdit.visibility = profileChildrenVisibility
@@ -150,5 +164,13 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val EXTRA_USERNAME = "extra_username"
+
+        fun startFor(context: Context, username: String): Intent =
+            Intent(context, ProfileActivity::class.java)
+                .putExtra(EXTRA_USERNAME, username)
     }
 }

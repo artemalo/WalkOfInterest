@@ -46,6 +46,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.UpdatePoiUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetProfileByUsernameUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiReviewsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
@@ -199,6 +200,7 @@ val appModule = module {
     factory { GetTripByIdUseCase(get()) }
     factory { DeleteTripByIdUseCase(get()) }
     factory { GetMyProfileUseCase(get()) }
+    factory { GetProfileByUsernameUseCase(get()) }
     factory { GetUserReviewsUseCase(get()) }
     factory { UpdateNicknameUseCase(get()) }
     factory { UpdateProfileInfoUseCase(get()) }
@@ -228,7 +230,7 @@ val appModule = module {
     viewModel { CategoriesViewModel(get(), get()) }
     viewModel { CategoryViewModel(get()) }
     viewModel { RoutesViewModel(get(), get(), get(), get()) }
-    viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { PoiViewModel(get(), get(), get(), get()) }
     viewModel { ReviewMakeViewModel(get()) }
     viewModel { AddPoiPickViewModel(get(), get()) }

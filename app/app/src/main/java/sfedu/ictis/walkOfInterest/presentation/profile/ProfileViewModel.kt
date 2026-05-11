@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
 import sfedu.ictis.walkOfInterest.domain.repository.UserRepository
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMyProfileUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetProfileByUsernameUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetUserReviewsUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.LogoutAllUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.LogoutUseCase
@@ -21,6 +22,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.UpdateProfileInfoUseCase
 
 class ProfileViewModel(
     private val getMyProfileUseCase: GetMyProfileUseCase,
+    private val getProfileByUsernameUseCase: GetProfileByUsernameUseCase,
     private val getUserReviewsUseCase: GetUserReviewsUseCase,
     private val updateNicknameUseCase: UpdateNicknameUseCase,
     private val updateProfileInfoUseCase: UpdateProfileInfoUseCase,
@@ -34,9 +36,20 @@ class ProfileViewModel(
     private val _events = MutableSharedFlow<ProfileEvent>(extraBufferCapacity = 1)
     val events: SharedFlow<ProfileEvent> = _events.asSharedFlow()
 
-    init {
-        observeProfileChanges()
-        loadInitialData()
+    private var initialized = false
+
+    fun initWith(username: String?) {
+        if (initialized) return
+        initialized = true
+
+        if (username == null) {
+            _uiState.update { it.copy(isOwnProfile = true) }
+            observeProfileChanges()
+            loadOwnProfile()
+        } else {
+            _uiState.update { it.copy(isOwnProfile = false) }
+            loadProfileByUsername(username)
+        }
     }
 
     private fun observeProfileChanges() {
@@ -49,11 +62,27 @@ class ProfileViewModel(
         }
     }
 
-    private fun loadInitialData() {
+    private fun loadOwnProfile() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             val profileResult = getMyProfileUseCase()
+            profileResult.onSuccess { profile ->
+                _uiState.update { it.copy(profile = profile, isLoading = false) }
+                loadReviewsFor(profile)
+            }.onFailure { e ->
+                _uiState.update { it.copy(isLoading = false) }
+                _events.emit(ProfileEvent.EmptyProfile)
+                _events.emit(ProfileEvent.ShowError(e.message ?: "Не удалось загрузить профиль"))
+            }
+        }
+    }
+
+    private fun loadProfileByUsername(username: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            val profileResult = getProfileByUsernameUseCase(username)
             profileResult.onSuccess { profile ->
                 _uiState.update { it.copy(profile = profile, isLoading = false) }
                 loadReviewsFor(profile)

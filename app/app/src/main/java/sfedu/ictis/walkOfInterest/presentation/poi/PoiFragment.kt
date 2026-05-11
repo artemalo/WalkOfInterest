@@ -18,6 +18,7 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoiInfo
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
 import sfedu.ictis.walkOfInterest.presentation.poi.review.ReviewMakeFragment
+import sfedu.ictis.walkOfInterest.presentation.profile.ProfileActivity
 import sfedu.ictis.walkOfInterest.presentation.profile.ReviewsAdapter
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import kotlin.math.roundToInt
@@ -29,6 +30,14 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
     private val reviewsAdapter by lazy {
         ReviewsAdapter(
             mode = ReviewsAdapter.Mode.POI,
+            onReviewClicked = { review ->
+                val currentUsername = viewModel.uiState.value.currentUsername
+                if (currentUsername != null && review.authorUsername.equals(currentUsername, ignoreCase = true)) {
+                    startActivity(android.content.Intent(requireContext(), ProfileActivity::class.java))
+                } else {
+                    startActivity(ProfileActivity.startFor(requireContext(), review.authorUsername))
+                }
+            },
             onLikeClicked = { review -> viewModel.onLikeClicked(review) },
             onDislikeClicked = { review -> viewModel.onDislikeClicked(review) }
         )
