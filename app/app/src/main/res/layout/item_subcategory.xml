@@ -41,6 +41,8 @@
             android:text="Название категории"
             android:textAppearance="@style/TextAppearance.App.H2"
             android:textColor="@color/white_gray"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="@+id/SeeAll"
             app:layout_constraintEnd_toStartOf="@+id/SeeAll"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +57,9 @@
 
             android:clickable="true"
             android:focusable="true"
+
+            android:maxLines="1"
+            android:ellipsize="end"
 
             android:layout_gravity="center_vertical"
             android:text="Подробно >"
