@@ -48,10 +48,11 @@
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="@dimen/input_width_min"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/padding_general"
-        android:maxWidth="@dimen/input_width_max"
+        android:paddingStart="@dimen/padding_btn"
+        android:paddingEnd="@dimen/btn_field"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -244,6 +245,8 @@
             android:id="@+id/textIsAlready"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_general"
+            android:layout_marginEnd="@dimen/padding_general"
             android:layout_marginTop="@dimen/padding_general"
             android:layout_marginBottom="@dimen/padding_title"
             android:includeFontPadding="false"
