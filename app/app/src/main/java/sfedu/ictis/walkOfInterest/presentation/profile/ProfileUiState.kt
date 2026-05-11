@@ -9,6 +9,7 @@ data class ProfileUiState(
     val reviews: List<DomainReview> = emptyList(),
     val sortOrder: ReviewsSortOrder = ReviewsSortOrder.NEWEST_FIRST,
 
+    val isLoadingReviews: Boolean = false,
     val isLoading: Boolean = false,
     val isEditMode: Boolean = false,
 
@@ -26,6 +27,7 @@ data class ProfileUiState(
 
 sealed class ProfileEvent {
     data class ShowError(val message: String) : ProfileEvent()
+    data object EmptyProfile : ProfileEvent()
     data object NicknameUpdated : ProfileEvent()
     data object CloseEditScreen : ProfileEvent()
     data object LoggedOut : ProfileEvent()

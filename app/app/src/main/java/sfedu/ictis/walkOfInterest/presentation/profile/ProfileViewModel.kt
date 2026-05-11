@@ -53,22 +53,27 @@ class ProfileViewModel(
 
             val profileResult = getMyProfileUseCase()
             profileResult.onSuccess { profile ->
-                _uiState.update { it.copy(profile = profile) }
+                _uiState.update { it.copy(profile = profile, isLoading = false) }
                 loadReviewsFor(profile)
             }.onFailure { e ->
                 _uiState.update { it.copy(isLoading = false) }
+                _events.emit(ProfileEvent.EmptyProfile)
                 _events.emit(ProfileEvent.ShowError(e.message ?: "Не удалось загрузить профиль"))
             }
         }
     }
 
-    private suspend fun loadReviewsFor(profile: DomainUserProfile) {
-        val reviewsResult = getUserReviewsUseCase(profile.username)
-        reviewsResult.onSuccess { reviews ->
-            _uiState.update { it.copy(reviews = reviews, isLoading = false) }
-        }.onFailure { e ->
-            _uiState.update { it.copy(isLoading = false) }
-            _events.emit(ProfileEvent.ShowError(e.message ?: "Не удалось загрузить отзывы"))
+    private fun loadReviewsFor(profile: DomainUserProfile) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingReviews = true) }
+
+            val reviewsResult = getUserReviewsUseCase(profile.username)
+            reviewsResult.onSuccess { reviews ->
+                _uiState.update { it.copy(reviews = reviews, isLoadingReviews = false) }
+            }.onFailure { e ->
+                _uiState.update { it.copy(isLoadingReviews = false) }
+                _events.emit(ProfileEvent.ShowError(e.message ?: "Не удалось загрузить отзывы"))
+            }
         }
     }
 
@@ -124,6 +129,11 @@ class ProfileViewModel(
         if (_uiState.value.isLoggingOut) return
 
         viewModelScope.launch {
+            if (_uiState.value.profile == null) {
+                _events.emit(ProfileEvent.ShowError("Ошибка"))
+                return@launch
+            }
+
             _uiState.update { it.copy(isLoggingOut = true) }
 
             logoutUseCase().onSuccess {
@@ -139,6 +149,11 @@ class ProfileViewModel(
         if (_uiState.value.isLoggingOut) return
 
         viewModelScope.launch {
+            if (_uiState.value.profile == null) {
+                _events.emit(ProfileEvent.ShowError("Ошибка"))
+                return@launch
+            }
+
             _uiState.update { it.copy(isLoggingOut = true) }
 
             logoutAllUseCase().onSuccess {

@@ -60,7 +60,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
     private fun setupListeners() {
         binding.fieldBtnClose.setOnClickListener { finish() }
 
-        binding.fieldBtnEdit.setOnClickListener { viewModel.openEditScreen() }
+        binding.btnEdit.setOnClickListener { viewModel.openEditScreen() }
 
         binding.btnSort.setOnClickListener { viewModel.toggleSortOrder() }
         binding.iconSwap.setOnClickListener { viewModel.toggleSortOrder() }
@@ -70,7 +70,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    state.profile?.let { renderProfile(it) }
+                    state.profile?.let { renderProfile(it, state.isLoading) }
                     renderReviews(state)
                     renderEditScreenVisibility(state.isEditMode)
 
@@ -80,7 +80,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         }
     }
 
-    private fun renderProfile(profile: DomainUserProfile) {
+    private fun renderProfile(profile: DomainUserProfile, isLoading: Boolean) {
         binding.profileUsername.text = profile.username
         binding.profileFullName.text = profile.fullName.ifBlank { profile.username }
         binding.profileBio.text = profile.bio ?: ""
@@ -88,6 +88,12 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         binding.countTrips.text = profile.countTrips.toString()
         binding.countSpots.text = profile.countSpots.toString()
         binding.profileCountComments.text = getString(R.string.profile_count_comments, profile.countComments)
+
+        val profileEnable = !isLoading && !profile.id.isEmpty()
+        binding.fieldBtnEdit.isEnabled = profileEnable
+        binding.btnEdit.isEnabled = profileEnable
+        binding.progressBar.visibility =
+            if (!profileEnable) View.VISIBLE else View.GONE
     }
 
     private fun renderReviews(state: ProfileUiState) {
@@ -95,8 +101,10 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         reviewsAdapter.submitList(list)
 
         val hasReviews = list.isNotEmpty()
+        binding.progressBarReviews.visibility =
+            if (state.isLoading && !hasReviews) View.VISIBLE else View.GONE
         binding.recyclerReviews.visibility = if (hasReviews) View.VISIBLE else View.GONE
-        binding.textEmptyReviews.visibility = if (!hasReviews && !state.isLoading) View.VISIBLE else View.GONE
+        binding.textEmptyReviews.visibility = if (!hasReviews && !state.isLoadingReviews) View.VISIBLE else View.GONE
     }
 
     private fun renderEditScreenVisibility(isEditMode: Boolean) {
@@ -130,6 +138,10 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
                     when (event) {
                         is ProfileEvent.ShowError ->
                             ToastManager.show(this@ProfileActivity, event.message)
+                        is ProfileEvent.EmptyProfile -> {
+                            binding.fieldBtnEdit.isEnabled = false
+                            binding.btnEdit.isEnabled = false
+                        }
 
                         ProfileEvent.NicknameUpdated,
                         ProfileEvent.CloseEditScreen,

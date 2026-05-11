@@ -64,7 +64,7 @@ class SubcategoryPickBottomSheet : BottomSheetDialogFragment() {
                     val lm  = rv.layoutManager as LinearLayoutManager
                     val last = lm.findLastVisibleItemPosition()
                     val total = lm.itemCount
-                    // подгружаем когда осталось 3 элемента до конца
+
                     if (total > 0 && last >= total - 3) {
                         pickViewModel.loadNextPage()
                     }
