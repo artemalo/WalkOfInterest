@@ -112,10 +112,10 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
 
                 launch {
                     viewModel.uiState
-                        .map { Pair(it.categories, it.selectedSubcategoryIds) }
+                        .map { Triple(it.categories, it.selectedSubcategoryIds, it.selectedSubcategories) }
                         .distinctUntilChanged()
-                        .collect { (cats, selected) ->
-                            renderCategories(cats, selected)
+                        .collect { (cats, _, selectedSubs) ->
+                            renderCategories(cats, selectedSubs)
                         }
                 }
 
@@ -151,7 +151,6 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
                             binding.btnSubmit.alpha = if (!submitting && valid) 1f else 0.5f
                             binding.textBtnSubmit.text = if (submitting) "Отправка..." else "Отправить на модерацию"
 
-                            // Disable inputs while submitting.
                             val enabled = !submitting
                             binding.editName.isEnabled = enabled
                             binding.editDescription.isEnabled = enabled
@@ -194,12 +193,12 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
 
     private fun renderCategories(
         cats: List<DomainPickCategory>,
-        selectedIds: Set<Int>
+        selectedSubs: List<DomainPickSubcategory>
     ) {
         val items = cats.map { cat ->
             CategoryPickAdapter.Item(
                 category = cat,
-                selectedCount = cat.subcategories.count { selectedIds.contains(it.id) }
+                selectedCount = selectedSubs.count { it.categoryId == cat.id }
             )
         }
         categoryAdapter.submitList(items)
@@ -242,7 +241,7 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
 
     private fun openSubcategorySheet(cat: DomainPickCategory) {
         SubcategoryPickBottomSheet
-            .newInstance(cat)
+            .newInstance(categoryId = cat.id, categoryName = cat.name)
             .show(childFragmentManager, SubcategoryPickBottomSheet.TAG)
     }
 

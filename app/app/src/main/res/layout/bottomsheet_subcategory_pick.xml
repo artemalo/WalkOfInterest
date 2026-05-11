@@ -7,8 +7,7 @@
     android:paddingStart="@dimen/padding_general"
     android:paddingTop="@dimen/padding_normal"
     android:paddingEnd="@dimen/padding_general"
-    android:paddingBottom="@dimen/padding_normal"
-    android:fitsSystemWindows="true">
+    android:paddingBottom="@dimen/padding_normal">
 
     <View
         android:layout_width="40dp"
@@ -21,19 +20,61 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_middle"
-        android:text="Подкатегории"
+        android:text="@string/Subcategories"
         android:textAppearance="@style/TextAppearance.App.H2"
         android:textColor="@color/white" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        style="@style/CompactTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_small"
+        android:textColorHint="@color/white_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_subcategories"
+            android:imeOptions="actionSearch"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:paddingVertical="@dimen/padding_middle"
+            android:textAppearance="@style/TextAppearance.App.Body"
+            android:textColor="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/padding_small"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_small"
-        android:maxHeight="400dp"
+        android:maxHeight="360dp"
         android:nestedScrollingEnabled="true"
         android:overScrollMode="never" />
 
+    <TextView
+        android:id="@+id/emptyText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_small"
+        android:gravity="center"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/not_found"
+        android:textAppearance="@style/TextAppearance.App.Body"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white_hint"
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/btnDone"
@@ -53,7 +94,7 @@
             android:minHeight="@dimen/btn_general">
             <TextView
                 android:id="@+id/btnNext"
-                android:text="Готово"
+                android:text="@string/Done"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

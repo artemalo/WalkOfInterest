@@ -45,4 +45,9 @@
     <string name="review_hint">Напишите ваш отзыв…</string>
     <string name="review_char_count">%1$d / %2$d</string>
     <string name="All_spots">Всего мест:</string>
+
+    <string name="Subcategories">Подкатегории</string>
+    <string name="search_subcategories">Поиск подкатегории</string>
+    <string name="not_found">Ничего не найдено</string>
+    <string name="Done">Готово</string>
 </resources>

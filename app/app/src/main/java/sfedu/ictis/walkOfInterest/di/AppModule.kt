@@ -38,6 +38,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.CheckPoiNearbyUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.CreatePoiUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.DeleteTripByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetAllCategoriesUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetSubcategoriesByCategoryUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetBaseRouteUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMyPoisUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SupplementPoiUseCase
@@ -71,6 +72,7 @@ import sfedu.ictis.walkOfInterest.presentation.main.MainFeedViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.PoiViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.add.AddPoiPickViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.add.form.AddPoiFormViewModel
+import sfedu.ictis.walkOfInterest.presentation.poi.add.form.SubcategoryPickViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.add.my.MyPoisViewModel
 import sfedu.ictis.walkOfInterest.presentation.poi.review.ReviewMakeViewModel
 import sfedu.ictis.walkOfInterest.presentation.profile.ProfileViewModel
@@ -212,6 +214,7 @@ val appModule = module {
     factory { SupplementPoiUseCase(get()) }
     factory { GetMyPoisUseCase(get()) }
     factory { GetAllCategoriesUseCase(get()) }
+    factory { GetSubcategoriesByCategoryUseCase(get()) }
     factory { ReorderPoisUseCase(get()) }
 
     // Presentation Layer: ViewModels
@@ -229,4 +232,5 @@ val appModule = module {
     viewModel { AddPoiPickViewModel(get(), get()) }
     viewModel { AddPoiFormViewModel(get(), get(), get(), get(), get()) }
     viewModel { MyPoisViewModel(get()) }
+    viewModel { SubcategoryPickViewModel(get()) }
 }
