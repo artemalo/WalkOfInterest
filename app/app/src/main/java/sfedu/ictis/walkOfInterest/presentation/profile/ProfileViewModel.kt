@@ -19,6 +19,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.LogoutAllUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.LogoutUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateNicknameUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateProfileInfoUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.UploadPhotoUseCase
 
 class ProfileViewModel(
     private val getMyProfileUseCase: GetMyProfileUseCase,
@@ -28,7 +29,8 @@ class ProfileViewModel(
     private val updateProfileInfoUseCase: UpdateProfileInfoUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val logoutAllUseCase: LogoutAllUseCase,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val uploadPhotoUseCase: UploadPhotoUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -178,6 +180,23 @@ class ProfileViewModel(
 
     fun clearNicknameError() {
         _uiState.update { it.copy(nicknameError = null) }
+    }
+
+    fun uploadPhoto(bytes: ByteArray, extension: String) {
+        if (_uiState.value.isUploadingPhoto) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isUploadingPhoto = true) }
+
+            uploadPhotoUseCase(bytes, extension)
+                .onSuccess { updatedProfile ->
+                    _uiState.update { it.copy(profile = updatedProfile, isUploadingPhoto = false) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(isUploadingPhoto = false) }
+                    _events.emit(ProfileEvent.ShowError(e.message ?: "Не удалось загрузить фото"))
+                }
+        }
     }
 
     fun logout() {

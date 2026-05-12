@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ItemReviewBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainReview
@@ -46,8 +47,11 @@ class ReviewsAdapter(
                 Mode.POI -> {
                     binding.tvUserName.text = review.authorUsername
                     binding.ivUserAvatar.visibility = View.VISIBLE
-                    // TODO: review.authorAvatarUrl Coil/Glide
-                    binding.ivUserAvatar.setImageResource(R.drawable.ic_profile)
+                    binding.ivUserAvatar.load(review.authorAvatarUrl) {
+                        placeholder(R.drawable.ic_profile)
+                        error(R.drawable.ic_profile)
+                        crossfade(true)
+                    }
                 }
             }
 

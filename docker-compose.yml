@@ -1,43 +1,79 @@
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
 services:
   db:
-    image: postgis/postgis:18-3.6
+    image: postgis/postgis:15-3.3
     container_name: walk-db
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: always
     environment:
       POSTGRES_DB: walk
       POSTGRES_USER: walk
-      POSTGRES_PASSWORD: walk
-    ports:
-      - "5433:5432" # Close port?
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    command: >
+      postgres
+      -c shared_buffers=128MB
+      -c work_mem=4MB
+      -c maintenance_work_mem=64MB
+      -c effective_cache_size=512MB
     volumes:
-      - ./data/postgres:/var/lib/postgresql
-      - ./data/walk.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data/postgres:/var/lib/postgresql/data
+    logging: *default-logging
+    mem_limit: 512m
 
   graphhopper:
     image: israelhikingmap/graphhopper:latest
     container_name: graphhopper
-    ports:
-      - "8989:8989" # Close port?
+    restart: always
     volumes:
       - ./data/graphhopper:/data
-      - ./graphhopper/config.yml:/config.yml
+      - ./graphhopper.yml:/config.yml
     command: ["-c", "/config.yml"]
     environment:
-      - JAVA_OPTS=-Xmx1g -Xms1g
+      - JAVA_OPTS=-Xmx512m -Xms512m
+    logging: *default-logging
+    mem_limit: 700m
 
   backend:
     build: ./WalkOfInterest-backend
     container_name: walk-api
-    ports:
-      - "8080:8080"
+    restart: always
     depends_on:
       - db
       - graphhopper
     environment:
       - DB_URL=jdbc:postgresql://db:5432/walk
       - DB_USERNAME=walk
-      - DB_PASSWORD=walk
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SHOW_SQL=false
       - GH_URL=http://graphhopper:8989
-      - SHOW_SQL=true
-      - JWT_EXPIRATION=900000
-      - JWT_REFRESH_EXPIRATION=2592000000
-      - JWT_SECRET=9a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b # I hope you are going to use it :)
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION}
+      - APP_BASE_URL=http://${DOMAIN}
+      - UPLOAD_DIR=/data/uploads
+      - JAVA_OPTS="-Xms256m -Xmx512m"
+    volumes:
+      - ./data/uploads:/data/uploads
+    logging: *default-logging
+    mem_limit: 700m
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - backend
+    logging: *default-logging
+    mem_limit: 64m

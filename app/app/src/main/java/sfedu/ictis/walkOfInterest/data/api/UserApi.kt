@@ -1,10 +1,13 @@
 package sfedu.ictis.walkOfInterest.data.api
 
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import sfedu.ictis.walkOfInterest.data.model.UpdateProfileRequest
@@ -35,6 +38,12 @@ interface UserApi {
     @PATCH("api/users/me/info")
     suspend fun updateProfileInfo(
         @Body request: UpdateProfileRequest
+    ): Response<UserProfileDto>
+
+    @Multipart
+    @POST("api/users/me/photo")
+    suspend fun uploadPhoto(
+        @Part photo: MultipartBody.Part
     ): Response<UserProfileDto>
 
     @POST("api/users/me/increment-trips")

@@ -11,6 +11,7 @@ interface UserRepository {
 
     suspend fun updateNickname(newUsername: String): Result<DomainUserProfile>
     suspend fun updateProfileInfo(firstName: String, lastName: String, bio: String): Result<DomainUserProfile>
+    suspend fun uploadPhoto(bytes: ByteArray, extension: String): Result<DomainUserProfile>
 
     fun observeProfile(): Flow<DomainUserProfile?>
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.R
@@ -90,6 +91,12 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         binding.profileUsername.text = profile.username
         binding.profileFullName.text = profile.fullName.ifBlank { profile.username }
         binding.profileBio.text = profile.bio ?: ""
+
+        binding.profilePhoto.load(profile.photoUrl) {
+            placeholder(R.drawable.ic_profile)
+            error(R.drawable.ic_profile)
+            crossfade(true)
+        }
 
         binding.countTrips.text = formatLargeNumber(profile.countTrips)
         binding.countSpots.text = formatLargeNumber(profile.countSpots)

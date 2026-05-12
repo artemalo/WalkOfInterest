@@ -69,6 +69,7 @@ import sfedu.ictis.walkOfInterest.domain.usecase.UpsertMyReviewUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCategoryTimeUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.ReorderPoisUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateProfileInfoUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.UploadPhotoUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateTripBestRouteTimeUseCase
 import sfedu.ictis.walkOfInterest.presentation.auth.AuthViewModel
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesViewModel
@@ -214,6 +215,7 @@ val appModule = module {
     factory { ToggleSavedPoiUseCase(get()) }
     factory { UpdateNicknameUseCase(get()) }
     factory { UpdateProfileInfoUseCase(get()) }
+    factory { UploadPhotoUseCase(get()) }
     factory { LogoutUseCase(get()) }
     factory { LogoutAllUseCase(get()) }
     factory { GetPoiByIdUseCase(get()) }
@@ -240,7 +242,7 @@ val appModule = module {
     viewModel { CategoriesViewModel(get(), get()) }
     viewModel { CategoryViewModel(get()) }
     viewModel { RoutesViewModel(get(), get(), get(), get(), get()) }
-    viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { PoiViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ReviewMakeViewModel(get()) }
     viewModel { AddPoiPickViewModel(get(), get()) }

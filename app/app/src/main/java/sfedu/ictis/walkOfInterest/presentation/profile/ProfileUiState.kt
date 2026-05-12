@@ -18,7 +18,8 @@ data class ProfileUiState(
     val isUpdatingNickname: Boolean = false,
     val isUpdatingProfile: Boolean = false,
 
-    val isLoggingOut: Boolean = false
+    val isLoggingOut: Boolean = false,
+    val isUploadingPhoto: Boolean = false
 ) {
     val sortedReviews: List<DomainReview>
         get() = when (sortOrder) {

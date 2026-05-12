@@ -1,21 +1,31 @@
 package sfedu.ictis.walkOfInterest.presentation.profile
 
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import coil.load
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentEditProfileBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
 
 class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
     private val viewModel: ProfileViewModel by activityViewModel()
+
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { handlePickedImage(it) }
+        }
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -43,8 +53,26 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
 
         binding.username.setOnClickListener { showEditNicknameDialog() }
 
+        binding.profilePhoto.setOnClickListener { pickImageLauncher.launch("image/*") }
+
         binding.fieldBtnLogout.setOnClickListener { viewModel.logout() }
         binding.fieldBtnLogoutAll.setOnClickListener { viewModel.logoutAll() }
+    }
+
+    private fun handlePickedImage(uri: Uri) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val bytes = requireContext().contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                ?: return@launch
+            val mime = requireContext().contentResolver.getType(uri) ?: "image/jpeg"
+            val ext = when (mime) {
+                "image/png" -> "png"
+                "image/webp" -> "webp"
+                else -> "jpg"
+            }
+            withContext(Dispatchers.Main) {
+                viewModel.uploadPhoto(bytes, ext)
+            }
+        }
     }
 
     private fun showEditNicknameDialog() {
@@ -56,7 +84,7 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    loadedEditing(state.isUpdatingNickname, state.isUpdatingProfile)
+                    loadedEditing(state.isUpdatingNickname, state.isUpdatingProfile, state.isUploadingPhoto)
                     state.profile?.let { renderProfile(it) }
                     renderLogoutButtons(state.isLoggingOut)
                 }
@@ -64,11 +92,12 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
         }
     }
 
-    private fun loadedEditing(isUpdatingNickname: Boolean, isUpdatingProfile: Boolean) {
+    private fun loadedEditing(isUpdatingNickname: Boolean, isUpdatingProfile: Boolean, isUploadingPhoto: Boolean) {
         binding.progressBar.visibility =
-            if (isUpdatingNickname || isUpdatingProfile) View.VISIBLE else View.GONE
+            if (isUpdatingNickname || isUpdatingProfile || isUploadingPhoto) View.VISIBLE else View.GONE
 
         binding.username.isEnabled = !isUpdatingNickname
+        binding.profilePhoto.isEnabled = !isUploadingPhoto
 
         binding.name.isEnabled = !isUpdatingProfile
         binding.lastname.isEnabled = !isUpdatingProfile
@@ -87,6 +116,12 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
         }
         if (binding.bio.text.toString() != profile.bio) {
             binding.bio.setText(profile.bio)
+        }
+
+        binding.profilePhoto.load(profile.photoUrl) {
+            placeholder(R.drawable.ic_profile)
+            error(R.drawable.ic_profile)
+            crossfade(true)
         }
     }
 

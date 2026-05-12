@@ -68,6 +68,9 @@ wget https://download.geofabrik.de/russia/south-fed-district-latest.osm.pbf
 
 # Возвращаемся в главную папку проекта
 cd ~/app
+
+# Создаем папку для аватаров пользователей
+mkdir -p ~/app/data/uploads
 ```
 
 Конфиг для GraphHopper (*обязательно*)
@@ -139,10 +142,12 @@ mv ~/app/data/graphhopper/south-fed-district-latest.osm.pbf ~/app/data/graphhopp
 ```bash
 nano .env
 ```
-
+DOMAIN - чистый ip/domain, без http
 ```env
 DB_PASSWORD=super_strong_password
 JWT_SECRET=длинная_случайная_строка_без_пробелов
+JWT_EXPIRATION=900000
+JWT_REFRESH_EXPIRATION=2592000000
 DOMAIN=<server-name>
 ```
 
@@ -153,6 +158,11 @@ nano docker-compose.yml
 ```
 
 ```yaml
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
 services:
   db:
     image: postgis/postgis:15-3.3
@@ -170,21 +180,23 @@ services:
       -c work_mem=4MB
       -c maintenance_work_mem=64MB
       -c effective_cache_size=512MB
-    mem_limit: 512m
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+    logging: *default-logging
+    mem_limit: 512m
 
   graphhopper:
     image: israelhikingmap/graphhopper:latest
     container_name: graphhopper
     restart: always
-    mem_limit: 700m
     volumes:
       - ./data/graphhopper:/data
       - ./graphhopper.yml:/config.yml
     command: ["-c", "/config.yml"]
     environment:
       - JAVA_OPTS=-Xmx512m -Xms512m
+    logging: *default-logging
+    mem_limit: 700m
 
   backend:
     build: ./WalkOfInterest-backend
@@ -197,18 +209,23 @@ services:
       - DB_URL=jdbc:postgresql://db:5432/walk
       - DB_USERNAME=walk
       - DB_PASSWORD=${DB_PASSWORD}
+      - SHOW_SQL=false
       - GH_URL=http://graphhopper:8989
       - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRATION=900000
-      - JWT_REFRESH_EXPIRATION=2592000000
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION}
+      - APP_BASE_URL=http://${DOMAIN}
+      - UPLOAD_DIR=/data/uploads
       - JAVA_OPTS="-Xms256m -Xmx512m"
+    volumes:
+      - ./data/uploads:/data/uploads
+    logging: *default-logging
     mem_limit: 700m
 
   nginx:
     image: nginx:alpine
     container_name: nginx
     restart: always
-    mem_limit: 64m
     ports:
       - "80:80"
       - "443:443"
@@ -218,6 +235,8 @@ services:
       - ./certbot/www:/var/www/certbot
     depends_on:
       - backend
+    logging: *default-logging
+    mem_limit: 64m
 ```
 
 ### 5.3 Файл архитектуры (`.dockerignore`)
@@ -266,6 +285,34 @@ sudo docker compose up -d
 
 ## Другое
 
+### Папка ~/app
+
+```bash
+../app/
+├── WalkOfInterest-backend/
+│   ├── src/
+│   ├── pom.xml
+│   └── Dockerfile
+├── data/
+│   ├── postgres/
+│   ├── graphhopper/
+│   │   └── map.osm.pbf
+│   └── uploads/
+│       └── avatars/
+├── nginx/
+│   └── conf/
+│       └── app.conf
+├── certbot/
+│   ├── conf/
+│   └── www/
+├── .env
+├── docker-compose.yml
+├── graphhopper.yml
+└── .dockerignore
+```
+
+---
+
 ### Полезные команды
 
 ```bash
@@ -282,37 +329,25 @@ sudo docker stats
 sudo docker compose down
 ```
 
----
+### Память
 
-### Папка ~/app
+Обслуживание достаточно раз в неделю:
+
+#### Очистка (безопасная)
 
 ```bash
-../app/
-├── WalkOfInterest-backend/
-│   ├── src/
-│   ├── pom.xml
-│   └── Dockerfile
-├── data/
-│   ├── postgres/
-│   └── graphhopper/
-│       └── south-fed-district-latest.osm.pbf
-├── nginx/
-│   └── conf/
-│       └── app.conf
-├── certbot/
-│   ├── conf/
-│   └── www/
-├── .env
-├── docker-compose.yml
-├── graphhopper.yml
-└── .dockerignore
+docker system prune -af
 ```
 
----
+#### Проверка
+
+```bash
+docker system df
+```
 
 ### Пересбор `docker`
 
-#### Образы
+#### Все образы
 
 Если был изменен `docker-compose.yml` и внутренние файлы (`.env`)
 
@@ -321,7 +356,7 @@ sudo docker compose down
 sudo docker compose up -d
 ```
 
-### Конкретный образ
+#### Конкретный образ
 
 Например, нужны новые изменения backend с git:
 

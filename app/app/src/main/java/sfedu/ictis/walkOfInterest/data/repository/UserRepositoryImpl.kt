@@ -3,6 +3,9 @@ package sfedu.ictis.walkOfInterest.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import retrofit2.Response
 import sfedu.ictis.walkOfInterest.data.api.UserApi
@@ -83,6 +86,23 @@ class UserRepositoryImpl(
             domain
         } else {
             throw response.toException("Не удалось обновить информацию о профиле")
+        }
+    }
+
+    override suspend fun uploadPhoto(bytes: ByteArray, extension: String): Result<DomainUserProfile> = runCatching {
+        val mediaType = "image/*".toMediaType()
+        val requestBody = bytes.toRequestBody(mediaType)
+        val part = MultipartBody.Part.createFormData("photo", "avatar.$extension", requestBody)
+
+        val response = api.uploadPhoto(part)
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            val domain = body.toDomain()
+            _profile.value = domain
+            domain
+        } else {
+            throw response.toException("Не удалось загрузить фото")
         }
     }
 
