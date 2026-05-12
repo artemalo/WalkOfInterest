@@ -9,7 +9,8 @@ sealed class FeedItem {
         val addressFrom: String,
         val addressTo: String,
         val totalTime: Int,
-        val totalPois: Int
+        val totalPois: Int,
+        val bestTime: Int?
         ) : FeedItem()
     data class Spot(
         val id: Long,

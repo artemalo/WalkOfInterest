@@ -51,6 +51,10 @@ class FeedAdapter(
             binding.countSelected.text = item.totalPois.toString()
             binding.time.text = formatMinutes(item.totalTime)
 
+            binding.bestTime.text = item.bestTime?.let {
+                if (it != 0) formatMinutes(it) else "-"
+            } ?: "-"
+
             binding.root.setOnClickListener {
                 onTripClicked(item.id)
             }
