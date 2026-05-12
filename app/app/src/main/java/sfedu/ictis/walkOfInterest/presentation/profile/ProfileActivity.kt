@@ -165,9 +165,9 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
                             binding.btnEdit.isEnabled = false
                         }
 
+                        ProfileEvent.LoggedOut -> navigateToAuth()
                         ProfileEvent.NicknameUpdated,
-                        ProfileEvent.CloseEditScreen,
-                        ProfileEvent.LoggedOut -> Unit
+                        ProfileEvent.CloseEditScreen -> Unit
                     }
                 }
             }
