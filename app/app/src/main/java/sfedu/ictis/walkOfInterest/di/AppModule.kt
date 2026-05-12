@@ -239,7 +239,7 @@ val appModule = module {
     viewModel { GenerateViewModel(get(), get(), get()) }
     viewModel { CategoriesViewModel(get(), get()) }
     viewModel { CategoryViewModel(get()) }
-    viewModel { RoutesViewModel(get(), get(), get(), get()) }
+    viewModel { RoutesViewModel(get(), get(), get(), get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { PoiViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ReviewMakeViewModel(get()) }

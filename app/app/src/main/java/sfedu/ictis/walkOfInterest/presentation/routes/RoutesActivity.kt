@@ -1,5 +1,7 @@
 package sfedu.ictis.walkOfInterest.presentation.routes
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -62,6 +64,11 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
         setupBottomSheet()
         observeState()
         observeEvents()
+
+        val tripId = intent.getStringExtra(EXTRA_TRIP_ID)
+        if (tripId != null) {
+            viewModel.loadTripById(tripId)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -350,5 +357,13 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
 
         super.onPause()
         binding.map.onPause()
+    }
+
+    companion object {
+        private const val EXTRA_TRIP_ID = "extra_trip_id"
+
+        fun startFor(context: Context, tripId: String): Intent =
+            Intent(context, RoutesActivity::class.java)
+                .putExtra(EXTRA_TRIP_ID, tripId)
     }
 }

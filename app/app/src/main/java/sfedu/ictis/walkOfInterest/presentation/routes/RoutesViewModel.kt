@@ -17,11 +17,13 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainRoute
 import sfedu.ictis.walkOfInterest.domain.usecase.GetCurrentTripUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetMapCenterUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetRoutesUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.GetTripByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdateTripBestRouteTimeUseCase
 
 class RoutesViewModel(
     private val getMapCenterUseCase: GetMapCenterUseCase,
     private val getCurrentTripUseCase: GetCurrentTripUseCase,
+    private val getTripByIdUseCase: GetTripByIdUseCase,
     private val getRoutesUseCase: GetRoutesUseCase,
     private val updateTripBestRouteTimeUseCase: UpdateTripBestRouteTimeUseCase
 ) : ViewModel() {
@@ -33,21 +35,37 @@ class RoutesViewModel(
 
     val defaultCenter: DomainPoint get() = getMapCenterUseCase()
 
+    private var loadedByIntent = false
+
     init {
         viewModelScope.launch {
             delay(100)
-            loadTripData()
+            if (!loadedByIntent) loadTripData()
+        }
+    }
+
+    fun loadTripById(tripId: String) {
+        loadedByIntent = true
+        viewModelScope.launch {
+            val trip = getTripByIdUseCase(tripId)
+            if (trip != null) {
+                loadRoutes(trip)
+            } else {
+                _events.emit(RoutesEvent.ShowError("Маршрут не найден"))
+            }
         }
     }
 
     private suspend fun loadTripData() {
         val trip = getCurrentTripUseCase()
-
         if (trip == null) {
             _events.emit(RoutesEvent.ShowError("Данные о поездке не найдены"))
             return
         }
+        loadRoutes(trip)
+    }
 
+    private suspend fun loadRoutes(trip: sfedu.ictis.walkOfInterest.domain.model.DomainTrip) {
         _uiState.update { it.copy(trip = trip, isLoading = true) }
 
         val str = trip.selectedPois.joinToString(separator = "\n") { poi ->

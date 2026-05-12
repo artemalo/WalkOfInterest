@@ -51,4 +51,8 @@
     <string name="not_found">Ничего не найдено</string>
     <string name="Done">Готово</string>
     <string name="show_on_the_map">Показать на карте</string>
+
+    <string name="calculate">Рассчитать</string>
+    <string name="from">Откуда</string>
+    <string name="to">Куда</string>
 </resources>

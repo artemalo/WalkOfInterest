@@ -14,6 +14,7 @@ import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentTripDetailsBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
+import sfedu.ictis.walkOfInterest.presentation.routes.RoutesActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
 import sfedu.ictis.walkOfInterest.utils.openPoiFragment
@@ -68,6 +69,11 @@ class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
         binding.fieldBtnTrash.setOnClickListener {
             viewModel.deleteTrip()
         }
+
+        binding.fieldBtn.setOnClickListener {
+            val trip = viewModel.uiState.value.trip ?: return@setOnClickListener
+            startActivity(RoutesActivity.startFor(requireContext(), trip.id))
+        }
     }
 
     private fun observeState() {
@@ -81,6 +87,7 @@ class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
                     }
 
                     state.trip?.let { renderTrip(it) }
+                    renderBtn(state.isLoading, state.trip != null)
                 }
             }
         }
@@ -107,19 +114,18 @@ class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
 
         binding.timeTotal.text = trip.totalPois.toString()
 
-        val time = trip.bestRouteTime ?: trip.userSelectedTime
-        binding.timeCurrent.text = formatMinutes(time)
+        binding.timeCurrent.text = formatMinutes(trip.userSelectedTime)
 
         adapter.submitList(trip.selectedPois.sortedBy { it.order })
     }
 
-//    private fun openPoiFragment(point: RoutePoint) {
-//        val fragment = PoiFragment.newInstance(point.id)
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, fragment)
-//            .addToBackStack(null)
-//            .commit()
-//    }
+    private fun renderBtn(isLoading: Boolean, hasTrip: Boolean) {
+        val ready = !isLoading && hasTrip
+        binding.fieldBtn.isEnabled = ready
+        binding.btnNext.isEnabled = ready
+        binding.btnNext.alpha = if (ready) 1f else 0.5f
+        binding.btnNext.text = if (isLoading) "Загрузка..." else getString(R.string.calculate)
+    }
 
     companion object {
         private const val ARG_TRIP_ID = "arg_trip_id"
