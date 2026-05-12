@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/fieldBtnClose"
+        android:layout_width="@dimen/btn_field"
+        android:layout_height="@dimen/btn_field"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/padding_general">
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="@dimen/btn_general"
+            android:layout_height="@dimen/btn_general"
+            android:layout_gravity="end|center_vertical"
+            android:padding="@dimen/padding_small"
+            android:background="@drawable/btn_general_alpha"
+            android:src="@drawable/ic_x"
+            android:contentDescription="close" />
+    </FrameLayout>
+
+</FrameLayout>

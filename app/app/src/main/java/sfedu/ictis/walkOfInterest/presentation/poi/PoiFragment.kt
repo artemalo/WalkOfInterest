@@ -90,6 +90,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
         }
 
         binding.fieldLikePoi.setOnClickListener { viewModel.toggleSaved() }
+        binding.frameAddressShow.setOnClickListener { openPoiMap() }
         binding.btnSort.setOnClickListener { viewModel.toggleSortOrder() }
         binding.btnEdit.setOnClickListener { viewModel.onAddOrEditReviewClicked() }
     }
@@ -148,9 +149,11 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
     private fun renderPoi(poi: DomainPoiInfo) {
         binding.name.text = poi.name ?: "—"
 
+        val hasPoint = poi.point != null
         binding.address.text = poi.point
             ?.let { "%.6f, %.6f".format(it.lat, it.lon) }
             ?: "Адрес недоступен"
+        binding.showText.visibility = if (hasPoint) View.VISIBLE else View.GONE
 
         binding.description.text = poi.description.orEmpty()
 
@@ -223,6 +226,19 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
             @Suppress("DEPRECATION")
             arguments?.getParcelable(ARG_POI)
         }
+    }
+
+    private fun openPoiMap() {
+        val poi = viewModel.uiState.value.poi ?: return
+        val point = poi.point ?: return
+
+        val fragment = PoiMapFragment.newInstance(point.lat, point.lon, poi.name)
+        val containerId = (view?.parent as? View)?.id ?: R.id.fragment_container
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(containerId, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     companion object {
