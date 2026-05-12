@@ -15,35 +15,36 @@ class TokenAuthenticator(
     private val sessionManager: SessionManager
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
-        val refreshToken = tokenStorage.getRefreshToken()
-
-        if (refreshToken == null) {
+        val refreshToken = tokenStorage.getRefreshToken() ?: run {
             sessionManager.triggerLogout()
             return null
         }
 
+        var isNetworkError = false
         val refreshResponse = runBlocking {
             try {
                 authApi.refresh(RefreshRequest(refreshToken))
-            } catch (_: retrofit2.HttpException) {
-                null
             } catch (_: java.io.IOException) {
+                isNetworkError = true
                 null
             } catch (_: Exception) {
                 null
             }
         }
 
-        return if (refreshResponse != null) {
-            tokenStorage.saveTokens(refreshResponse.accessToken, refreshResponse.refreshToken)
-
-            response.request.newBuilder()
-                .header("Authorization", "Bearer ${refreshResponse.accessToken}")
-                .build()
-        } else {
-            tokenStorage.clear() // TODO: EXCEPTIONS
-            sessionManager.triggerLogout()
-            null
+        return when {
+            refreshResponse != null -> {
+                tokenStorage.saveTokens(refreshResponse.accessToken, refreshResponse.refreshToken)
+                response.request.newBuilder()
+                    .header("Authorization", "Bearer ${refreshResponse.accessToken}")
+                    .build()
+            }
+            isNetworkError -> null
+            else -> {
+                tokenStorage.clear()
+                sessionManager.triggerLogout()
+                null
+            }
         }
     }
 }

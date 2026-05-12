@@ -6,7 +6,7 @@ import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class SessionManager {
-    private val _logoutEvent = MutableSharedFlow<Unit>(replay = 1)
+    private val _logoutEvent = MutableSharedFlow<Unit>(replay = 0)
     val logoutEvent = _logoutEvent.asSharedFlow()
 
     fun triggerLogout() {
