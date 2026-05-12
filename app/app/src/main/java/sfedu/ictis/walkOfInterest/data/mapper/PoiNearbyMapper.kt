@@ -23,6 +23,7 @@ private fun List<PoiNearbyDto>.toAggregatedDomain(): DomainPoiNearby {
     return DomainPoiNearby(
         id = first.id,
         name = first.name?.takeIf { it.isNotBlank() } ?: "Без названия",
+        categoryId = first.categoryId,
         categoryName = categoryNames.joinToString(" • ").takeIf { it.isNotBlank() },
         subcategoryName = subcategoryNames.joinToString(", ").takeIf { it.isNotBlank() },
         point = first.point?.let { DomainPoint(it.lat, it.lon) },

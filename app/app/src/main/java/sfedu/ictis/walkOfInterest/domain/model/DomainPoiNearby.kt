@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class DomainPoiNearby(
     val id: Long,
     val name: String,
+    val categoryId: Int?,
     val categoryName: String?,
     val subcategoryName: String?,
     val point: DomainPoint?,

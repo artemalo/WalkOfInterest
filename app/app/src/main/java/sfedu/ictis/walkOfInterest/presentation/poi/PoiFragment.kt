@@ -232,7 +232,7 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
         val poi = viewModel.uiState.value.poi ?: return
         val point = poi.point ?: return
 
-        val fragment = PoiMapFragment.newInstance(point.lat, point.lon, poi.name)
+        val fragment = PoiMapFragment.newInstance(point.lat, point.lon, poi.name, poi.tags.first().categoryId ?: 0)
         val containerId = (view?.parent as? View)?.id ?: R.id.fragment_container
 
         requireActivity().supportFragmentManager.beginTransaction()

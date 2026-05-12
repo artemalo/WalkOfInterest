@@ -13,11 +13,13 @@ import org.osmdroid.views.overlay.Marker
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentPoiMapBinding
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
+import sfedu.ictis.walkOfInterest.utils.calculateColorByCategory
 
 class PoiMapFragment : BaseFragment<FragmentPoiMapBinding>() {
     private val lat by lazy { requireArguments().getDouble(ARG_LAT) }
     private val lon by lazy { requireArguments().getDouble(ARG_LON) }
     private val poiName by lazy { requireArguments().getString(ARG_NAME) }
+    private val categoryId by lazy { requireArguments().getInt(ARG_CATEGORY_ID) }
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentPoiMapBinding.inflate(inflater, container, false)
@@ -51,6 +53,10 @@ class PoiMapFragment : BaseFragment<FragmentPoiMapBinding>() {
             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_spot_on)
             title = poiName
+
+            val newIcon = icon?.constantState?.newDrawable()?.mutate()
+            newIcon?.setTint(calculateColorByCategory(categoryId))
+            icon = newIcon
         }
         map.overlays.add(marker)
         map.invalidate()
@@ -70,13 +76,15 @@ class PoiMapFragment : BaseFragment<FragmentPoiMapBinding>() {
         private const val ARG_LAT = "arg_lat"
         private const val ARG_LON = "arg_lon"
         private const val ARG_NAME = "arg_name"
+        private const val ARG_CATEGORY_ID = "arg_category_id"
 
-        fun newInstance(lat: Double, lon: Double, name: String?): PoiMapFragment =
+        fun newInstance(lat: Double, lon: Double, name: String?, catId: Int): PoiMapFragment =
             PoiMapFragment().apply {
                 arguments = Bundle().apply {
                     putDouble(ARG_LAT, lat)
                     putDouble(ARG_LON, lon)
                     putString(ARG_NAME, name)
+                    putInt(ARG_CATEGORY_ID, catId)
                 }
             }
     }

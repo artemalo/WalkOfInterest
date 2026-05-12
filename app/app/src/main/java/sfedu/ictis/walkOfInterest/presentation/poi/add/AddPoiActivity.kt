@@ -24,6 +24,7 @@ import sfedu.ictis.walkOfInterest.presentation.poi.PoiFragment
 import sfedu.ictis.walkOfInterest.presentation.poi.add.form.AddPoiFormFragment
 import sfedu.ictis.walkOfInterest.presentation.poi.add.my.MyPoisActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
+import sfedu.ictis.walkOfInterest.utils.calculateColorByCategory
 
 class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
     SimilarPoisBottomSheet.Listener {
@@ -182,6 +183,10 @@ class AddPoiActivity : BaseActivity<ActivityAddPoiBinding>(),
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 icon = ContextCompat.getDrawable(this@AddPoiActivity, R.drawable.ic_spot_on)
                 title = poi.name
+
+                val newIcon = icon?.constantState?.newDrawable()?.mutate()
+                newIcon?.setTint(calculateColorByCategory(poi.categoryId ?: 0))
+                icon = newIcon
             }
         }
         newMarkers.forEach { map.overlays.add(it) }
