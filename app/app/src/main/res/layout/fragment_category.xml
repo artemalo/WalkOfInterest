@@ -8,7 +8,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
-<!--    TODO: fix this fragment - name category height-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemList"

@@ -48,7 +48,7 @@ class ReviewMakeFragment : BaseFragment<FragmentReviewMakeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets -> // TODO: test
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.updatePadding(bottom = maxOf(ime.bottom, systemBars.bottom))
