@@ -41,3 +41,22 @@ fun calculateRouteColor(context: Context, timeDiffMinutes: Int): Int {
         }
     }
 }
+
+fun formatLargeNumber(num: Int): String = when {
+    num < 1000 -> num.toString()
+    num < 1_000_000 -> {
+        val thousands = num / 1000
+        val remainder = num % 1000
+        if (remainder > 0) "$thousands к $remainder" else "$thousands к"
+    }
+    num < 1_000_000_000 -> {
+        val millions = num / 1_000_000
+        val remainder = num % 1_000_000
+        if (remainder > 0) "$millions кк ${formatLargeNumber(remainder)}" else "$millions кк"
+    }
+    else -> {
+        val billions = num / 1_000_000_000
+        val remainder = num % 1_000_000_000
+        if (remainder > 0) "$billions ккк ${formatLargeNumber(remainder)}" else "$billions ккк"
+    }
+}

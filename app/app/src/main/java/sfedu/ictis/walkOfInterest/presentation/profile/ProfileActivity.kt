@@ -16,6 +16,7 @@ import sfedu.ictis.walkOfInterest.databinding.ActivityProfileBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
+import sfedu.ictis.walkOfInterest.utils.formatLargeNumber
 import sfedu.ictis.walkOfInterest.utils.openPoiFragment
 
 class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
@@ -90,8 +91,8 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
         binding.profileFullName.text = profile.fullName.ifBlank { profile.username }
         binding.profileBio.text = profile.bio ?: ""
 
-        binding.countTrips.text = profile.countTrips.toString()
-        binding.countSpots.text = profile.countSpots.toString()
+        binding.countTrips.text = formatLargeNumber(profile.countTrips)
+        binding.countSpots.text = formatLargeNumber(profile.countSpots)
         binding.profileCountComments.text = getString(R.string.profile_count_comments, profile.countComments)
 
         val profileReady = !isLoading && profile.id.isNotEmpty()

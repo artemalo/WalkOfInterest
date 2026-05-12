@@ -4,6 +4,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import sfedu.ictis.walkOfInterest.data.model.UpdateProfileRequest
@@ -35,4 +36,7 @@ interface UserApi {
     suspend fun updateProfileInfo(
         @Body request: UpdateProfileRequest
     ): Response<UserProfileDto>
+
+    @POST("api/users/me/increment-trips")
+    suspend fun incrementTrips(): Response<Void>
 }

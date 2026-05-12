@@ -30,12 +30,6 @@ class TripDetailsViewModel(
         viewModelScope.launch {
             val trip = getTripByIdUseCase(tripId)
             if (trip != null) {
-                Log.i("TripDetails", "Загружен маршрут: ${trip.addressFrom} -> ${trip.addressTo}")
-                Log.i("TripDetails", "Точки (selectedPois):")
-                trip.selectedPois.forEach { poi ->
-                    Log.i("TripDetails", "- ${poi.name} (Cat: ${poi.nameCat})")
-                }
-
                 _uiState.update {
                     it.copy(trip = trip, isLoading = false, notFound = false)
                 }

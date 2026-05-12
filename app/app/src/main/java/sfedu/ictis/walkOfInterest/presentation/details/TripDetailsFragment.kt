@@ -112,9 +112,12 @@ class TripDetailsFragment : BaseFragment<FragmentTripDetailsBinding>() {
         binding.textFrom.text = trip.addressFrom
         binding.textTo.text = trip.addressTo
 
-        binding.timeTotal.text = trip.totalPois.toString()
-
+        binding.countPoi.text = trip.totalPois.toString()
         binding.timeCurrent.text = formatMinutes(trip.userSelectedTime)
+        
+        binding.timeWalk.text = trip.bestRouteTime?.let {
+            if (it != 0) formatMinutes(it) else "-"
+        } ?: "-"
 
         adapter.submitList(trip.selectedPois.sortedBy { it.order })
     }

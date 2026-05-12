@@ -53,17 +53,19 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/timeWalk"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="Маршрут"
-            android:textAppearance="@style/TextAppearance.App.H1"
+            android:gravity="start|center_vertical"
+            tools:text="@string/none"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.H2"
             android:textColor="@color/white_gray"
+            app:drawableStartCompat="@drawable/ic_walk"
+            app:drawableTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/fieldBtnClose"
+            app:layout_constraintStart_toEndOf="@+id/fieldBtnTrash"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -102,11 +104,11 @@
         android:id="@+id/itemList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/padding_normal"
         android:clipToPadding="false"
         android:paddingStart="@dimen/padding_general"
         android:paddingEnd="@dimen/padding_general"
         android:paddingBottom="@dimen/padding_normal"
+        android:paddingTop="@dimen/padding_normal"
         app:layout_constraintBottom_toTopOf="@+id/bottomSheet"
         app:layout_constraintTop_toBottomOf="@+id/header"
         tools:listitem="@layout/item_trip_route_point" />
@@ -153,7 +155,7 @@
             android:gravity="center"
             android:orientation="horizontal">
             <TextView
-                android:id="@+id/timeTotal"
+                android:id="@+id/countPoi"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/padding_middle"
