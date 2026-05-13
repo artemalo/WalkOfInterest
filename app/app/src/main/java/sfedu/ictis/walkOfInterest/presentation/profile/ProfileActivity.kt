@@ -117,9 +117,11 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>() {
 
         val hasReviews = list.isNotEmpty()
         binding.progressBarReviews.visibility =
-            if (state.isLoading || !hasReviews) View.VISIBLE else View.GONE
-        binding.recyclerReviews.visibility = if (hasReviews) View.VISIBLE else View.GONE
-        binding.textEmptyReviews.visibility = if (!hasReviews && !state.isLoadingReviews) View.VISIBLE else View.GONE
+            if (state.isLoading) View.VISIBLE else View.GONE
+        binding.recyclerReviews.visibility =
+            if (hasReviews) View.VISIBLE else View.GONE
+        binding.textEmptyReviews.visibility =
+            if (!hasReviews && !state.isLoadingReviews) View.VISIBLE else View.GONE
     }
 
     private fun renderEditScreenVisibility(isEditMode: Boolean, isOwnProfile: Boolean) {

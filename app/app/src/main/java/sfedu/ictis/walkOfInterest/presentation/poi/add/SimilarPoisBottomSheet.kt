@@ -59,7 +59,6 @@ class SimilarPoisBottomSheet : BottomSheetDialogFragment() {
             listener?.onAlwaysCreateNew()
             dismissAllowingStateLoss()
         }
-        binding.btnClose.setOnClickListener { dismiss() }
     }
 
     override fun onCancel(dialog: android.content.DialogInterface) {

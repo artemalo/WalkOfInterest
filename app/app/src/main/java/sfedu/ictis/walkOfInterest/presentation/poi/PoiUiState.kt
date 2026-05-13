@@ -18,7 +18,7 @@ data class PoiUiState(
     val sortedReviews: List<DomainReview>
         get() = when (sortOrder) {
             ReviewsSortOrder.NEWEST_FIRST -> reviews.sortedByDescending { it.createdAtMillis }
-            ReviewsSortOrder.OLDEST_FIRST -> reviews.sortedBy { it.createdAtMillis }
+            ReviewsSortOrder.POPULAR -> reviews.sortedByDescending { it.likes }
         }
 
     val myReview: DomainReview?

@@ -37,4 +37,7 @@
     <dimen name="input_width_min">230dp</dimen>
     <dimen name="input_width_max">512dp</dimen>
 
+    <dimen name="list_poi_nearby_min">120dp</dimen>
+    <dimen name="list_poi_nearby_max">370dp</dimen>
+
 </resources>
