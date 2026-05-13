@@ -28,38 +28,46 @@
 
         <activity
             android:name=".presentation.main.MainActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false" />
         <activity
             android:name=".presentation.auth.AuthActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".presentation.profile.ProfileActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".presentation.generate.GenerateActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
 
         <activity
             android:name=".presentation.categories.CategoriesActivity"
+            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".presentation.routes.RoutesActivity"
+            android:configChanges="orientation|screenSize"
             android:label="Routes"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
             android:name=".presentation.poi.add.AddPoiActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".presentation.poi.add.my.MyPoisActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false" />
 
     </application>
