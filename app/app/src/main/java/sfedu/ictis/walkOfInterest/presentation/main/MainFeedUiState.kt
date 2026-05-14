@@ -14,7 +14,7 @@ sealed class FeedItem {
         ) : FeedItem()
     data class Spot(
         val id: Long,
-        val photo: String,
+        val photo: String?,
         val title: String,
         val address: String
     ) : FeedItem()

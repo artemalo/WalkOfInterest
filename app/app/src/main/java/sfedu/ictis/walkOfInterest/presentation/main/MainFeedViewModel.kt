@@ -73,7 +73,7 @@ class MainFeedViewModel(
             val spots = getSavedPoisUseCase().map { poi ->
                 FeedItem.Spot(
                     id = poi.poiId,
-                    photo = "",
+                    photo = poi.photo,
                     title = poi.name,
                     address = poi.address
                 )

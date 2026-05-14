@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ItemSpotBinding
 import sfedu.ictis.walkOfInterest.databinding.ItemTripBinding
 import sfedu.ictis.walkOfInterest.utils.formatMinutes
@@ -65,6 +67,12 @@ class FeedAdapter(
         fun bind(item: FeedItem.Spot) {
             binding.titleSpot.text = item.title
             binding.addressSpot.text = item.address
+
+            binding.imgTrip.load(item.photo) {
+                crossfade(true)
+                placeholder(R.color.white_empty)
+                error(R.color.white_empty)
+            }
 
             binding.root.setOnClickListener {
                 onSpotClicked(item.id)

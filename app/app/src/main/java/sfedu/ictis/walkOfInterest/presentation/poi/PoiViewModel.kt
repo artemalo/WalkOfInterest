@@ -110,7 +110,8 @@ class PoiViewModel(
             poiId = poiId,
             name = poi.name.orEmpty(),
             address = address,
-            savedAt = System.currentTimeMillis()
+            savedAt = System.currentTimeMillis(),
+            photo = poi.photoUrl
         )
 
         viewModelScope.launch {

@@ -24,12 +24,14 @@ private fun SavedPoiEntity.toDomain() = DomainSavedPoi(
     poiId = poiId,
     name = name,
     address = address,
-    savedAt = savedAt
+    savedAt = savedAt,
+    photo = photo
 )
 
 private fun DomainSavedPoi.toEntity() = SavedPoiEntity(
     poiId = poiId,
     name = name,
     address = address,
-    savedAt = savedAt
+    savedAt = savedAt,
+    photo = photo
 )

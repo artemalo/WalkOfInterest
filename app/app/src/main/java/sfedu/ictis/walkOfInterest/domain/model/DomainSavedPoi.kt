@@ -4,5 +4,6 @@ data class DomainSavedPoi(
     val poiId: Long,
     val name: String,
     val address: String,
-    val savedAt: Long
+    val savedAt: Long,
+    val photo: String?
 )

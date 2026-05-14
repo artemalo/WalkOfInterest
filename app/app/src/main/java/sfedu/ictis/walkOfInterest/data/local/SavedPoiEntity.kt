@@ -8,5 +8,6 @@ data class SavedPoiEntity(
     @PrimaryKey val poiId: Long,
     val name: String,
     val address: String,
-    val savedAt: Long
+    val savedAt: Long,
+    val photo: String? = null
 )
