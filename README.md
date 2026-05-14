@@ -1,8 +1,8 @@
 # Руководство: Запуск бэкенда на чистом Ubuntu 24.04
 
-## Шаг 1. Базовая подготовка и защита от зависаний (Swap)
+## Шаг 1. Подготовка системы (Swap и Обновления)
 
-Первым делом обновляем систему и создаем файл подкачки (Swap). Так как у сервера всего 2 ГБ оперативной памяти, без Swap сервер зависнет при запуске базы данных и маршрутизатора.
+Так как у сервера 2 ГБ оперативной памяти, Swap обязателен, иначе Docker упадет при сборке или запуске GraphHopper.
 
 ```bash
 # Обновляем списки пакетов и саму систему
@@ -43,8 +43,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Устанавливаем сам Docker и Docker Compose
-sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 ```
 
 ## Шаг 4. Подготовка проекта и данных
@@ -69,8 +68,8 @@ wget https://download.geofabrik.de/russia/south-fed-district-latest.osm.pbf
 # Возвращаемся в главную папку проекта
 cd ~/app
 
-# Создаем папку для аватаров пользователей
-mkdir -p ~/app/data/uploads
+# Если после запуска фотографии не будут загружаться, то создаем папку для фотографий
+# mkdir -p ~/app/data/uploads
 ```
 
 Конфиг для GraphHopper (*обязательно*)
@@ -140,21 +139,23 @@ mv ~/app/data/graphhopper/south-fed-district-latest.osm.pbf ~/app/data/graphhopp
 ### 5.1 Файл переменных окружения (`.env`)
 
 ```bash
-nano .env
+nano ~/app/.env
 ```
+
 DOMAIN - чистый ip/domain, без http
+
 ```env
 DB_PASSWORD=super_strong_password
 JWT_SECRET=длинная_случайная_строка_без_пробелов
 JWT_EXPIRATION=900000
 JWT_REFRESH_EXPIRATION=2592000000
-DOMAIN=<server-name>
+DOMAIN=ip_или_домен
 ```
 
 ### 5.2 Файл архитектуры (`docker-compose.yml`)
 
 ```bash
-nano docker-compose.yml
+nano ~/app/docker-compose.yml
 ```
 
 ```yaml
@@ -231,8 +232,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
+      - ./data/uploads:/data/uploads:ro
     depends_on:
       - backend
     logging: *default-logging
@@ -242,7 +242,7 @@ services:
 ### 5.3 Файл архитектуры (`.dockerignore`)
 
 ```bash
-nano .dockerignore
+nano ~/app/.dockerignore
 ```
 
 ```dockerignore
@@ -263,7 +263,21 @@ mkdir -p ~/app/nginx/conf && nano ~/app/nginx/conf/app.conf
 ```nginx
 server {
     listen 80;
-    server_name <server-name>;
+    server_name <domain_или_ip>;
+    
+    # Если нужно свое ограничение на загрузку файлов от клиентов
+    # client_max_body_size 5M;    
+    # expires - для кэширования на стороне клиента     
+
+    location /avatars/ {
+        alias /data/uploads/avatars/;
+        expires 30d;
+    }
+
+    location /pois/ {
+        alias /data/uploads/pois/;
+        expires 30d;
+    }    
 
     location / {
         proxy_pass http://backend:8080;

@@ -1,16 +1,21 @@
 package sfedu.ictis.walkOfInterest.presentation.poi
 
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentPoiBinding
@@ -167,6 +172,12 @@ class PoiFragment : BaseFragment<FragmentPoiBinding>() {
         renderStars(poi.rating)
 
         tagsAdapter.submitList(poi.tags)
+
+        binding.photo.load(poi.photoUrl) {
+            crossfade(true)
+            error(R.color.white_empty)
+            placeholder(R.color.white_empty)
+        }
     }
 
     private fun renderStars(rating: Double) {

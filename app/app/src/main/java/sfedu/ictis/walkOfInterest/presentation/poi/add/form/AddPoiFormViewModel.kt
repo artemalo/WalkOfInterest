@@ -22,13 +22,15 @@ import sfedu.ictis.walkOfInterest.domain.usecase.GetAllCategoriesUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SupplementPoiUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpdatePoiUseCase
+import sfedu.ictis.walkOfInterest.domain.usecase.UploadPoiPhotoUseCase
 
 class AddPoiFormViewModel(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val createPoiUseCase: CreatePoiUseCase,
     private val updatePoiUseCase: UpdatePoiUseCase,
     private val supplementPoiUseCase: SupplementPoiUseCase,
-    private val getPoiByIdUseCase: GetPoiByIdUseCase
+    private val getPoiByIdUseCase: GetPoiByIdUseCase,
+    private val uploadPoiPhotoUseCase: UploadPoiPhotoUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AddPoiFormUiState())
     val uiState: StateFlow<AddPoiFormUiState> = _uiState.asStateFlow()
@@ -169,6 +171,30 @@ class AddPoiFormViewModel(
         }
     }
 
+    fun uploadPhoto(bytes: ByteArray, extension: String) {
+        val poiId = _uiState.value.targetPoiId ?: return
+        if (_uiState.value.isUploadingPhoto) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isUploadingPhoto = true) }
+
+            uploadPoiPhotoUseCase(poiId, bytes, extension)
+                .onSuccess { poiInfo ->
+                    val timestampUrl = "${poiInfo.photoUrl}?t=${System.currentTimeMillis()}" // заставить Coil обновить кэш
+                    _uiState.update { it.copy(
+                        isUploadingPhoto = false,
+                        photoUrl = timestampUrl
+                    ) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(isUploadingPhoto = false) }
+                    _events.emit(AddPoiFormEvent.ShowError(e.message ?: "Не удалось загрузить фото"))
+                }
+        }
+    }
+
+
+
     private fun loadCategories() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingCategories = true, errorBanner = null) }
@@ -241,6 +267,7 @@ class AddPoiFormViewModel(
             val originalIds = prefillSubs.map { it.id }.toSet()
 
             state.copy(
+                photoUrl = poi.photoUrl,
                 name = state.name.ifBlank { poi.name.orEmpty() },
                 description = state.description.ifBlank { poi.description.orEmpty() },
                 selectedSubcategoryIds = mergedIds,

@@ -1,5 +1,8 @@
 package sfedu.ictis.walkOfInterest.data.repository
 
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import sfedu.ictis.walkOfInterest.data.api.PoiApi
 import sfedu.ictis.walkOfInterest.data.mapper.toDomain
 import sfedu.ictis.walkOfInterest.data.model.dto.PoiAddDto
@@ -203,6 +206,21 @@ class PoiRepositoryImpl(
             body.map { it.toDomain() }
         } else {
             throw response.toException("Не удалось загрузить ваши места")
+        }
+    }
+
+    override suspend fun uploadPoiPhoto(id: Long, bytes: ByteArray, extension: String): Result<DomainPoiInfo> = runCatching {
+        val mediaType = "image/$extension".toMediaTypeOrNull()
+        val requestBody = bytes.toRequestBody(mediaType)
+        val part = MultipartBody.Part.createFormData("photo", "poi_photo.$extension", requestBody)
+
+        val response = api.uploadPoiPhoto(id, part)
+        val body = response.body()
+
+        if (response.isSuccessful && body != null) {
+            body.toDomain()
+        } else {
+            throw response.toException("Не удалось загрузить фото")
         }
     }
 }

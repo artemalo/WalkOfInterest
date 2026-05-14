@@ -10,14 +10,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import coil.load
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.FragmentEditProfileBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainUserProfile
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
+import sfedu.ictis.walkOfInterest.utils.getBitmapDataFromUri
 
 class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
     private val viewModel: ProfileViewModel by activityViewModel()
@@ -60,17 +59,10 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>() {
     }
 
     private fun handlePickedImage(uri: Uri) {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            val bytes = requireContext().contentResolver.openInputStream(uri)?.use { it.readBytes() }
-                ?: return@launch
-            val mime = requireContext().contentResolver.getType(uri) ?: "image/jpeg"
-            val ext = when (mime) {
-                "image/png" -> "png"
-                "image/webp" -> "webp"
-                else -> "jpg"
-            }
-            withContext(Dispatchers.Main) {
-                viewModel.uploadPhoto(bytes, ext)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = requireContext().getBitmapDataFromUri(uri)
+            if (result != null) {
+                viewModel.uploadPhoto(result.first, result.second)
             }
         }
     }

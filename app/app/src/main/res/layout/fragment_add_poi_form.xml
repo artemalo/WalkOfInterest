@@ -62,11 +62,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="@dimen/padding_normal"
+            android:paddingTop="@dimen/padding_middle"
             android:paddingBottom="@dimen/padding_general">
+
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/photo_poi"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_small"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@color/white_empty"
+                    app:shapeAppearanceOverlay="@style/RoundedCornerStyle" />
+            </FrameLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nameInputLayout"
+                android:layout_marginTop="@dimen/padding_middle"
                 style="@style/CompactTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

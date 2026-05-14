@@ -56,6 +56,8 @@ interface PoiRepository {
     ): Result<DomainPoiInfo>
 
     suspend fun getMyPois(lang: String = "ru"): Result<List<DomainMyPoi>>
+
+    suspend fun uploadPoiPhoto(id: Long, bytes: ByteArray, extension: String): Result<DomainPoiInfo>
 }
 
 data class ReviewReactionState(

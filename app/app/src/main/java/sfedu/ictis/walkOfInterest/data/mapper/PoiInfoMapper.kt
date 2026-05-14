@@ -15,7 +15,8 @@ fun PoiInfoDto.toDomain(): DomainPoiInfo = DomainPoiInfo(
     tags = tags.orEmpty().mapNotNull { it.toDomainOrNull() },
     status = parsePoiStatus(status),
     rating = rating ?: 0.0,
-    countRate = countRate ?: 0
+    countRate = countRate ?: 0,
+    photoUrl = photoUrl
 )
 
 private fun TagNameDto.toDomainOrNull(): DomainPoiTag? {

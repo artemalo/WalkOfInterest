@@ -16,5 +16,7 @@ data class DomainPoiInfo(
     val status: PoiStatus,
 
     val rating: Double,
-    val countRate: Int
+    val countRate: Int,
+
+    val photoUrl: String? = null
 ) : Parcelable

@@ -1,10 +1,13 @@
 package sfedu.ictis.walkOfInterest.data.api
 
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import sfedu.ictis.walkOfInterest.data.model.dto.PoiAddDto
@@ -72,4 +75,12 @@ interface PoiApi {
     suspend fun getMyPois(
         @Query("lang") lang: String = "ru"
     ): Response<List<PoiCardDto>>
+
+    @Multipart
+    @POST("api/pois/{id}/photo")
+    suspend fun uploadPoiPhoto(
+        @Path("id") id: Long,
+        @Part photo: MultipartBody.Part,
+        @Query("lang") lang: String = "ru"
+    ): Response<PoiInfoDto>
 }

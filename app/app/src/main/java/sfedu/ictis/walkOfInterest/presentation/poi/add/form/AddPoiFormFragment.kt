@@ -1,5 +1,6 @@
 package sfedu.ictis.walkOfInterest.presentation.poi.add.form
 
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -7,10 +8,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -24,10 +27,16 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.presentation.BaseFragment
 import sfedu.ictis.walkOfInterest.utils.ToastManager
 import sfedu.ictis.walkOfInterest.utils.calculateColorByCategory
+import sfedu.ictis.walkOfInterest.utils.getBitmapDataFromUri
 
 class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
 
     private val viewModel: AddPoiFormViewModel by viewModel()
+
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { handlePickedImage(it) }
+        }
 
     private val categoryAdapter by lazy {
         CategoryPickAdapter(onCategoryClicked = { cat -> openSubcategorySheet(cat) })
@@ -57,6 +66,19 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
         setupListeners()
         observeState()
         observeEvents()
+    }
+
+    private fun handlePickedImage(uri: Uri) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = requireContext().getBitmapDataFromUri(uri)
+            if (result != null) {
+                viewModel.uploadPhoto(result.first, result.second)
+            }
+        }
+    }
+
+    private fun renderPhotoUploadProgress(isUploading: Boolean) {
+        binding.photo.alpha = if (isUploading) 0.5f else 1.0f
     }
 
     private fun setupRecyclers() {
@@ -93,11 +115,39 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
 
         binding.btnSubmit.setOnClickListener { viewModel.onSubmitClicked() }
         binding.btnRetryCategories.setOnClickListener { viewModel.retryLoadCategories() }
+
+        binding.photo.setOnClickListener {
+            if (!viewModel.uiState.value.isUploadingPhoto) {
+                pickImageLauncher.launch("image/*")
+            }
+        }
     }
 
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+                    viewModel.uiState
+                        .map { it.photoUrl }
+                        .distinctUntilChanged()
+                        .collect { url ->
+                            binding.photo.load(url) {
+                                crossfade(true)
+                                error(R.color.white_empty)
+                                placeholder(R.color.white_empty)
+                            }
+                        }
+                }
+
+                launch {
+                    viewModel.uiState
+                        .map { it.isUploadingPhoto }
+                        .distinctUntilChanged()
+                        .collect { isUploading ->
+                            renderPhotoUploadProgress(isUploading)
+                        }
+                }
 
                 launch {
                     viewModel.uiState

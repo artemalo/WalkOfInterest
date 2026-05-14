@@ -10,6 +10,9 @@ data class AddPoiFormUiState(
     val point: DomainPoint? = null,
     val targetPoiId: Long? = null,
 
+    val photoUrl: String? = null,
+    val isUploadingPhoto: Boolean = false,
+
     val name: String = "",
     val description: String = "",
     val lang: FormLang = FormLang.RU,

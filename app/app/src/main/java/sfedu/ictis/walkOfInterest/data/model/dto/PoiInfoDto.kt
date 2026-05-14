@@ -14,5 +14,7 @@ data class PoiInfoDto(
     @SerializedName("status") val status: String?,
 
     @SerializedName("rating") val rating: Double?,
-    @SerializedName("countRate") val countRate: Int?
+    @SerializedName("countRate") val countRate: Int?,
+
+    @SerializedName("photoUrl") val photoUrl: String? = null
 )
