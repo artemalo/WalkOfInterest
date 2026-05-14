@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ItemPoiBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoi
@@ -18,6 +19,12 @@ class PoiAdapter(
         fun bind(poi: DomainPoi) {
             binding.nameCategory.text = poi.name ?: "-"
             binding.tvRate.text = if (poi.rate != null) "${poi.rate} (${poi.count ?: 0})" else "Нет оценок"
+
+            binding.imgPoi.load(poi.photo) {
+                crossfade(true)
+                placeholder(R.color.white_empty)
+                error(R.color.white_empty)
+            }
 
             bindSelected(poi.selected)
 

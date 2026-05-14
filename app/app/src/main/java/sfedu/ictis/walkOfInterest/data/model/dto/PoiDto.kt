@@ -7,12 +7,12 @@ data class PoiDto(
     @SerializedName("name") val name: String,
     @SerializedName("description") val description: String?,
     @SerializedName("lang") val lang: String?,
-    //PointDto
     @SerializedName("lat") val lat: Double,
     @SerializedName("lon") val lon: Double,
     @SerializedName("selected") val selected: Boolean = false,
     @SerializedName("rate") val rate: Double?,
     @SerializedName("count") val count: Int?,
+    @SerializedName("photo") val photo: String?,
 
     @SerializedName("order") val order: Int? = null
 )
