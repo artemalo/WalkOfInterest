@@ -95,6 +95,14 @@ class AddPoiFormViewModel(
         loadCategories()
     }
 
+    fun onPhotoSelected(bytes: List<Byte>, extension: String, uri: android.net.Uri) {
+        _uiState.update { it.copy(
+            photoBytes = bytes,
+            photoExtension = extension,
+            localPhotoUri = uri
+        ) }
+    }
+
     fun onSubmitClicked() {
         val state = _uiState.value
         if (state.isSubmitting) return
@@ -161,35 +169,34 @@ class AddPoiFormViewModel(
                 )
             }
 
-            result.onSuccess {
-                _uiState.update { it.copy(isSubmitting = false) }
-                _events.emit(AddPoiFormEvent.SubmittedSuccessfully)
+            result.onSuccess { response ->
+                val poiId = targetId ?: response.id
+
+                if (state.photoBytes != null && state.photoExtension != null) {
+                    _uiState.update { it.copy(isUploadingPhoto = true) }
+
+                    uploadPoiPhotoUseCase(poiId, state.photoBytes.toByteArray(), state.photoExtension)
+                        .onSuccess { poiInfo ->
+                            val timestampUrl = "${poiInfo.photoUrl}?t=${System.currentTimeMillis()}"
+                            _uiState.update { it.copy(
+                                isSubmitting = false,
+                                isUploadingPhoto = false,
+                                photoUrl = timestampUrl
+                            ) }
+                            _events.emit(AddPoiFormEvent.SubmittedSuccessfully)
+                        }
+                        .onFailure { error ->
+                            _uiState.update { it.copy(isSubmitting = false, isUploadingPhoto = false) }
+                            _events.emit(AddPoiFormEvent.ShowError(error.message ?: "Место сохранено, но фото не загрузилось"))
+                        }
+                } else {
+                    _uiState.update { it.copy(isSubmitting = false) }
+                    _events.emit(AddPoiFormEvent.SubmittedSuccessfully)
+                }
             }.onFailure { error ->
                 if (error is kotlinx.coroutines.CancellationException) return@onFailure
                 handleFailure(error)
             }
-        }
-    }
-
-    fun uploadPhoto(bytes: ByteArray, extension: String) {
-        val poiId = _uiState.value.targetPoiId ?: return
-        if (_uiState.value.isUploadingPhoto) return
-
-        viewModelScope.launch {
-            _uiState.update { it.copy(isUploadingPhoto = true) }
-
-            uploadPoiPhotoUseCase(poiId, bytes, extension)
-                .onSuccess { poiInfo ->
-                    val timestampUrl = "${poiInfo.photoUrl}?t=${System.currentTimeMillis()}" // заставить Coil обновить кэш
-                    _uiState.update { it.copy(
-                        isUploadingPhoto = false,
-                        photoUrl = timestampUrl
-                    ) }
-                }
-                .onFailure { e ->
-                    _uiState.update { it.copy(isUploadingPhoto = false) }
-                    _events.emit(AddPoiFormEvent.ShowError(e.message ?: "Не удалось загрузить фото"))
-                }
         }
     }
 

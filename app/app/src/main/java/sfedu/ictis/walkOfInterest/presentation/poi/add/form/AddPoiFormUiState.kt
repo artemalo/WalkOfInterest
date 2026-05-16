@@ -12,6 +12,9 @@ data class AddPoiFormUiState(
 
     val photoUrl: String? = null,
     val isUploadingPhoto: Boolean = false,
+    val localPhotoUri: android.net.Uri? = null,
+    val photoBytes: List<Byte>? = null,
+    val photoExtension: String? = null,
 
     val name: String = "",
     val description: String = "",

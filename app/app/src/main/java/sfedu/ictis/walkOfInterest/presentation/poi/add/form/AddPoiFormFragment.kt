@@ -72,7 +72,7 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
         viewLifecycleOwner.lifecycleScope.launch {
             val result = requireContext().getBitmapDataFromUri(uri)
             if (result != null) {
-                viewModel.uploadPhoto(result.first, result.second)
+                viewModel.onPhotoSelected(result.first.toList(), result.second, uri)
             }
         }
     }
@@ -113,7 +113,9 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
         binding.btnLangRu.setOnClickListener { viewModel.onLangSelected(FormLang.RU) }
         binding.btnLangEn.setOnClickListener { viewModel.onLangSelected(FormLang.EN) }
 
-        binding.btnSubmit.setOnClickListener { viewModel.onSubmitClicked() }
+        binding.btnSubmit.setOnClickListener {
+            viewModel.onSubmitClicked()
+        }
         binding.btnRetryCategories.setOnClickListener { viewModel.retryLoadCategories() }
 
         binding.photo.setOnClickListener {
@@ -129,10 +131,12 @@ class AddPoiFormFragment : BaseFragment<FragmentAddPoiFormBinding>() {
 
                 launch {
                     viewModel.uiState
-                        .map { it.photoUrl }
+                        .map { Pair(it.photoUrl, it.localPhotoUri) }
                         .distinctUntilChanged()
-                        .collect { url ->
-                            binding.photo.load(url) {
+                        .collect { (url, localUri) ->
+                            val imageSource: Any? = localUri ?: url
+
+                            binding.photo.load(imageSource) {
                                 crossfade(true)
                                 error(R.color.white_empty)
                                 placeholder(R.color.white_empty)
