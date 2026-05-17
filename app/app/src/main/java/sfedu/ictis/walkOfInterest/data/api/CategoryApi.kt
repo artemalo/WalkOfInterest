@@ -4,6 +4,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import sfedu.ictis.walkOfInterest.data.model.dto.CategoryPhotoDto
 import sfedu.ictis.walkOfInterest.data.model.dto.CategoryWithSubcategoriesDto
 import sfedu.ictis.walkOfInterest.data.model.dto.PageResponseDto
 import sfedu.ictis.walkOfInterest.data.model.dto.SubcategoryShortDto
@@ -13,6 +14,9 @@ interface CategoryApi {
     suspend fun getAllCategories(
         @Query("lang") lang: String = "ru"
     ): Response<List<CategoryWithSubcategoriesDto>>
+
+    @GET("api/categories/photos")
+    suspend fun getCategoryPhotos(): Response<List<CategoryPhotoDto>>
 
     @GET("api/categories/{id}/subcategories")
     suspend fun getSubcategoriesByCategory(

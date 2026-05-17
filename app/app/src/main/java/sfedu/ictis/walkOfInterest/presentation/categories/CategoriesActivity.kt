@@ -90,6 +90,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>() {
             to = to,
             userSelectedTime = totalTime
         )
+        viewModel.loadCategoryPhotos()
     }
 
     private fun setupRecyclerView() {

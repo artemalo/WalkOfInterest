@@ -12,6 +12,19 @@ class CategoryRepositoryImpl(
     private val api: CategoryApi
 ) : CategoryRepository {
 
+    override suspend fun getCategoryPhotos(): Result<Map<Int, String>> = runCatching {
+        val response = api.getCategoryPhotos()
+        val body = response.body()
+        if (response.isSuccessful && body != null) {
+            body.mapNotNull { dto ->
+                val url = dto.photoUrl?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                dto.categoryId to url
+            }.toMap()
+        } else {
+            throw response.toException("Не удалось загрузить фото категорий")
+        }
+    }
+
     override suspend fun getAllCategories(lang: String): Result<List<DomainPickCategory>> = runCatching {
         val response = api.getAllCategories(lang)
         val body = response.body()

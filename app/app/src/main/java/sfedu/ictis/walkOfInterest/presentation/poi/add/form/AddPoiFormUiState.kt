@@ -25,6 +25,8 @@ data class AddPoiFormUiState(
     val selectedSubcategoryIds: Set<Int> = emptySet(),
     val selectedSubcategories: List<DomainPickSubcategory> = emptyList(),
     val originalSubcategoryIds: Set<Int>? = null,
+    val originalName: String? = null,
+    val originalDescription: String? = null,
 
     val isSubmitting: Boolean = false,
     val errorBanner: String? = null

@@ -107,7 +107,18 @@ class AddPoiFormViewModel(
         val state = _uiState.value
         if (state.isSubmitting) return
 
-        if (!state.isFormValid) {
+        val targetId = state.targetPoiId
+        val hasPhoto = state.photoBytes != null && state.photoExtension != null
+        val textChanged = hasTextChanges(state)
+
+        val isPhotoOnlyEdit = targetId != null && !textChanged && hasPhoto
+
+        if (targetId != null && !textChanged && !hasPhoto) {
+            viewModelScope.launch { _events.emit(AddPoiFormEvent.ShowError("Нет изменений для сохранения")) }
+            return
+        }
+
+        if (!isPhotoOnlyEdit && !state.isFormValid) {
             viewModelScope.launch {
                 _events.emit(
                     AddPoiFormEvent.ShowError(
@@ -127,77 +138,98 @@ class AddPoiFormViewModel(
         val description = state.description.trim().takeIf { it.isNotEmpty() }
         val lang = if (state.lang == FormLang.EN) "en" else "ru"
         val subIds = state.selectedSubcategoryIds.toList()
-        val targetId = state.targetPoiId
 
         submitJob?.cancel()
         submitJob = viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true, errorBanner = null) }
 
-            val result = if (targetId != null) {
-                val originalIds = state.originalSubcategoryIds
-                val subcategoriesUntouched = originalIds != null &&
-                        originalIds == state.selectedSubcategoryIds
+            when {
+                isPhotoOnlyEdit -> {
+                    uploadPhotoAndFinish(targetId, state)
+                }
 
-                if (subcategoriesUntouched) {
-                    // не трогал подкатегории
-                    supplementPoiUseCase(
-                        id = targetId,
-                        name = name,
-                        description = description,
-                        lang = lang,
-                        subcategoryIds = subIds
-                    )
-                } else {
-                    // добавил/удалил подкатегории
-                    updatePoiUseCase(
-                        id = targetId,
+                targetId != null -> {
+                    val subcategoriesUntouched = state.originalSubcategoryIds != null &&
+                            state.originalSubcategoryIds == state.selectedSubcategoryIds
+
+                    val result = if (subcategoriesUntouched) {
+                        supplementPoiUseCase(
+                            id = targetId,
+                            name = name,
+                            description = description,
+                            lang = lang,
+                            subcategoryIds = subIds
+                        )
+                    } else {
+                        updatePoiUseCase(
+                            id = targetId,
+                            point = point,
+                            name = name,
+                            description = description,
+                            lang = lang,
+                            subcategoryIds = subIds
+                        )
+                    }
+
+                    result.onSuccess {
+                        if (hasPhoto) uploadPhotoAndFinish(targetId, state)
+                        else {
+                            _uiState.update { it.copy(isSubmitting = false) }
+                            _events.emit(AddPoiFormEvent.SubmittedSuccessfully)
+                        }
+                    }.onFailure { error ->
+                        if (error is kotlinx.coroutines.CancellationException) return@onFailure
+                        handleFailure(error)
+                    }
+                }
+
+                else -> {
+                    createPoiUseCase(
                         point = point,
                         name = name,
                         description = description,
                         lang = lang,
-                        subcategoryIds = subIds
-                    )
-                }
-            } else {
-                createPoiUseCase(
-                    point = point,
-                    name = name,
-                    description = description,
-                    lang = lang,
-                    subcategoryIds = subIds,
-                    force = false
-                )
-            }
-
-            result.onSuccess { response ->
-                val poiId = targetId ?: response.id
-
-                if (state.photoBytes != null && state.photoExtension != null) {
-                    _uiState.update { it.copy(isUploadingPhoto = true) }
-
-                    uploadPoiPhotoUseCase(poiId, state.photoBytes.toByteArray(), state.photoExtension)
-                        .onSuccess { poiInfo ->
-                            val timestampUrl = "${poiInfo.photoUrl}?t=${System.currentTimeMillis()}"
-                            _uiState.update { it.copy(
-                                isSubmitting = false,
-                                isUploadingPhoto = false,
-                                photoUrl = timestampUrl
-                            ) }
+                        subcategoryIds = subIds,
+                        force = false
+                    ).onSuccess { response ->
+                        if (hasPhoto) uploadPhotoAndFinish(response.id, state)
+                        else {
+                            _uiState.update { it.copy(isSubmitting = false) }
                             _events.emit(AddPoiFormEvent.SubmittedSuccessfully)
                         }
-                        .onFailure { error ->
-                            _uiState.update { it.copy(isSubmitting = false, isUploadingPhoto = false) }
-                            _events.emit(AddPoiFormEvent.ShowError(error.message ?: "Место сохранено, но фото не загрузилось"))
-                        }
-                } else {
-                    _uiState.update { it.copy(isSubmitting = false) }
-                    _events.emit(AddPoiFormEvent.SubmittedSuccessfully)
+                    }.onFailure { error ->
+                        if (error is kotlinx.coroutines.CancellationException) return@onFailure
+                        handleFailure(error)
+                    }
                 }
-            }.onFailure { error ->
-                if (error is kotlinx.coroutines.CancellationException) return@onFailure
-                handleFailure(error)
             }
         }
+    }
+
+    private fun hasTextChanges(state: AddPoiFormUiState): Boolean {
+        if (state.targetPoiId == null) return true
+        val origName = state.originalName ?: return true
+
+        val nameChanged = state.name.trim() != origName.trim()
+        val descChanged = state.description.trim() != (state.originalDescription?.trim() ?: "")
+        val subcatsChanged = state.originalSubcategoryIds != null &&
+                state.originalSubcategoryIds != state.selectedSubcategoryIds
+
+        return nameChanged || descChanged || subcatsChanged
+    }
+
+    private suspend fun uploadPhotoAndFinish(poiId: Long, state: AddPoiFormUiState) {
+        _uiState.update { it.copy(isUploadingPhoto = true) }
+        uploadPoiPhotoUseCase(poiId, state.photoBytes!!.toByteArray(), state.photoExtension!!)
+            .onSuccess { poiInfo ->
+                val timestampUrl = "${poiInfo.photoUrl}?t=${System.currentTimeMillis()}"
+                _uiState.update { it.copy(isSubmitting = false, isUploadingPhoto = false, photoUrl = timestampUrl) }
+                _events.emit(AddPoiFormEvent.SubmittedSuccessfully)
+            }
+            .onFailure { error ->
+                _uiState.update { it.copy(isSubmitting = false, isUploadingPhoto = false) }
+                _events.emit(AddPoiFormEvent.ShowError(error.message ?: "Место сохранено, но фото не загрузилось"))
+            }
     }
 
 
@@ -270,7 +302,6 @@ class AddPoiFormViewModel(
                 .distinctBy { it.id }
                 .sortedByCategory()
 
-            // supplement vs update
             val originalIds = prefillSubs.map { it.id }.toSet()
 
             state.copy(
@@ -279,7 +310,9 @@ class AddPoiFormViewModel(
                 description = state.description.ifBlank { poi.description.orEmpty() },
                 selectedSubcategoryIds = mergedIds,
                 selectedSubcategories = mergedSubs,
-                originalSubcategoryIds = originalIds
+                originalSubcategoryIds = originalIds,
+                originalName = poi.name.orEmpty(),
+                originalDescription = poi.description.orEmpty()
             )
         }
 

@@ -8,6 +8,7 @@ import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ItemCategoryBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainCategory
@@ -87,7 +88,12 @@ class CategoriesAdapter(
             binding.framePicture.setOnClickListener {
                 onPictureClicked(category)
             }
-            // TODO: Glide или Coil.
+
+            binding.imgCategory.load(category.icon) {
+                crossfade(true)
+                placeholder(R.color.white_empty)
+                error(R.color.white_empty)
+            }
         }
     }
 

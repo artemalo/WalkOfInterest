@@ -15,13 +15,15 @@ import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.domain.model.PoiOrder
 import sfedu.ictis.walkOfInterest.domain.model.RoutePoint
+import sfedu.ictis.walkOfInterest.domain.usecase.GetCategoryPhotosUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.ReorderPoisUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.SaveTripUseCase
 import java.util.UUID
 
 class CategoriesViewModel(
     private val saveTripUseCase: SaveTripUseCase,
-    private val reorderPoisUseCase: ReorderPoisUseCase
+    private val reorderPoisUseCase: ReorderPoisUseCase,
+    private val getCategoryPhotosUseCase: GetCategoryPhotosUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CategoriesUiState())
     val uiState: StateFlow<CategoriesUiState> = _uiState.asStateFlow()
@@ -48,6 +50,20 @@ class CategoriesViewModel(
                 to = to,
                 userSelectedTime = userSelectedTime
             )
+        }
+    }
+
+    fun loadCategoryPhotos() {
+        viewModelScope.launch {
+            getCategoryPhotosUseCase()
+                .onSuccess { photos ->
+                    _uiState.update { state ->
+                        state.copy(categories = state.categories.map { cat ->
+                            val url = photos[cat.id]
+                            if (url != null) cat.copy(icon = url) else cat
+                        })
+                    }
+                }
         }
     }
 
