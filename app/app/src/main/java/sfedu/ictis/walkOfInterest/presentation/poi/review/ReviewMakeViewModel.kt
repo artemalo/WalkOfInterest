@@ -10,10 +10,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import sfedu.ictis.walkOfInterest.domain.usecase.GetPoiByIdUseCase
 import sfedu.ictis.walkOfInterest.domain.usecase.UpsertMyReviewUseCase
 
 class ReviewMakeViewModel(
-    private val upsertMyReviewUseCase: UpsertMyReviewUseCase
+    private val upsertMyReviewUseCase: UpsertMyReviewUseCase,
+    private val getPoiByIdUseCase: GetPoiByIdUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ReviewMakeUiState())
@@ -44,6 +46,8 @@ class ReviewMakeViewModel(
                 isEditMode = existingRating != null
             )
         }
+
+        loadPoiPhoto(poiId)
     }
 
     fun onRatingSelected(value: Int) {
@@ -79,6 +83,20 @@ class ReviewMakeViewModel(
                 _uiState.update { it.copy(isSaving = false) }
                 _events.emit(ReviewMakeEvent.ShowError(e.message ?: "Не удалось сохранить отзыв"))
             }
+        }
+    }
+
+
+
+    private fun loadPoiPhoto(poiId: Long) {
+        viewModelScope.launch {
+            getPoiByIdUseCase(poiId)
+                .onSuccess { poiInfo ->
+                    _uiState.update { it.copy(photoUrl = poiInfo.photoUrl) }
+                }
+                .onFailure {
+                    _uiState.update { it.copy(photoUrl = null) }
+                }
         }
     }
 }

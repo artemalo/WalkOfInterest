@@ -14,6 +14,9 @@ import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import coil.load
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import sfedu.ictis.walkOfInterest.R
@@ -73,8 +76,6 @@ class ReviewMakeFragment : BaseFragment<FragmentReviewMakeBinding>() {
             existingContent = arguments?.getString(ARG_EXISTING_CONTENT)
         )
 
-        // TODO: photoPoi
-
         setupListeners()
         observeState()
         observeEvents()
@@ -102,25 +103,40 @@ class ReviewMakeFragment : BaseFragment<FragmentReviewMakeBinding>() {
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    binding.poiName.text = state.poiName ?: "—"
-                    binding.addressPoi.text = state.poiAddress ?: "Адрес пуст"
+                launch {
+                    viewModel.uiState
+                        .map { it.photoUrl }
+                        .distinctUntilChanged()
+                        .collect { url ->
+                            binding.photoPoi.load(url) {
+                                crossfade(true)
+                                error(R.color.white_empty)
+                                placeholder(R.color.white_empty)
+                            }
+                        }
+                }
 
-                    binding.textBtnSave.text = if (state.isEditMode) "Сохранить" else "Добавить"
+                launch {
+                    viewModel.uiState.collect { state ->
+                        binding.poiName.text = state.poiName ?: "—"
+                        binding.addressPoi.text = state.poiAddress ?: "Адрес пуст"
 
-                    val current = binding.reviewEditText.text?.toString().orEmpty()
-                    if (current != state.content) {
-                        binding.reviewEditText.removeTextChangedListener(textWatcher)
-                        binding.reviewEditText.setText(state.content)
-                        binding.reviewEditText.setSelection(state.content.length)
-                        binding.reviewEditText.addTextChangedListener(textWatcher)
+                        binding.textBtnSave.text = if (state.isEditMode) "Сохранить" else "Добавить"
+
+                        val current = binding.reviewEditText.text?.toString().orEmpty()
+                        if (current != state.content) {
+                            binding.reviewEditText.removeTextChangedListener(textWatcher)
+                            binding.reviewEditText.setText(state.content)
+                            binding.reviewEditText.setSelection(state.content.length)
+                            binding.reviewEditText.addTextChangedListener(textWatcher)
+                        }
+
+                        renderStars(state.rating)
+
+                        binding.btnSave.isEnabled = !state.isSaving
+                        binding.fieldBtnSave.isEnabled = !state.isSaving
+                        binding.fieldBtnSave.alpha = if (state.isSaving) 0.6f else 1f
                     }
-
-                    renderStars(state.rating)
-
-                    binding.btnSave.isEnabled = !state.isSaving
-                    binding.fieldBtnSave.isEnabled = !state.isSaving
-                    binding.fieldBtnSave.alpha = if (state.isSaving) 0.6f else 1f
                 }
             }
         }

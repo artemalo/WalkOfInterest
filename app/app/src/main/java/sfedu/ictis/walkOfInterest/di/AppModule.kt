@@ -246,7 +246,7 @@ val appModule = module {
     viewModel { RoutesViewModel(get(), get(), get(), get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { PoiViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { ReviewMakeViewModel(get()) }
+    viewModel { ReviewMakeViewModel(get(), get()) }
     viewModel { AddPoiPickViewModel(get(), get()) }
     viewModel { AddPoiFormViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { MyPoisViewModel(get()) }

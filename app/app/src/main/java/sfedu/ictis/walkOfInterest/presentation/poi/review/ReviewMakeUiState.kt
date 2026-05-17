@@ -4,6 +4,7 @@ data class ReviewMakeUiState(
     val poiId: Long = -1L,
     val poiName: String? = null,
     val poiAddress: String? = null,
+    val photoUrl: String? = null,
 
     val rating: Int = 0,
     val content: String = "",
