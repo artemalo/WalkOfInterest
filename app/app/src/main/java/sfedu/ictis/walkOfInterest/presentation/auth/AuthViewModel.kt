@@ -43,7 +43,7 @@ class AuthViewModel(
                 loginUseCase(email, pass)
             }
 
-            result.onSuccess { authResponse ->
+            result.onSuccess { _ ->
                 sessionManager.resetLogout()
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 _navigationEvent.emit(Unit)

@@ -45,9 +45,9 @@ class MainFeedViewModel(
         }
     }
 
-    fun hideCreateMenu() {
-        _uiState.update { it.copy(isCreateMenuVisible = false, selectedTab = MainTab.TRIPS) }
-    }
+//    fun hideCreateMenu() {
+//        _uiState.update { it.copy(isCreateMenuVisible = false, selectedTab = MainTab.TRIPS) }
+//    }
 
     private fun loadTrips() {
         viewModelScope.launch {

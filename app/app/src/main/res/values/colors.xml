@@ -29,4 +29,6 @@
     <color name="object_star">#EDD84C</color>
     <color name="object">#4B8F8C</color>
     <color name="object_selected">#264B8F8C</color>
+
+    <color name="from_to">#2E7D32</color>
 </resources>

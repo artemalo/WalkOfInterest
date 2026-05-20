@@ -1,9 +1,7 @@
 package sfedu.ictis.walkOfInterest.presentation.generate
 
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -27,7 +25,6 @@ import org.osmdroid.views.overlay.Polyline
 import sfedu.ictis.walkOfInterest.R
 import sfedu.ictis.walkOfInterest.databinding.ActivityGenerateBinding
 import sfedu.ictis.walkOfInterest.domain.model.DomainPoint
-import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
 import sfedu.ictis.walkOfInterest.presentation.BaseActivity
 import sfedu.ictis.walkOfInterest.presentation.categories.CategoriesActivity
 import sfedu.ictis.walkOfInterest.utils.ToastManager
@@ -283,12 +280,16 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
 
         markerFrom?.let { map.overlays.remove(it) }
         markerTo?.let { map.overlays.remove(it) }
+        val color = ContextCompat.getColor(this@GenerateActivity, R.color.from_to)
 
         from?.let {
             markerFrom = Marker(map).apply {
                 position = GeoPoint(it.lat, it.lon)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 icon = ContextCompat.getDrawable(this@GenerateActivity, R.drawable.ic_a)
+                    ?.mutate()?.apply {
+                        setTint(color)
+                    }
             }
             map.overlays.add(markerFrom)
         }
@@ -298,6 +299,9 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
                 position = GeoPoint(it.lat, it.lon)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 icon = ContextCompat.getDrawable(this@GenerateActivity, R.drawable.ic_b)
+                    ?.mutate()?.apply {
+                        setTint(color)
+                    }
             }
             map.overlays.add(markerTo)
         }

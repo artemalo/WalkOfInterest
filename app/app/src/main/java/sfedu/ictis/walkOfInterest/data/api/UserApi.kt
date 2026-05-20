@@ -45,7 +45,4 @@ interface UserApi {
     suspend fun uploadPhoto(
         @Part photo: MultipartBody.Part
     ): Response<UserProfileDto>
-
-    @POST("api/users/me/increment-trips")
-    suspend fun incrementTrips(): Response<Void>
 }

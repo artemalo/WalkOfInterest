@@ -211,16 +211,24 @@ class RoutesActivity : BaseActivity<ActivityRoutesBinding>() {
         markerTo?.let { map.overlays.remove(it) }
         poiMarkers.forEach { map.overlays.remove(it) }
 
+        val color = ContextCompat.getColor(this@RoutesActivity, R.color.from_to)
+
         markerFrom = Marker(map).apply {
             position = GeoPoint(from.lat, from.lon)
             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             icon = ContextCompat.getDrawable(this@RoutesActivity, R.drawable.ic_a)
+                ?.mutate()?.apply {
+                    setTint(color)
+                }
         }
         map.overlays.add(markerFrom)
         markerTo = Marker(map).apply {
             position = GeoPoint(to.lat, to.lon)
             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             icon = ContextCompat.getDrawable(this@RoutesActivity, R.drawable.ic_b)
+                ?.mutate()?.apply {
+                    setTint(color)
+                }
         }
         map.overlays.add(markerTo)
 
