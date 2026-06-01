@@ -12,7 +12,8 @@ fun DomainTrip.toEntity(): TripEntity = TripEntity(
     bestRouteTime = bestRouteTime,
     userSelectedTime = userSelectedTime,
     totalPois = totalPois,
-    selectedPois = selectedPois
+    selectedPois = selectedPois,
+    photo = photo
 )
 
 fun TripEntity.toDomain(): DomainTrip = DomainTrip(
@@ -24,5 +25,6 @@ fun TripEntity.toDomain(): DomainTrip = DomainTrip(
     bestRouteTime = bestRouteTime,
     userSelectedTime = userSelectedTime,
     totalPois = totalPois,
-    selectedPois = selectedPois
+    selectedPois = selectedPois,
+    photo = photo
 )

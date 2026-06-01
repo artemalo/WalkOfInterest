@@ -12,5 +12,7 @@ data class DomainTrip(
     val userSelectedTime: Int,
 
     val totalPois: Int,
-    val selectedPois: List<RoutePoint>
+    val selectedPois: List<RoutePoint>,
+
+    val photo: String?
 )

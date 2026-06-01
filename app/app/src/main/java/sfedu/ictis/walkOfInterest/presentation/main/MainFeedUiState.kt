@@ -10,7 +10,8 @@ sealed class FeedItem {
         val addressTo: String,
         val totalTime: Int,
         val totalPois: Int,
-        val bestTime: Int?
+        val bestTime: Int?,
+        val photo: String?
         ) : FeedItem()
     data class Spot(
         val id: Long,
