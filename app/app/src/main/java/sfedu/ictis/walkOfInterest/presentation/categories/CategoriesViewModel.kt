@@ -140,18 +140,12 @@ class CategoriesViewModel(
         val state = _uiState.value
         val selectedCategories = state.categories.filter { it.isSelect }
 
-        var photo: String? = null
-
         val routePoints = selectedCategories.asSequence()
             .flatMap { category ->
                 category.subcategories.asSequence().flatMap { subCategory ->
                     subCategory.pois.asSequence()
                         .filter { poi -> poi.selected && poi.order != null }
                         .map { poi ->
-                            if (photo == null && poi.photo != null) {
-                                photo = poi.photo
-                            }
-
                             RoutePoint(
                                 id = poi.id,
                                 lat = poi.lat,
@@ -189,8 +183,7 @@ class CategoriesViewModel(
             bestRouteTime = null,
             userSelectedTime = state.userSelectedTime,
             totalPois = routePoints.size,
-            selectedPois = routePoints,
-            photo = photo
+            selectedPois = routePoints
         )
 
         viewModelScope.launch {

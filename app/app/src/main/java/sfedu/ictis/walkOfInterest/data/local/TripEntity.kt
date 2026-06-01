@@ -18,7 +18,5 @@ data class TripEntity(
     val userSelectedTime: Int,
 
     val totalPois: Int,
-    val selectedPois: List<RoutePoint>,
-
-    val photo: String? = null
+    val selectedPois: List<RoutePoint>
 )

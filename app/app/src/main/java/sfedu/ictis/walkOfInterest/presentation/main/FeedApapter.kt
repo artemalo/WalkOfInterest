@@ -53,12 +53,6 @@ class FeedAdapter(
             binding.countSelected.text = item.totalPois.toString()
             binding.time.text = formatMinutes(item.totalTime)
 
-            binding.imgTrip.load(item.photo) {
-                crossfade(true)
-                placeholder(R.color.white_empty)
-                error(R.color.white_empty)
-            }
-
             binding.bestTime.text = item.bestTime?.let {
                 if (it != 0) formatMinutes(it) else "-"
             } ?: "-"
