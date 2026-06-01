@@ -5,8 +5,14 @@ import android.widget.Toast
 
 class ToastManager {
     companion object {
+        private var currentToast: Toast? = null
+
         fun show(context: Context, message: String, duration: Int = Toast.LENGTH_SHORT) {
-            Toast.makeText(context, message, duration).show()
+            currentToast?.cancel()
+
+            currentToast = Toast.makeText(context.applicationContext, message, duration)
+
+            currentToast?.show()
         }
     }
 }

@@ -1,5 +1,6 @@
 package sfedu.ictis.walkOfInterest.presentation.generate
 
+import android.animation.ObjectAnimator
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
@@ -60,6 +61,8 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
         setupListeners()
         observeState()
         observeEvents()
+
+        pulseFieldsAttention()
     }
 
 
@@ -224,7 +227,7 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
 
                         GenerateEvent.OpenTimePicker -> showTimePicker()
 
-                        is GenerateEvent.ShowError ->
+                        is GenerateEvent.ShowMsg ->
                             ToastManager.show(this@GenerateActivity, event.message)
 
                         is GenerateEvent.NavigateToCategories -> {
@@ -370,6 +373,24 @@ class GenerateActivity : BaseActivity<ActivityGenerateBinding>() {
         TimePickerDialog(this, { _, hour, minute ->
             viewModel.onTimeSelected(hour * 60 + minute)
         }, currentTime / 60, currentTime % 60, true).show()
+    }
+
+    private fun pulseFieldsAttention() {
+        binding.root.post {
+            viewModel.showMsgSelectPoint()
+        }
+
+        val views = listOf(binding.fieldFromLayout, binding.fieldToLayout)
+
+        views.forEach { view ->
+            view.postDelayed({
+                ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0.3f, 1f).apply {
+                    duration = 500
+                    repeatCount = 1
+                    start()
+                }
+            }, 300)
+        }
     }
 
 

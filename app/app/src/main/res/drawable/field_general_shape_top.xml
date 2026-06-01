@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/gray_button"/>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/object_not_active"/>
+            <corners
+                    android:topLeftRadius="@dimen/corner_field"
+                    android:topRightRadius="@dimen/corner_field"/>
+        </shape>
+    </item>
 
-    <corners
-        android:topLeftRadius="@dimen/corner_field"
-        android:topRightRadius="@dimen/corner_field"/>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/gray_button_selected"/>
+            <corners
+                    android:topLeftRadius="@dimen/corner_field"
+                    android:topRightRadius="@dimen/corner_field"/>
+        </shape>
+    </item>
 
-</shape>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/gray_button"/>
+            <corners
+                    android:topLeftRadius="@dimen/corner_field"
+                    android:topRightRadius="@dimen/corner_field"/>
+        </shape>
+    </item>
+</selector>

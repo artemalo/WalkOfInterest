@@ -84,6 +84,7 @@
                 android:layout_height="@dimen/btn_field"
                 android:minHeight="@dimen/btn_field">
                 <LinearLayout
+                    android:id="@+id/fieldFromLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
@@ -115,7 +116,7 @@
             </FrameLayout>
 
             <LinearLayout
-                android:background="@drawable/field_general_shape_top"
+                android:background="@color/gray_button"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent">
                 <View
@@ -134,6 +135,7 @@
                 android:layout_height="@dimen/btn_field"
                 android:minHeight="@dimen/btn_field">
                 <LinearLayout
+                    android:id="@+id/fieldToLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"

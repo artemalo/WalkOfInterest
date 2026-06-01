@@ -47,14 +47,26 @@ class GenerateViewModel(
 
     private var selectingFrom: Boolean? = null
 
+    fun showMsgSelectPoint() {
+        showMsg("Выберите точку")
+    }
+
     fun onSelectFromClicked() {
         if (_uiState.value.isLoading) return
         selectingFrom = true
+
+        showMsgClickOnMap()
     }
 
     fun onSelectToClicked() {
         if (_uiState.value.isLoading) return
         selectingFrom = false
+
+        showMsgClickOnMap()
+    }
+
+    private fun showMsgClickOnMap() {
+        showMsg("Нажмите на карту, чтобы поставить")
     }
 
     fun onMapPointClicked(lat: Double, lon: Double) {
@@ -71,10 +83,18 @@ class GenerateViewModel(
             }
         }
 
+        showMsgSelectedPoint(isFrom)
+
         selectingFrom = null
 
         checkAndFetchRoute()
         Log.i("MainViewModel", "onPointSelected(): ${lat},${lon}")
+    }
+
+    private fun showMsgSelectedPoint(isFrom: Boolean) {
+        val point = if (isFrom) "откуда" else "куда"
+
+        showMsg("Точка $point выбрана")
     }
 
     private fun checkAndFetchRoute() {
@@ -117,24 +137,19 @@ class GenerateViewModel(
         if (state.isLoading) return
 
         if (!state.isCalculateEnabled) {
-            viewModelScope.launch {
-                _events.emit(
-                    GenerateEvent.ShowError(
-                        if (state.pointFrom == null || state.pointTo == null)
-                            "Выберите обе точки на карте"
-                        else
-                            "Неизвестная ошибка. Попробуйте выбрать другие точки"
-                    )
-                )
-            }
+            showMsg(
+                if (state.pointFrom == null || state.pointTo == null)
+                    "Выберите обе точки на карте"
+                else
+                    "Неизвестная ошибка. Попробуйте выбрать другие точки"
+            )
+
             return
         }
 
         val minAcceptable = (state.minTimeMinutes * 1.5).roundToInt()
         if (state.selectedTimeMinutes < minAcceptable) {
-            viewModelScope.launch {
-                _events.emit(GenerateEvent.ShowError("Минимум для маршрута: ${formatMinutes(minAcceptable)}"))
-            }
+            showMsg("Минимум для маршрута: ${formatMinutes(minAcceptable)}")
             return
         }
 
@@ -168,7 +183,7 @@ class GenerateViewModel(
                 _events.emit(GenerateEvent.OpenTimePicker)
             } else {
                 _events.emit(
-                    GenerateEvent.ShowError(
+                    GenerateEvent.ShowMsg(
                         if (state.pointFrom == null || state.pointTo == null)
                             "Выберите обе точки на карте"
                         else
@@ -185,9 +200,7 @@ class GenerateViewModel(
         val finalMinutes = if (minutes < minAcceptable) minAcceptable else minutes
 
         if (minutes < minAcceptable) {
-            viewModelScope.launch {
-                _events.emit(GenerateEvent.ShowError("Минимум: ${formatMinutes(minAcceptable)}"))
-            }
+            showMsg("Минимум: ${formatMinutes(minAcceptable)}")
         }
 
         _uiState.update { state ->
@@ -274,8 +287,14 @@ class GenerateViewModel(
             else -> "Что-то пошло не так. Попробуйте снова"
         }
 
+        showMsg(userMessage)
+    }
+
+    private fun showMsg(msg: String) {
         viewModelScope.launch {
-            _events.emit(GenerateEvent.ShowError(userMessage))
+            _events.emit(
+                GenerateEvent.ShowMsg(msg)
+            )
         }
     }
 }
