@@ -2,6 +2,7 @@ package sfedu.ictis.walkOfInterest.data.mapper
 
 import sfedu.ictis.walkOfInterest.data.local.TripEntity
 import sfedu.ictis.walkOfInterest.domain.model.DomainTrip
+import kotlin.String
 
 fun DomainTrip.toEntity(): TripEntity = TripEntity(
     id = id,
@@ -12,7 +13,8 @@ fun DomainTrip.toEntity(): TripEntity = TripEntity(
     bestRouteTime = bestRouteTime,
     userSelectedTime = userSelectedTime,
     totalPois = totalPois,
-    selectedPois = selectedPois
+    selectedPois = selectedPois,
+    photo = photo
 )
 
 fun TripEntity.toDomain(): DomainTrip = DomainTrip(
@@ -24,5 +26,6 @@ fun TripEntity.toDomain(): DomainTrip = DomainTrip(
     bestRouteTime = bestRouteTime,
     userSelectedTime = userSelectedTime,
     totalPois = totalPois,
-    selectedPois = selectedPois
+    selectedPois = selectedPois,
+    photo = photo
 )

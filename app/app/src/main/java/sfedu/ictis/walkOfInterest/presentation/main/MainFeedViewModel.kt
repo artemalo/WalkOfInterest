@@ -61,7 +61,8 @@ class MainFeedViewModel(
                     addressTo = trip.addressTo,
                     totalTime = trip.userSelectedTime,
                     totalPois = trip.totalPois,
-                    bestTime = trip.bestRouteTime
+                    bestTime = trip.bestRouteTime,
+                    photo = trip.photo
                 )
             }
             _uiState.update { it.copy(items = uiTrips) }
