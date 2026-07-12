@@ -1,385 +1,160 @@
-# Руководство: Запуск бэкенда на чистом Ubuntu 24.04
+# Walk of Interest
 
-## Шаг 1. Подготовка системы (Swap и Обновления)
+**Русский** | [English](README.en.md)
 
-Так как у сервера 2 ГБ оперативной памяти, Swap обязателен, иначе Docker упадет при сборке или запуске GraphHopper.
+Мобильное приложение для генерации пешеходных маршрутов через интересные места - по категориям интересов пользователя, доступному времени и точкам «откуда/куда».
 
-```bash
-# Обновляем списки пакетов и саму систему
-sudo apt update && sudo apt upgrade -y
+> Между встречами - окно в 2 часа в незнакомом городе. Хочется погулять и увидеть что-то стоящее, но планировать маршрут некогда. Обычные карты строят путь из A в B - Walk of Interest строит прогулку *через самое интересное по пути*.
 
-# Создаем файл подкачки на 4 ГБ
-sudo fallocate -l 4G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
+![Kotlin](https://img.shields.io/badge/Kotlin-Android-7F52FF?logo=kotlin&logoColor=white)
+![Java](https://img.shields.io/badge/Java-25-ED8B00?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F?logo=springboot&logoColor=white)
+![PostGIS](https://img.shields.io/badge/PostgreSQL-PostGIS-4169E1?logo=postgresql&logoColor=white)
+![GraphHopper](https://img.shields.io/badge/GraphHopper-routing-00B0A8)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
 
-# Делаем так, чтобы Swap работал и после перезагрузки сервера
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-```
-
-## Шаг 2. Безопасность (Брандмауэр UFW)
-
-**ВНИМАНИЕ:** Строка с портом 22 критически важна
-
-```bash
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-sudo ufw allow 22/tcp    # Обязательно: доступ по SSH
-sudo ufw allow 80/tcp
-sudo ufw --force enable
-```
-
-## Шаг 3. Установка «Сердца» (`Docker`)
-
-```bash
-# Устанавливаем необходимые системные утилиты
-sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
-
-# Добавляем официальный ключ безопасности Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-# Добавляем репозиторий Docker в систему
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-# Устанавливаем сам Docker и Docker Compose
-sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
-```
-
-## Шаг 4. Подготовка проекта и данных
-
-Создаем папку для проекта, скачиваем код бэкенда и карту для навигатора GraphHopper
-
-```bash
-# Создаем рабочую директорию и переходим в нее
-mkdir ~/app && cd ~/app
-
-# Скачиваем код бэкенда
-git clone https://github.com/artemalo/WalkOfInterest-backend.git
-
-# Перед использованием wget команды
-apt-get install wget
-
-# Создаем папку для карт и скачиваем карту ЮФО
-mkdir -p ~/app/data/graphhopper
-cd ~/app/data/graphhopper
-wget https://download.geofabrik.de/russia/south-fed-district-latest.osm.pbf
-
-# Возвращаемся в главную папку проекта
-cd ~/app
-
-# Если после запуска фотографии не будут загружаться, то создаем папку для фотографий
-# mkdir -p ~/app/data/uploads
-```
-
-Конфиг для GraphHopper (*обязательно*)
-
-```bash
-graphhopper:
-  datareader.file: /data/map.osm.pbf
-  graph.location: /data/cache
-
-  import.osm.ignored_highways: |
-    motorway, trunk, busway,
-    motorway_link, trunk_link
-
-  profiles:
-    - name: foot
-      custom_model_files: [foot.json, foot_elevation.json]
-
-  profiles_ch:
-    - profile: foot
-
-  graph.encoded_values: |
-    foot_access, foot_average_speed, foot_priority, foot_road_access,
-    hike_rating, average_slope,
-    country, road_class, mtb_rating, road_environment, ferry_speed
-
-  graph.elevation.provider: srtm
-
-server:
-  application_connectors:
-  - type: http
-    port: 8989
-    max_request_header_size: 50k
-  request_log:
-      appenders: []
-logging:
-  appenders:
-    - type: file
-      time_zone: UTC
-      current_log_filename: logs/graphhopper.log
-      log_format: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-      archive: true
-      archived_log_filename_pattern: ./logs/graphhopper-%d.log.gz
-      archived_file_count: 30
-      never_block: true
-    - type: console
-      time_zone: UTC
-      log_format: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-  loggers:
-    "com.graphhopper.osm_warnings":
-      level: DEBUG
-      additive: false
-      appenders:
-        - type: file
-          currentLogFilename: logs/osm_warnings.log
-          archive: false
-          logFormat: '[%level] %msg%n'
-```
-
-Переименовать файл (или везде использовать имя нужное .pbf)
-
-```bash
-mv ~/app/data/graphhopper/south-fed-district-latest.osm.pbf ~/app/data/graphhopper/map.osm.pbf
-```
-
-## Шаг 5. Конфигурация (Секреты и Архитектура)
-
-### 5.1 Файл переменных окружения (`.env`)
-
-```bash
-nano ~/app/.env
-```
-
-DOMAIN - чистый ip/domain, без http
-
-```env
-DB_PASSWORD=super_strong_password
-JWT_SECRET=длинная_случайная_строка_без_пробелов
-JWT_EXPIRATION=900000
-JWT_REFRESH_EXPIRATION=2592000000
-DOMAIN=ip_или_домен
-```
-
-### 5.2 Файл архитектуры (`docker-compose.yml`)
-
-```bash
-nano ~/app/docker-compose.yml
-```
-
-```yaml
-x-logging: &default-logging
-  driver: "json-file"
-  options:
-    max-size: "10m"
-    max-file: "3"
-services:
-  db:
-    image: postgis/postgis:15-3.3
-    container_name: walk-db
-    ports:
-      - "127.0.0.1:5432:5432"
-    restart: always
-    environment:
-      POSTGRES_DB: walk
-      POSTGRES_USER: walk
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    command: >
-      postgres
-      -c shared_buffers=128MB
-      -c work_mem=4MB
-      -c maintenance_work_mem=64MB
-      -c effective_cache_size=512MB
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-    logging: *default-logging
-    mem_limit: 512m
-
-  graphhopper:
-    image: israelhikingmap/graphhopper:latest
-    container_name: graphhopper
-    restart: always
-    volumes:
-      - ./data/graphhopper:/data
-      - ./graphhopper.yml:/config.yml
-    command: ["-c", "/config.yml"]
-    environment:
-      - JAVA_OPTS=-Xmx512m -Xms512m
-    logging: *default-logging
-    mem_limit: 700m
-
-  backend:
-    build: ./WalkOfInterest-backend
-    container_name: walk-api
-    restart: always
-    depends_on:
-      - db
-      - graphhopper
-    environment:
-      - DB_URL=jdbc:postgresql://db:5432/walk
-      - DB_USERNAME=walk
-      - DB_PASSWORD=${DB_PASSWORD}
-      - SHOW_SQL=false
-      - GH_URL=http://graphhopper:8989
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRATION=${JWT_EXPIRATION}
-      - JWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION}
-      - APP_BASE_URL=http://${DOMAIN}
-      - UPLOAD_DIR=/data/uploads
-      - JAVA_OPTS="-Xms256m -Xmx512m"
-    volumes:
-      - ./data/uploads:/data/uploads
-    logging: *default-logging
-    mem_limit: 700m
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/conf:/etc/nginx/conf.d
-      - ./data/uploads:/data/uploads:ro
-    depends_on:
-      - backend
-    logging: *default-logging
-    mem_limit: 64m
-```
-
-### 5.3 Файл архитектуры (`.dockerignore`)
-
-```bash
-nano ~/app/.dockerignore
-```
-
-```dockerignore
-target
-.git
-.idea
-*.iml
-```
-
-## Шаг 6. Настройка Nginx
-
-```bash
-mkdir -p ~/app/nginx/conf && nano ~/app/nginx/conf/app.conf
-```
-
-*Вставить этот код:*
-
-```nginx
-server {
-    listen 80;
-    server_name <domain_или_ip>;
-    
-    # Если нужно свое ограничение на загрузку файлов от клиентов
-    # client_max_body_size 5M;    
-    # expires - для кэширования на стороне клиента     
-
-    location /avatars/ {
-        alias /data/uploads/avatars/;
-        expires 30d;
-    }
-
-    location /pois/ {
-        alias /data/uploads/pois/;
-        expires 30d;
-    }    
-
-    location / {
-        proxy_pass http://backend:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-## Шаг 7. Запуск
-
-```bash
-sudo docker compose up -d
-```
+Backend вынесен в отдельный репозиторий: [WalkOfInterest-backend](https://github.com/artemalo/WalkOfInterest-backend) (подключен сюда как git submodule).
 
 ---
 
-## Другое
+## Скриншоты
 
-### Папка ~/app
+### Генерация маршрута
 
-```bash
-../app/
-├── WalkOfInterest-backend/
-│   ├── src/
-│   ├── pom.xml
-│   └── Dockerfile
-├── data/
-│   ├── postgres/
-│   ├── graphhopper/
-│   │   └── map.osm.pbf
-│   └── uploads/
-│       └── avatars/
-├── nginx/
-│   └── conf/
-│       └── app.conf
-├── certbot/
-│   ├── conf/
-│   └── www/
-├── .env
-├── docker-compose.yml
-├── graphhopper.yml
-└── .dockerignore
+| Параметры маршрута                                     | Выбор категорий                                                                 | Готовые варианты                                                                  |
+|:------------------------------------------------------:|:-------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------:|
+| ![Параметры маршрута](docs/images/app_route_setup.jpg) | <img src="docs/images/app_categories.jpg" title="" alt="Категории" width="507"> | <img title="" src="docs/images/app_route_result.jpg" alt="Результат" width="518"> |
+
+Пользователь задаёт точки «откуда/куда», лимит времени и количество POI, выбирает интересные категории - приложение предлагает несколько вариантов маршрута с временем и длиной пути.
+
+### Карта и создание
+
+| Меню создания                                                                                            | Подкатегории:<br/>ручной выбор POI                                                                        |
+|:--------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|
+| <img title="" src="docs/images/app_create_menu.jpg" alt="Меню создания" width="208" data-align="inline"> | <img title="" src="docs/images/app_subcategory_edit.jpg" alt="Выбор POI" width="208" data-align="inline"> |
+
+### Точки интереса
+
+| Добавление POI                                                                    | Похожие места рядом                                | Карточка POI и отзывы                         |
+|:---------------------------------------------------------------------------------:|:--------------------------------------------------:|:---------------------------------------------:|
+| <img title="" src="docs/images/app_add_poi.jpg" alt="Добавление POI" width="418"> | ![Похожие места](docs/images/app_similar_pois.jpg) | ![Карточка POI](docs/images/app_poi_card.jpg) |
+
+### Профиль и сохранённое
+
+| Профиль                                 | Мои POI                                                                    | Сохранённые маршруты                                                          |
+|:---------------------------------------:|:--------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
+| ![Профиль](docs/images/app_profile.jpg) | <img src="docs/images/app_my_pois.jpg" title="" alt="Мои POI" width="511"> | <img title="" src="docs/images/app_my_routes.jpg" alt="Маршруты" width="398"> |
+
+### Модерация
+
+Точки, добавленные пользователями, проходят модерацию в веб-панели (Spring MVC + Thymeleaf), встроенной в backend:
+
+![Панель модератора](docs/images/admin_panel.png)
+
+## Возможности
+
+- Генерация нескольких вариантов пешего маршрута по интересам за секунды
+- 60+ подкатегорий POI (музеи, парки, смотровые, архитектура…) с весами «интересности»
+- Учёт лимита времени: реальное время пешего пути считает движок маршрутизации
+- Отзывы, оценки и лайки для точек; рейтинг влияет на попадание в маршрут
+- Добавление собственных точек пользователями + модерация в веб-панели
+- Регистрация/вход по JWT (access + refresh с ротацией), профиль со статистикой прогулок
+- Сохранение маршрутов и точек офлайн (Room)
+- Данные - только открытые источники (OpenStreetMap), работает для любого региона
+
+## Как строится маршрут
+
+Ядро проекта - собственный алгоритм подбора и упорядочивания POI:
+
+```mermaid
+flowchart LR
+    A["Запрос:<br/>A -> B, время,<br/>категории"] --> B["Эллипс-фильтр<br/>кандидатов<br/>(Хаверсин)"]
+    B --> C["Оценка каждого POI:<br/>коридор + интерес + рейтинг"]
+    C --> D["Жадная вставка точек<br/>с минимальным крюком"]
+    D --> E["2-opt: устранение<br/>пересечений пути"]
+    E --> F["Проверка времени<br/>через GraphHopper"]
+    F --> G["Отсев по бюджету<br/>времени"]
+    G --> H["Варианты<br/>маршрута"]
 ```
 
----
+1. **Пространственная фильтрация.** Кандидаты отбираются эллипсом с фокусами в точках A и B: `d(T,A) + d(T,B) ≤ 2a` - крюк к любой точке остаётся разумным. Расстояния - по формуле Хаверсина (погрешность < 0,3 % на дистанциях до 10 км).
+2. **Оценка объектов.** `score = (0.3·коридор + 0.4·интерес + 0.2·рейтинг) × статус × бонус`, где «коридор» - гауссова близость к прямой A->B (σ = 300 м), «интерес» - вес подкатегории под профиль пользователя, «рейтинг» - оценка через сигмоиду `σ((rate-3)·lg(votes+1))`, чтобы одинокая «пятёрка» проигрывала множеству стабильных оценок.
+3. **Сборка и оптимизация.** Жадная вставка каждой точки туда, где путь удлиняется меньше всего -> 2-opt распутывает пересечения (на тестовом маршруте: 96 мин -> 78 мин) -> реальное пешее время проверяется запросом к GraphHopper -> лишние точки отсеиваются по убыванию ценности, пока маршрут не уложится в бюджет времени.
 
-### Полезные команды
+## Архитектура
 
-```bash
-# Посмотреть статус всех контейнеров
-sudo docker compose ps
-
-# Посмотреть логи бэкенда (чтобы убедиться, что Spring Boot запустился)
-sudo docker compose logs -f backend
-
-# Проверить потребление оперативной памяти контейнерами
-sudo docker stats
-
-# Полностью остановить проект
-sudo docker compose down
+```mermaid
+flowchart LR
+    subgraph Device["Android-устройство"]
+        APP["Приложение<br/>Kotlin | MVVM | Clean Architecture<br/>osmdroid | Retrofit | Room | Koin"]
+    end
+    subgraph VPS["VPS | Docker Compose"]
+        NGINX["Nginx<br/>обратный прокси + статика"]
+        API["Backend<br/>Spring Boot REST API"]
+        DB[("PostgreSQL<br/>+ PostGIS")]
+        GH["GraphHopper<br/>движок маршрутизации"]
+    end
+    APP -- HTTP --> NGINX --> API
+    API --> DB
+    API --> GH
 ```
 
-### Память
+Все серверные компоненты - изолированные контейнеры на одном VPS (2 ГБ RAM, с лимитами памяти на каждый контейнер); наружу открыт только Nginx.
 
-Обслуживание достаточно раз в неделю:
+### Мобильное приложение - Clean Architecture + MVVM
 
-#### Очистка (безопасная)
+Слои представления и данных зависят от доменного слоя (чистый Kotlin, без Android SDK): 37 use-case, 8 интерфейсов репозиториев, доменные модели. Замена Retrofit или Room не затрагивает бизнес-логику.
 
-```bash
-docker system prune -af
+- **Presentation:** Fragment/ViewModel + StateFlow, Navigation Component, DataBinding
+- **Domain:** use-case и интерфейсы - без зависимостей на фреймворки
+- **Data:** 8 репозиториев, 5 Retrofit API, Room (офлайн-хранение маршрутов и точек), EncryptedSharedPreferences для токенов, TokenAuthenticator с автоматическим refresh
+
+### Backend - слоистая архитектура
+
+9 контроллеров -> 12+ сервисов (связи только через DI) -> 9 репозиториев Spring Data JPA; пространственные запросы - нативный SQL + PostGIS (`ST_Within` / `ST_DWithin`, GiST-индексы). POI наполняются собственным парсером OSM PBF (osm4j) с батч-вставкой и категоризацией по 60+ подкатегориям с весами. Сквозные функции: JWT-фильтр, глобальный обработчик ошибок, rate limiting (Bucket4j, token bucket), клиент GraphHopper. Подробности и схема БД - в [README бэкенда](https://github.com/artemalo/WalkOfInterest-backend).
+
+## Технологический стек
+
+| Слой               | Технологии                                                                                                                                                                         |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Мобильное**      | Kotlin, MVVM + Clean Architecture, osmdroid, Retrofit + OkHttp, Room + KSP, Koin, Coil, Security-Crypto, Navigation Component                                                      |
+| **Backend**        | Java 25, Spring Boot 4 (Web/WebFlux), Spring Security + JWT, Spring Data JPA + Hibernate, PostgreSQL + PostGIS, Bucket4j, springdoc-openapi, osm4j + JTS, Thymeleaf, Lombok, Maven |
+| **Инфраструктура** | Docker Compose, Nginx, GraphHopper (профиль foot, Contraction Hierarchies, рельеф SRTM), VPS                                                                                       |
+
+### Почему GraphHopper
+
+Google Directions - от $5 за 1000 запросов; Yandex - гео-ограничения; OSRM - нет изохрон, смена профиля требует перекомпиляции. GraphHopper: бесплатный self-hosted, REST `/isochrone` (полигон отдаётся в PostGIS как WKT), Contraction Hierarchies для быстрых расчётов, учёт рельефа SRTM.
+
+## Структура репозитория
+
+```
+WalkOfInterest/
+├── app/                      # Android-приложение (Kotlin)
+├── WalkOfInterest-backend/   # Backend (git submodule -> отдельный репозиторий)
+├── graphhopper/              # Конфигурация движка маршрутизации
+├── docker-compose.yml        # Оркестрация: PostGIS, GraphHopper, backend, Nginx
+└── docs/
+    ├── DEPLOYMENT.md         # Полный гайд по развертыванию на VDS
+    └── images/
 ```
 
-#### Проверка
+## Запуск
+
+**Сервер** (Docker Compose: PostGIS + GraphHopper + backend + Nginx):
 
 ```bash
-docker system df
+git clone --recurse-submodules https://github.com/artemalo/WalkOfInterest.git
+cd WalkOfInterest
+# заполнить .env (см. docs/DEPLOYMENT.md), положить карту OSM в data/graphhopper/
+docker compose up -d
 ```
 
-### Пересбор `docker`
+Полная инструкция, включая настройку чистого VDS с 2 ГБ RAM: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-#### Все образы
+**Приложение:** открыть `app/` в Android Studio, указать `SERVER_URL` в `local.properties`, собрать (minSdk 24).
 
-Если был изменен `docker-compose.yml` и внутренние файлы (`.env`)
+## Планы развития
 
-```bash
-sudo docker compose down
-sudo docker compose up -d
-```
+Рекомендации по истории прогулок, «комфортные» маршруты в обход магистралей, офлайн-режим, экспорт маршрутов в навигаторы.
 
-#### Конкретный образ
-
-Например, нужны новые изменения backend с git:
-
-```bash
-cd ~/app/WalkOfInterest-backend
-git pull origin master
-```
-
-```bash
-cd ~/app
-sudo docker compose up -d --build backend
-```
+# 
